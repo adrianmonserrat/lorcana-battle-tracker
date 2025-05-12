@@ -65,22 +65,34 @@ export function Statistics() {
   
   // Custom tooltip for charts
   const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-background border border-border p-4 rounded-md shadow-lg">
-          <p className="font-bold">{label}</p>
-          {payload.map((entry: any, index: number) => (
+    if (!active || !payload || !payload.length) {
+      return null;
+    }
+
+    // Find the total data point safely
+    const totalEntry = payload.find((p: any) => p.dataKey === "total");
+    
+    return (
+      <div className="bg-background border border-border p-4 rounded-md shadow-lg">
+        <p className="font-bold">{label}</p>
+        {payload.map((entry: any, index: number) => {
+          // Safely calculate percentage
+          let percentageText = '';
+          if (entry.name !== "total" && entry.dataKey !== "winRate" && totalEntry && totalEntry.value > 0) {
+            percentageText = ` (${Math.round((entry.value / totalEntry.value) * 100)}%)`;
+          } else if (entry.dataKey === "winRate") {
+            percentageText = `%`;
+          }
+          
+          return (
             <p key={index} style={{ color: entry.color }}>
               {`${entry.name}: ${entry.value}`}
-              {entry.name !== "total" && entry.dataKey !== "winRate" && 
-                ` (${Math.round((entry.value / payload.find((p: any) => p.dataKey === "total").value) * 100)}%)`}
-              {entry.dataKey === "winRate" && `%`}
+              {percentageText}
             </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
+          );
+        })}
+      </div>
+    );
   };
 
   return (
@@ -145,7 +157,7 @@ export function Statistics() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip content={<CustomTooltip />} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -200,3 +212,4 @@ export function Statistics() {
     </div>
   );
 }
+
