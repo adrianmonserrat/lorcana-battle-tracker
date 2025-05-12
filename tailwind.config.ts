@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Lorcana colors
+				lorcana: {
+					amber: '#FFB81C',
+					amethyst: '#9452A5',
+					emerald: '#00A651',
+					ruby: '#E31937',
+					sapphire: '#0070BA',
+					steel: '#8A898C',
+					victory: '#E1F8E8',
+					defeat: '#FCEBEB',
 				}
 			},
 			borderRadius: {
