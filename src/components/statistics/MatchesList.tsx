@@ -2,7 +2,10 @@
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Match, Tournament } from "@/types";
+import { Match, Tournament, InkColor } from "@/types";
+import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getInkColorHex } from "./utils";
 
 interface EnhancedMatch extends Match {
   tournamentName?: string;
@@ -14,6 +17,8 @@ interface MatchesListProps {
 }
 
 export function MatchesList({ matches, tournaments }: MatchesListProps) {
+  const [colorFilter, setColorFilter] = useState<string>("all");
+
   // Combine all matches (regular and tournament)
   const allMatches: EnhancedMatch[] = [
     ...matches,
@@ -25,27 +30,53 @@ export function MatchesList({ matches, tournaments }: MatchesListProps) {
     )
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  const getInkColorHex = (color: string) => {
-    switch(color) {
-      case 'Ambar': return '#FFB81C';
-      case 'Amatista': return '#9452A5';
-      case 'Esmeralda': return '#00A651';
-      case 'Rubí': return '#E31937';
-      case 'Zafiro': return '#0070BA';
-      case 'Acero': return '#8A898C';
-      default: return '#CCCCCC';
-    }
-  };
+  // Generate a list of all unique colors used in any deck
+  const allUsedColors = new Set<string>();
+  allMatches.forEach(match => {
+    match.myDeck.colors.forEach(color => allUsedColors.add(color));
+    match.opponentDeck.colors.forEach(color => allUsedColors.add(color));
+  });
+  
+  // Apply color filter
+  const filteredMatches = colorFilter === "all" 
+    ? allMatches 
+    : allMatches.filter(match => 
+        match.myDeck.colors.includes(colorFilter as InkColor) || 
+        match.opponentDeck.colors.includes(colorFilter as InkColor)
+      );
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Listado de todas las partidas</CardTitle>
+        <Select value={colorFilter} onValueChange={setColorFilter}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filtrar por color" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos los colores</SelectItem>
+            {[...allUsedColors].map((color) => (
+              <SelectItem 
+                key={color} 
+                value={color}
+                className="flex items-center gap-2"
+              >
+                <span 
+                  className="inline-block w-4 h-4 rounded-full mr-2"
+                  style={{ 
+                    backgroundColor: getInkColorHex(color) 
+                  }}
+                ></span>
+                {color}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </CardHeader>
       <CardContent className="max-h-[600px] overflow-y-auto">
-        {allMatches.length > 0 ? (
+        {filteredMatches.length > 0 ? (
           <div className="space-y-4">
-            {allMatches.map((match) => (
+            {filteredMatches.map((match) => (
               <Card key={match.id} className={`border-l-4 ${match.result === 'Victoria' ? 'border-l-emerald-500' : 'border-l-red-500'}`}>
                 <CardContent className="p-4">
                   <div className="flex justify-between items-start">
@@ -119,7 +150,11 @@ export function MatchesList({ matches, tournaments }: MatchesListProps) {
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground">No hay partidas registradas</p>
+          <p className="text-center text-muted-foreground">
+            {colorFilter !== "all" 
+              ? "No hay partidas con este color" 
+              : "No hay partidas registradas"}
+          </p>
         )}
       </CardContent>
     </Card>
