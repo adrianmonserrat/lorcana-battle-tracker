@@ -3,14 +3,22 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { TournamentDetail as TournamentDetailComponent } from '@/components/tournament-detail';
+import { TournamentDetailComponent } from '@/components/tournament-detail';
 import { MatchForm } from '@/components/match-form';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle 
+} from '@/components/ui/sheet';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const TournamentDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isAddingMatch, setIsAddingMatch] = useState(false);
+  const isMobile = useIsMobile();
   
   if (!id) {
     navigate('/torneos');
@@ -37,17 +45,35 @@ const TournamentDetail = () => {
           onAddMatch={() => setIsAddingMatch(true)} 
         />
         
-        <Dialog open={isAddingMatch} onOpenChange={setIsAddingMatch}>
-          <DialogContent className="max-w-4xl">
-            <DialogHeader>
-              <DialogTitle>Agregar Partida al Torneo</DialogTitle>
-            </DialogHeader>
-            <MatchForm 
-              tournamentId={id} 
-              onSuccess={() => setIsAddingMatch(false)} 
-            />
-          </DialogContent>
-        </Dialog>
+        {isMobile ? (
+          <Sheet open={isAddingMatch} onOpenChange={setIsAddingMatch}>
+            <SheetContent side="bottom" className="h-[85vh] overflow-y-auto">
+              <SheetHeader>
+                <SheetTitle>Agregar Partida al Torneo</SheetTitle>
+              </SheetHeader>
+              <ScrollArea className="h-full pr-4">
+                <MatchForm 
+                  tournamentId={id} 
+                  onSuccess={() => setIsAddingMatch(false)} 
+                />
+              </ScrollArea>
+            </SheetContent>
+          </Sheet>
+        ) : (
+          <Sheet open={isAddingMatch} onOpenChange={setIsAddingMatch}>
+            <SheetContent className="w-[95%] sm:max-w-[600px] overflow-y-auto">
+              <SheetHeader>
+                <SheetTitle>Agregar Partida al Torneo</SheetTitle>
+              </SheetHeader>
+              <ScrollArea className="h-[calc(100vh-120px)] pr-4">
+                <MatchForm 
+                  tournamentId={id} 
+                  onSuccess={() => setIsAddingMatch(false)} 
+                />
+              </ScrollArea>
+            </SheetContent>
+          </Sheet>
+        )}
       </main>
     </div>
   );
