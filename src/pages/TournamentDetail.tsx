@@ -9,7 +9,8 @@ import {
   Sheet, 
   SheetContent, 
   SheetHeader, 
-  SheetTitle 
+  SheetTitle,
+  SheetDescription
 } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -47,11 +48,14 @@ const TournamentDetail = () => {
         
         {isMobile ? (
           <Sheet open={isAddingMatch} onOpenChange={setIsAddingMatch}>
-            <SheetContent side="bottom" className="h-[85vh] overflow-y-auto">
+            <SheetContent side="bottom" className="h-[90vh] pb-8 overflow-y-auto">
               <SheetHeader>
                 <SheetTitle>Agregar Partida al Torneo</SheetTitle>
+                <SheetDescription>
+                  Completa el formulario para registrar una nueva partida
+                </SheetDescription>
               </SheetHeader>
-              <ScrollArea className="h-full pr-4">
+              <ScrollArea className="h-full pr-4 mt-4">
                 <MatchForm 
                   tournamentId={id} 
                   onSuccess={() => setIsAddingMatch(false)} 
@@ -64,8 +68,11 @@ const TournamentDetail = () => {
             <SheetContent className="w-[95%] sm:max-w-[600px] overflow-y-auto">
               <SheetHeader>
                 <SheetTitle>Agregar Partida al Torneo</SheetTitle>
+                <SheetDescription>
+                  Completa el formulario para registrar una nueva partida
+                </SheetDescription>
               </SheetHeader>
-              <ScrollArea className="h-[calc(100vh-120px)] pr-4">
+              <ScrollArea className="h-[calc(100vh-150px)] pr-4 mt-4">
                 <MatchForm 
                   tournamentId={id} 
                   onSuccess={() => setIsAddingMatch(false)} 

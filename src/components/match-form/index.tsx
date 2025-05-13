@@ -10,6 +10,7 @@ import { DeckInput } from './deck-input';
 import { MatchFormatSelector } from './match-format-selector';
 import { ResultSelector } from './result-selector';
 import { NotesInput } from './notes-input';
+import { toast } from "sonner";
 
 interface MatchFormProps {
   tournamentId?: string;
@@ -27,6 +28,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
   const [opponentColors, setOpponentColors] = useState<InkColor[]>([]);
   const [result, setResult] = useState<'Victoria' | 'Derrota' | ''>('');
   const [notes, setNotes] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleMyColorToggle = (color: InkColor) => {
     setMyColors(prev => 
@@ -59,37 +61,46 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
     e.preventDefault();
     
     if (!myDeckName || !opponentDeckName || myColors.length === 0 || opponentColors.length === 0 || !result) {
-      alert('Por favor completa todos los campos obligatorios');
+      toast.error('Por favor completa todos los campos obligatorios');
       return;
     }
     
-    const matchData = {
-      gameFormat,
-      matchFormat,
-      myDeck: {
-        name: myDeckName,
-        colors: myColors
-      },
-      opponentDeck: {
-        name: opponentDeckName,
-        colors: opponentColors
-      },
-      result,
-      notes: notes.trim() || undefined
-    };
+    setIsSubmitting(true);
     
-    if (tournamentId) {
-      addTournamentMatch(tournamentId, matchData);
-    } else {
-      addMatch(matchData);
+    try {
+      const matchData = {
+        gameFormat,
+        matchFormat,
+        myDeck: {
+          name: myDeckName,
+          colors: myColors
+        },
+        opponentDeck: {
+          name: opponentDeckName,
+          colors: opponentColors
+        },
+        result,
+        notes: notes.trim() || undefined
+      };
+      
+      if (tournamentId) {
+        addTournamentMatch(tournamentId, matchData);
+      } else {
+        addMatch(matchData);
+      }
+      
+      resetForm();
+      if (onSuccess) onSuccess();
+    } catch (error) {
+      console.error('Error al guardar la partida:', error);
+      toast.error('Ocurrió un error al guardar la partida');
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    resetForm();
-    if (onSuccess) onSuccess();
   };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
+    <Card className="w-full max-w-3xl mx-auto mb-8">
       <CardHeader>
         <CardTitle className="text-xl font-bold">
           {tournamentId ? 'Registrar Partida de Torneo' : 'Registrar Nueva Partida'}
@@ -102,6 +113,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
           <GameFormatSelector 
             value={gameFormat}
             onChange={setGameFormat}
+            disabled={isSubmitting}
           />
 
           {/* My Deck Colors */}
@@ -110,6 +122,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
             onColorToggle={handleMyColorToggle}
             label="Mis Colores"
             id="my"
+            disabled={isSubmitting}
           />
           
           {/* My Deck Name */}
@@ -119,6 +132,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
             value={myDeckName}
             onChange={setMyDeckName}
             placeholder="Ej: Control Ambar/Amatista"
+            disabled={isSubmitting}
           />
           
           {/* Opponent Deck Colors */}
@@ -127,6 +141,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
             onColorToggle={handleOpponentColorToggle}
             label="Colores del Oponente"
             id="opp"
+            disabled={isSubmitting}
           />
           
           {/* Opponent Deck Name */}
@@ -136,30 +151,38 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
             value={opponentDeckName}
             onChange={setOpponentDeckName}
             placeholder="Ej: Aggro Rubí/Esmeralda"
+            disabled={isSubmitting}
           />
           
           {/* Match Format */}
           <MatchFormatSelector
             value={matchFormat}
             onChange={setMatchFormat}
+            disabled={isSubmitting}
           />
           
           {/* Result */}
           <ResultSelector
             value={result}
             onChange={setResult}
+            disabled={isSubmitting}
           />
           
           {/* Notes */}
           <NotesInput
             value={notes}
             onChange={setNotes}
+            disabled={isSubmitting}
           />
         </CardContent>
         
         <CardFooter>
-          <Button type="submit" className="w-full">
-            Guardar Partida
+          <Button 
+            type="submit" 
+            className="w-full"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Guardando...' : 'Guardar Partida'}
           </Button>
         </CardFooter>
       </form>

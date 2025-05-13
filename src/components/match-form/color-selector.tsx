@@ -8,9 +8,10 @@ interface ColorSelectorProps {
   onColorToggle: (color: InkColor) => void;
   label: string;
   id: string;
+  disabled?: boolean;
 }
 
-export function ColorSelector({ selectedColors, onColorToggle, label, id }: ColorSelectorProps) {
+export function ColorSelector({ selectedColors, onColorToggle, label, id, disabled = false }: ColorSelectorProps) {
   const colorOptions: InkColor[] = ['Ambar', 'Amatista', 'Esmeralda', 'Rubí', 'Zafiro', 'Acero'];
   
   const getColorClass = (color: InkColor) => {
@@ -28,7 +29,7 @@ export function ColorSelector({ selectedColors, onColorToggle, label, id }: Colo
   return (
     <div className="space-y-3">
       <h3 className="font-medium">{label}</h3>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {colorOptions.map(color => (
           <div 
             key={`${id}-${color}`} 
@@ -38,8 +39,9 @@ export function ColorSelector({ selectedColors, onColorToggle, label, id }: Colo
               id={`${id}-${color}`} 
               checked={selectedColors.includes(color)}
               onCheckedChange={() => onColorToggle(color)}
+              disabled={disabled}
             />
-            <Label htmlFor={`${id}-${color}`} className="flex-grow cursor-pointer">
+            <Label htmlFor={`${id}-${color}`} className={`flex-grow cursor-pointer ${disabled ? 'opacity-60' : ''}`}>
               {color}
             </Label>
           </div>
