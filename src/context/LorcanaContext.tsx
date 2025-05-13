@@ -10,6 +10,7 @@ interface LorcanaContextType {
   addMatch: (match: Omit<Match, "id" | "date">) => void;
   addTournament: (tournament: Omit<Tournament, "id" | "date" | "matches">) => void;
   addTournamentMatch: (tournamentId: string, match: Omit<Match, "id" | "date" | "tournamentId">) => void;
+  deleteMatch: (matchId: string, tournamentId?: string) => void;
 }
 
 const defaultStats: Stats = {
@@ -190,6 +191,24 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
     toast.success('Partida de torneo registrada correctamente');
   };
 
+  const deleteMatch = (matchId: string, tournamentId?: string) => {
+    if (tournamentId) {
+      // Delete match from tournament
+      setTournaments(prev => 
+        prev.map(tournament => 
+          tournament.id === tournamentId 
+            ? { ...tournament, matches: tournament.matches.filter(match => match.id !== matchId) } 
+            : tournament
+        )
+      );
+    } else {
+      // Delete regular match
+      setMatches(prev => prev.filter(match => match.id !== matchId));
+    }
+    
+    toast.success('Partida eliminada correctamente');
+  };
+
   return (
     <LorcanaContext.Provider value={{
       matches,
@@ -197,7 +216,8 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
       stats,
       addMatch,
       addTournament,
-      addTournamentMatch
+      addTournamentMatch,
+      deleteMatch
     }}>
       {children}
     </LorcanaContext.Provider>
