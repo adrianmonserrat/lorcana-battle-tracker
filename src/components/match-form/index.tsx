@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useLorcana } from '@/context/LorcanaContext';
@@ -29,6 +28,13 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
   const [result, setResult] = useState<'Victoria' | 'Derrota' | 'Empate' | ''>('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Reset the result if changing from BO2 to another format and result is 'Empate'
+  useEffect(() => {
+    if (matchFormat !== 'BO2' && result === 'Empate') {
+      setResult('');
+    }
+  }, [matchFormat, result]);
 
   const handleMyColorToggle = (color: InkColor) => {
     setMyColors(prev => 
@@ -166,6 +172,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
             value={result}
             onChange={setResult}
             disabled={isSubmitting}
+            matchFormat={matchFormat}
           />
           
           {/* Notes */}
