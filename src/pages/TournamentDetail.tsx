@@ -40,7 +40,7 @@ const TournamentDetail = () => {
       </header>
       
       <main className="container max-w-6xl mx-auto p-4 md:p-6">
-        <TournamentDetailComponent 
+        <TournamentDetailComponent
           tournamentId={id} 
           onAddMatch={() => setIsAddingMatch(true)} 
         />
