@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { TournamentDetailComponent } from '@/components/tournament-detail';
+import { TournamentDetail as TournamentDetailComponent } from '@/components/tournament-detail';
 import { MatchForm } from '@/components/match-form';
 import { 
   Sheet, 
