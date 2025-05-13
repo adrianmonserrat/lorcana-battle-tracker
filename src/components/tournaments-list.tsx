@@ -30,6 +30,7 @@ export function TournamentsList() {
         {tournaments.map(tournament => {
           const victories = tournament.matches.filter(m => m.result === 'Victoria').length;
           const defeats = tournament.matches.filter(m => m.result === 'Derrota').length;
+          const ties = tournament.matches.filter(m => m.result === 'Empate').length;
           
           return (
             <Card key={tournament.id} className="overflow-hidden">
@@ -48,9 +49,10 @@ export function TournamentsList() {
                     <p className="text-xl font-bold">{tournament.matches.length}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">V / D</p>
+                    <p className="text-sm text-muted-foreground">V / E / D</p>
                     <p className="text-xl font-bold">
                       <span className="text-emerald-600">{victories}</span> / 
+                      <span className="text-amber-600">{ties}</span> / 
                       <span className="text-red-600">{defeats}</span>
                     </p>
                   </div>

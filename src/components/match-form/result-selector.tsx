@@ -1,10 +1,10 @@
 
 import { Button } from "@/components/ui/button";
-import { Trophy, X } from "lucide-react";
+import { Trophy, X, MinusCircle } from "lucide-react";
 
 interface ResultSelectorProps {
-  value: 'Victoria' | 'Derrota' | '';
-  onChange: (value: 'Victoria' | 'Derrota' | '') => void;
+  value: 'Victoria' | 'Derrota' | 'Empate' | '';
+  onChange: (value: 'Victoria' | 'Derrota' | 'Empate' | '') => void;
   disabled?: boolean;
 }
 
@@ -12,7 +12,7 @@ export function ResultSelector({ value, onChange, disabled = false }: ResultSele
   return (
     <div className="space-y-2">
       <h3 className="font-medium">Resultado</h3>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         <Button 
           type="button"
           variant={value === 'Victoria' ? 'default' : 'outline'} 
@@ -22,6 +22,17 @@ export function ResultSelector({ value, onChange, disabled = false }: ResultSele
         >
           <Trophy className="mr-2 h-5 w-5" />
           Victoria
+        </Button>
+        
+        <Button 
+          type="button"
+          variant={value === 'Empate' ? 'default' : 'outline'}
+          className={`h-20 sm:h-24 ${value === 'Empate' ? 'bg-lorcana-tie text-amber-800 hover:bg-lorcana-tie/90' : ''}`}
+          onClick={() => onChange('Empate')}
+          disabled={disabled}
+        >
+          <MinusCircle className="mr-2 h-5 w-5" />
+          Empate
         </Button>
         
         <Button 

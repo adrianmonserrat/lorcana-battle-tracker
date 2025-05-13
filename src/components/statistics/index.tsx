@@ -15,6 +15,7 @@ export function Statistics() {
   // Data for the pie chart
   const resultData = [
     { name: "Victorias", value: stats.total.victories },
+    { name: "Empates", value: stats.total.ties },
     { name: "Derrotas", value: stats.total.defeats },
   ];
   
@@ -23,6 +24,7 @@ export function Statistics() {
     name: color,
     total: data.matches,
     victorias: data.victories,
+    empates: data.ties,
     derrotas: data.defeats,
     winRate: calculateWinRate(data.victories, data.matches),
   })).filter(item => item.total > 0);
@@ -34,6 +36,7 @@ export function Statistics() {
       name: tournament?.name || "Torneo Desconocido",
       total: data.matches,
       victorias: data.victories,
+      empates: data.ties,
       derrotas: data.defeats,
       winRate: calculateWinRate(data.victories, data.matches),
     };
@@ -48,6 +51,7 @@ export function Statistics() {
         totalMatches={stats.total.matches}
         victories={stats.total.victories}
         defeats={stats.total.defeats}
+        ties={stats.total.ties}
         winRate={winRate}
       />
       

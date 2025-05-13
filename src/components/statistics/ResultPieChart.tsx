@@ -8,7 +8,7 @@ interface ResultPieChartProps {
 }
 
 export function ResultPieChart({ resultData }: ResultPieChartProps) {
-  const COLORS = ["#00A651", "#E31937"];
+  const COLORS = ["#00A651", "#FFB81C", "#E31937"];
   
   return (
     <Card className="col-span-1">

@@ -26,7 +26,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
   const [opponentDeckName, setOpponentDeckName] = useState('');
   const [myColors, setMyColors] = useState<InkColor[]>([]);
   const [opponentColors, setOpponentColors] = useState<InkColor[]>([]);
-  const [result, setResult] = useState<'Victoria' | 'Derrota' | ''>('');
+  const [result, setResult] = useState<'Victoria' | 'Derrota' | 'Empate' | ''>('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 

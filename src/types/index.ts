@@ -16,7 +16,7 @@ export interface Match {
   matchFormat: MatchFormat;
   myDeck: Deck;
   opponentDeck: Deck;
-  result: 'Victoria' | 'Derrota';
+  result: 'Victoria' | 'Derrota' | 'Empate';
   notes?: string;
   tournamentId?: string;
 }
@@ -34,15 +34,18 @@ export interface Stats {
     matches: number;
     victories: number;
     defeats: number;
+    ties: number;
   };
   byColor: Record<InkColor, {
     matches: number;
     victories: number;
     defeats: number;
+    ties: number;
   }>;
   byTournament: Record<string, {
     matches: number;
     victories: number;
     defeats: number;
+    ties: number;
   }>;
 }

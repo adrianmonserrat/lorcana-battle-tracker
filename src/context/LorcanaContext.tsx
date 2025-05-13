@@ -13,14 +13,14 @@ interface LorcanaContextType {
 }
 
 const defaultStats: Stats = {
-  total: { matches: 0, victories: 0, defeats: 0 },
+  total: { matches: 0, victories: 0, defeats: 0, ties: 0 },
   byColor: {
-    'Ambar': { matches: 0, victories: 0, defeats: 0 },
-    'Amatista': { matches: 0, victories: 0, defeats: 0 },
-    'Esmeralda': { matches: 0, victories: 0, defeats: 0 },
-    'Rubí': { matches: 0, victories: 0, defeats: 0 },
-    'Zafiro': { matches: 0, victories: 0, defeats: 0 },
-    'Acero': { matches: 0, victories: 0, defeats: 0 }
+    'Ambar': { matches: 0, victories: 0, defeats: 0, ties: 0 },
+    'Amatista': { matches: 0, victories: 0, defeats: 0, ties: 0 },
+    'Esmeralda': { matches: 0, victories: 0, defeats: 0, ties: 0 },
+    'Rubí': { matches: 0, victories: 0, defeats: 0, ties: 0 },
+    'Zafiro': { matches: 0, victories: 0, defeats: 0, ties: 0 },
+    'Acero': { matches: 0, victories: 0, defeats: 0, ties: 0 }
   },
   byTournament: {}
 };
@@ -66,15 +66,29 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Update stats whenever matches or tournaments change
   useEffect(() => {
-    const newStats = { ...defaultStats };
+    const newStats = { 
+      total: { matches: 0, victories: 0, defeats: 0, ties: 0 },
+      byColor: {
+        'Ambar': { matches: 0, victories: 0, defeats: 0, ties: 0 },
+        'Amatista': { matches: 0, victories: 0, defeats: 0, ties: 0 },
+        'Esmeralda': { matches: 0, victories: 0, defeats: 0, ties: 0 },
+        'Rubí': { matches: 0, victories: 0, defeats: 0, ties: 0 },
+        'Zafiro': { matches: 0, victories: 0, defeats: 0, ties: 0 },
+        'Acero': { matches: 0, victories: 0, defeats: 0, ties: 0 }
+      },
+      byTournament: {}
+    };
     
     // Process regular matches
     matches.forEach(match => {
       newStats.total.matches++;
+      
       if (match.result === 'Victoria') {
         newStats.total.victories++;
-      } else {
+      } else if (match.result === 'Derrota') {
         newStats.total.defeats++;
+      } else if (match.result === 'Empate') {
+        newStats.total.ties++;
       }
       
       // Update color stats
@@ -82,8 +96,10 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
         newStats.byColor[color].matches++;
         if (match.result === 'Victoria') {
           newStats.byColor[color].victories++;
-        } else {
+        } else if (match.result === 'Derrota') {
           newStats.byColor[color].defeats++;
+        } else if (match.result === 'Empate') {
+          newStats.byColor[color].ties++;
         }
       });
     });
@@ -92,7 +108,7 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
     tournaments.forEach(tournament => {
       if (!newStats.byTournament[tournament.id]) {
         newStats.byTournament[tournament.id] = {
-          matches: 0, victories: 0, defeats: 0
+          matches: 0, victories: 0, defeats: 0, ties: 0
         };
       }
       
@@ -103,9 +119,12 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (match.result === 'Victoria') {
           newStats.total.victories++;
           newStats.byTournament[tournament.id].victories++;
-        } else {
+        } else if (match.result === 'Derrota') {
           newStats.total.defeats++;
           newStats.byTournament[tournament.id].defeats++;
+        } else if (match.result === 'Empate') {
+          newStats.total.ties++;
+          newStats.byTournament[tournament.id].ties++;
         }
         
         // Update color stats for tournament matches too
@@ -113,8 +132,10 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
           newStats.byColor[color].matches++;
           if (match.result === 'Victoria') {
             newStats.byColor[color].victories++;
-          } else {
+          } else if (match.result === 'Derrota') {
             newStats.byColor[color].defeats++;
+          } else if (match.result === 'Empate') {
+            newStats.byColor[color].ties++;
           }
         });
       });

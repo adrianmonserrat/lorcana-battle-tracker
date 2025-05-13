@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { useState } from "react";
 import { Match } from "@/types";
 
 interface TournamentDetailProps {
@@ -22,6 +21,7 @@ export function TournamentDetail({ tournamentId, onAddMatch }: TournamentDetailP
   
   const victories = tournament.matches.filter(m => m.result === 'Victoria').length;
   const defeats = tournament.matches.filter(m => m.result === 'Derrota').length;
+  const ties = tournament.matches.filter(m => m.result === 'Empate').length;
   const winRate = tournament.matches.length > 0 
     ? Math.round((victories / tournament.matches.length) * 100) 
     : 0;
@@ -52,11 +52,12 @@ export function TournamentDetail({ tournamentId, onAddMatch }: TournamentDetailP
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Victorias / Derrotas</CardTitle>
+            <CardTitle className="text-lg">V / E / D</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold">
               <span className="text-emerald-600">{victories}</span> / 
+              <span className="text-amber-600">{ties}</span> / 
               <span className="text-red-600">{defeats}</span>
             </p>
           </CardContent>
@@ -95,13 +96,29 @@ export function TournamentDetail({ tournamentId, onAddMatch }: TournamentDetailP
 }
 
 function MatchCard({ match }: { match: Match }) {
-  const isVictory = match.result === 'Victoria';
+  let bgColor = '';
+  let borderColor = '';
+  let textColor = '';
+  
+  if (match.result === 'Victoria') {
+    bgColor = 'bg-lorcana-victory/30';
+    borderColor = 'border-lorcana-victory';
+    textColor = 'text-emerald-700';
+  } else if (match.result === 'Empate') {
+    bgColor = 'bg-lorcana-tie/30';
+    borderColor = 'border-lorcana-tie';
+    textColor = 'text-amber-700';
+  } else {
+    bgColor = 'bg-lorcana-defeat/30';
+    borderColor = 'border-lorcana-defeat';
+    textColor = 'text-red-700';
+  }
   
   return (
-    <div className={`p-4 rounded-md border ${isVictory ? 'bg-lorcana-victory/30 border-lorcana-victory' : 'bg-lorcana-defeat/30 border-lorcana-defeat'}`}>
+    <div className={`p-4 rounded-md border ${bgColor} ${borderColor}`}>
       <div className="flex flex-col md:flex-row justify-between mb-2">
         <p className="font-medium">{format(match.date, "PPP", { locale: es })}</p>
-        <span className={`font-bold ${isVictory ? 'text-emerald-700' : 'text-red-700'}`}>
+        <span className={`font-bold ${textColor}`}>
           {match.result}
         </span>
       </div>
