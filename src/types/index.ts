@@ -1,7 +1,7 @@
 
 export type InkColor = 'Ambar' | 'Amatista' | 'Esmeralda' | 'Rubí' | 'Zafiro' | 'Acero';
 
-export type GameFormat = 'Infinity Constructor' | 'Nuevas Expansiones';
+export type GameFormat = 'Infinity Constructor' | 'Estándar';
 export type MatchFormat = 'BO1' | 'BO2' | 'BO3' | 'BO5';
 
 export interface Deck {

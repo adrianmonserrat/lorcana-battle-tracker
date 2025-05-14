@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -66,8 +67,8 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!myDeckName || !opponentDeckName || myColors.length === 0 || opponentColors.length === 0 || !result) {
-      toast.error('Por favor completa todos los campos obligatorios');
+    if (myColors.length === 0 || opponentColors.length === 0 || !result) {
+      toast.error('Por favor selecciona colores y resultado');
       return;
     }
     
@@ -78,11 +79,11 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
         gameFormat,
         matchFormat,
         myDeck: {
-          name: myDeckName,
+          name: myDeckName.trim() || 'Sin nombre',
           colors: myColors
         },
         opponentDeck: {
-          name: opponentDeckName,
+          name: opponentDeckName.trim() || 'Sin nombre',
           colors: opponentColors
         },
         result,
@@ -134,7 +135,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
           {/* My Deck Name */}
           <DeckInput
             id="myDeckName"
-            label="Nombre de Mi Mazo"
+            label="Nombre de Mi Mazo (opcional)"
             value={myDeckName}
             onChange={setMyDeckName}
             placeholder="Ej: Control Ambar/Amatista"
@@ -153,7 +154,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
           {/* Opponent Deck Name */}
           <DeckInput
             id="opponentDeckName"
-            label="Nombre del Mazo Oponente"
+            label="Nombre del Mazo Oponente (opcional)"
             value={opponentDeckName}
             onChange={setOpponentDeckName}
             placeholder="Ej: Aggro Rubí/Esmeralda"

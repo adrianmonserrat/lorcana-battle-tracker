@@ -1,11 +1,12 @@
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { MatchForm } from '@/components/match-form';
 import { Statistics } from '@/components/statistics';
+import { CurrentDateTime } from '@/components/current-datetime';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -15,7 +16,12 @@ const Index = () => {
     <div className="min-h-screen">
       <header className="border-b p-4">
         <div className="container max-w-6xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Contador Lorcana</h1>
+          <Link to="/" className="text-2xl font-bold hover:text-primary transition-colors">
+            Contador Lorcana
+          </Link>
+          
+          <CurrentDateTime />
+          
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={() => navigate('/torneos')}>
               Torneos
