@@ -9,6 +9,7 @@ export interface LorcanaContextType {
   addTournament: (tournament: Omit<Tournament, "id" | "date" | "matches">) => void;
   addTournamentMatch: (tournamentId: string, match: Omit<Match, "id" | "date" | "tournamentId">) => void;
   deleteMatch: (matchId: string, tournamentId?: string) => void;
+  deleteTournament: (tournamentId: string) => void;
 }
 
 export const defaultStats: Stats = {

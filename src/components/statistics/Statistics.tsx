@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useLorcana } from "@/context/LorcanaContext";
+import { useLorcana } from "@/context/lorcana/LorcanaProvider";
 import { StatisticCards } from "./StatisticCards";
 import { ResultPieChart } from "./ResultPieChart";
 import { ColorPerformanceChart } from "./ColorPerformanceChart";

@@ -96,6 +96,11 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
     toast.success('Partida eliminada correctamente');
   };
 
+  const deleteTournament = (tournamentId: string) => {
+    setTournaments(prev => prev.filter(tournament => tournament.id !== tournamentId));
+    toast.success('Torneo eliminado correctamente');
+  };
+
   return (
     <LorcanaContext.Provider value={{
       matches,
@@ -104,7 +109,8 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
       addMatch,
       addTournament,
       addTournamentMatch,
-      deleteMatch
+      deleteMatch,
+      deleteTournament
     }}>
       {children}
     </LorcanaContext.Provider>
