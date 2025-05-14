@@ -1,11 +1,10 @@
-
 import { useLorcana } from "@/context/LorcanaContext";
 import { useState } from "react";
 import { StatisticCards } from "./StatisticCards";
 import { ResultPieChart } from "./ResultPieChart";
 import { ColorPerformanceChart } from "./ColorPerformanceChart";
 import { TournamentStatsChart } from "./TournamentStatsChart";
-import { MatchesList } from "./MatchesList";
+import { MatchesList } from "./matches-list";
 import { calculateWinRate } from "./utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
