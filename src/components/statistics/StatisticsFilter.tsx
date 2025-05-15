@@ -22,7 +22,7 @@ export function StatisticsFilter({ selectedFilter, setSelectedFilter }: Statisti
             <SelectItem value="freeplay">Solo partidas libres</SelectItem>
             <SelectItem value="tournament">Solo partidas de torneo</SelectItem>
             <SelectItem value="infinity">Solo formato Infinity Constructor</SelectItem>
-            <SelectItem value="expansiones">Solo formato Nuevas Expansiones</SelectItem>
+            <SelectItem value="expansiones">Solo formato Estándar</SelectItem>
           </SelectContent>
         </Select>
       </CardContent>

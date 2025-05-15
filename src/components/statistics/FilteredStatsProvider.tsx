@@ -45,7 +45,7 @@ export function FilteredStatsProvider({ selectedFilter, children }: FilteredStat
       if (selectedFilter === 'all') return true;
       if (selectedFilter === 'freeplay') return true;
       if (selectedFilter === 'infinity') return match.gameFormat === 'Infinity Constructor';
-      if (selectedFilter === 'expansiones') return match.gameFormat === 'Nuevas Expansiones';
+      if (selectedFilter === 'expansiones') return match.gameFormat === 'Estándar';
       return false;
     });
     
@@ -54,7 +54,7 @@ export function FilteredStatsProvider({ selectedFilter, children }: FilteredStat
         if (selectedFilter === 'all') return true;
         if (selectedFilter === 'tournament') return true;
         if (selectedFilter === 'infinity') return match.gameFormat === 'Infinity Constructor';
-        if (selectedFilter === 'expansiones') return match.gameFormat === 'Nuevas Expansiones';
+        if (selectedFilter === 'expansiones') return match.gameFormat === 'Estándar';
         return false;
       })
     );
@@ -148,7 +148,7 @@ export function FilteredStatsProvider({ selectedFilter, children }: FilteredStat
         // Check if any of the tournament's matches match the format
         return tournament.matches.some(match => {
           if (selectedFilter === 'infinity') return match.gameFormat === 'Infinity Constructor';
-          if (selectedFilter === 'expansiones') return match.gameFormat === 'Nuevas Expansiones';
+          if (selectedFilter === 'expansiones') return match.gameFormat === 'Estándar';
           return false;
         });
       })
@@ -164,7 +164,7 @@ export function FilteredStatsProvider({ selectedFilter, children }: FilteredStat
           tournament?.matches.forEach(match => {
             const formatMatches = 
               (selectedFilter === 'infinity' && match.gameFormat === 'Infinity Constructor') ||
-              (selectedFilter === 'expansiones' && match.gameFormat === 'Nuevas Expansiones');
+              (selectedFilter === 'expansiones' && match.gameFormat === 'Estándar');
             
             if (formatMatches) {
               filteredData.matches++;
