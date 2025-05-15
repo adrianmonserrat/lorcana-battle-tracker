@@ -1,5 +1,5 @@
 
-import { Match, Tournament } from "@/types";
+import { Match, Tournament, Stats } from "@/types";
 import { StatsFilter } from "./types";
 import { calculateWinRate } from "./utils";
 
@@ -75,7 +75,7 @@ export function calculateColorStats(
 
 export function calculateTournamentStats(
   tournaments: Tournament[], 
-  stats: any, 
+  stats: Stats, 
   selectedFilter: StatsFilter
 ) {
   return Object.entries(stats.byTournament)
@@ -126,13 +126,21 @@ export function calculateTournamentStats(
       }
       
       // Use existing stats if not filtering by format
+      // We need to type the data properly to avoid TypeScript errors
+      const tournamentData = data as {
+        matches: number;
+        victories: number;
+        defeats: number;
+        ties: number;
+      };
+      
       return {
         name: tournament?.name || "Torneo Desconocido",
-        total: data.matches,
-        victorias: data.victories,
-        empates: data.ties,
-        derrotas: data.defeats,
-        winRate: calculateWinRate(data.victories, data.matches),
+        total: tournamentData.matches,
+        victorias: tournamentData.victories,
+        empates: tournamentData.ties,
+        derrotas: tournamentData.defeats,
+        winRate: calculateWinRate(tournamentData.victories, tournamentData.matches),
       };
     })
     .filter(item => item.total > 0);
