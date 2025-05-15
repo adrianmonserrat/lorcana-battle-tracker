@@ -92,22 +92,23 @@ export function loadDataFromLocalStorage() {
     if (savedMatches) {
       const parsedMatches = JSON.parse(savedMatches);
       // Convert string dates back to Date objects
-      parsedMatches.forEach((match: any) => {
-        match.date = new Date(match.date);
-      });
-      matches = parsedMatches;
+      matches = parsedMatches.map((match: any) => ({
+        ...match,
+        date: new Date(match.date)
+      }));
     }
     
     if (savedTournaments) {
       const parsedTournaments = JSON.parse(savedTournaments);
       // Convert string dates back to Date objects
-      parsedTournaments.forEach((tournament: any) => {
-        tournament.date = new Date(tournament.date);
-        tournament.matches.forEach((match: any) => {
-          match.date = new Date(match.date);
-        });
-      });
-      tournaments = parsedTournaments;
+      tournaments = parsedTournaments.map((tournament: any) => ({
+        ...tournament,
+        date: new Date(tournament.date),
+        matches: tournament.matches.map((match: any) => ({
+          ...match,
+          date: new Date(match.date)
+        }))
+      }));
     }
 
     return { matches, tournaments };
