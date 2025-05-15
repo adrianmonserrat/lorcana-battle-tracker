@@ -1,0 +1,2 @@
+
+export { TournamentDetail } from "./TournamentDetail";
