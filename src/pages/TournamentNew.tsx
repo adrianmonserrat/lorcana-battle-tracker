@@ -1,8 +1,7 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { MainHeader } from '@/components/layouts/main-header';
 import { TournamentForm } from '@/components/tournament-form';
 
 const TournamentNew = () => {
@@ -18,17 +17,12 @@ const TournamentNew = () => {
   
   return (
     <div className="min-h-screen">
-      <header className="border-b p-4">
-        <div className="container max-w-6xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Contador Lorcana</h1>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => navigate('/torneos')} disabled={isSubmitting}>
-              Volver a Torneos
-            </Button>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <MainHeader 
+        showTourneosButton={false}
+        showPartidasButton={false}
+        alternateButtonText="Volver a Torneos"
+        alternateButtonAction={() => navigate('/torneos')}
+      />
       
       <main className="container max-w-6xl mx-auto p-4 md:p-6">
         <div className="mb-6">

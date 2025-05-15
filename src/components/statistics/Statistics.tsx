@@ -8,20 +8,22 @@ import { TournamentStatsChart } from "./TournamentStatsChart";
 import { MatchesList } from "./matches-list";
 import { StatisticsFilter, StatsFilter } from "./StatisticsFilter";
 import { FilteredStatsProvider } from "./FilteredStatsProvider";
+import { StatisticsLayout } from "./StatisticsLayout";
 
 export function Statistics() {
   const [selectedFilter, setSelectedFilter] = useState<StatsFilter>('all');
   const { tournaments } = useLorcana();
   
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-center">Estadísticas</h1>
-      
-      <StatisticsFilter 
-        selectedFilter={selectedFilter}
-        setSelectedFilter={setSelectedFilter}
-      />
-      
+    <StatisticsLayout
+      title="Estadísticas"
+      filter={
+        <StatisticsFilter 
+          selectedFilter={selectedFilter}
+          setSelectedFilter={setSelectedFilter}
+        />
+      }
+    >
       <FilteredStatsProvider selectedFilter={selectedFilter}>
         {({ victories, defeats, ties, totalMatches, winRate, resultData, colorData, tournamentData, filteredMatches }) => (
           <>
@@ -54,6 +56,6 @@ export function Statistics() {
           </>
         )}
       </FilteredStatsProvider>
-    </div>
+    </StatisticsLayout>
   );
 }
