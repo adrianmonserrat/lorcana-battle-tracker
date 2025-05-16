@@ -21,7 +21,7 @@ export function GameFormatSelector({ value, onChange, disabled = false }: GameFo
       >
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="Infinity Constructor" id="infinity" disabled={disabled} />
-          <Label htmlFor="infinity" className={disabled ? "opacity-60" : ""}>Infinity Constructor (Todas las expansiones)</Label>
+          <Label htmlFor="infinity" className={disabled ? "opacity-60" : ""}>Infinity Constructor</Label>
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="Estándar" id="standard" disabled={disabled} />
