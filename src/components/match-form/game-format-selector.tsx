@@ -25,7 +25,7 @@ export function GameFormatSelector({ value, onChange, disabled = false }: GameFo
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="Estándar" id="standard" disabled={disabled} />
-          <Label htmlFor="standard" className={disabled ? "opacity-60" : ""}>Estándar (Últimas 5 expansiones)</Label>
+          <Label htmlFor="standard" className={disabled ? "opacity-60" : ""}>Estándar</Label>
         </div>
       </RadioGroup>
     </div>
