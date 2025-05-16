@@ -41,7 +41,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
     setMyColors(prev => 
       prev.includes(color) 
         ? prev.filter(c => c !== color) 
-        : prev.length < 2 ? [...prev, color] : prev
+        : [...prev, color]
     );
   };
 
@@ -49,7 +49,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
     setOpponentColors(prev => 
       prev.includes(color) 
         ? prev.filter(c => c !== color) 
-        : prev.length < 2 ? [...prev, color] : prev
+        : [...prev, color]
     );
   };
 
