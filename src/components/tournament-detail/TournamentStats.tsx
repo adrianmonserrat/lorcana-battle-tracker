@@ -31,8 +31,8 @@ export function TournamentStats({ tournament }: TournamentStatsProps) {
         </CardHeader>
         <CardContent>
           <p className="text-4xl font-bold">
-            <span className="text-emerald-600">{victories}</span> / 
-            <span className="text-amber-600">{ties}</span> / 
+            <span className="text-emerald-600">{victories}</span>
+            <span className="mx-2 text-amber-600">{ties}</span> 
             <span className="text-red-600">{defeats}</span>
           </p>
         </CardContent>
