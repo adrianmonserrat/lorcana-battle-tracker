@@ -10,6 +10,13 @@ interface GameFormatSelectorProps {
 }
 
 export function GameFormatSelector({ value, onChange, disabled = false }: GameFormatSelectorProps) {
+  // Function to handle clicking on the container div
+  const handleContainerClick = (format: GameFormat) => {
+    if (!disabled && value !== format) {
+      onChange(format);
+    }
+  };
+
   return (
     <div className="space-y-2">
       <h3 className="font-medium">Formato de Juego</h3>
@@ -20,14 +27,14 @@ export function GameFormatSelector({ value, onChange, disabled = false }: GameFo
         disabled={disabled}
       >
         <div className="flex items-center space-x-2 rounded-md border p-3 cursor-pointer" 
-             onClick={() => !disabled && onChange('Infinity Constructor')}>
+             onClick={() => handleContainerClick('Infinity Constructor')}>
           <RadioGroupItem value="Infinity Constructor" id="infinity" disabled={disabled} />
           <Label htmlFor="infinity" className={`flex-grow cursor-pointer ${disabled ? "opacity-60" : ""}`}>
             Infinity Constructor (Todas las expansiones)
           </Label>
         </div>
         <div className="flex items-center space-x-2 rounded-md border p-3 cursor-pointer" 
-             onClick={() => !disabled && onChange('Estándar')}>
+             onClick={() => handleContainerClick('Estándar')}>
           <RadioGroupItem value="Estándar" id="standard" disabled={disabled} />
           <Label htmlFor="standard" className={`flex-grow cursor-pointer ${disabled ? "opacity-60" : ""}`}>
             Estándar (Últimas 5 expansiones)
