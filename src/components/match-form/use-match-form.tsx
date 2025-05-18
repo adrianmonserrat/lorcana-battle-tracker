@@ -79,8 +79,13 @@ export function useMatchForm({ tournamentId, onSuccess }: UseMatchFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (myColors.length === 0 || opponentColors.length === 0 || !result) {
-      toast.error('Por favor selecciona colores y resultado');
+    if (myColors.length === 0 || opponentColors.length === 0) {
+      toast.error('Por favor selecciona colores para ambos mazos');
+      return;
+    }
+    
+    if (!result) {
+      toast.error('Por favor selecciona un resultado');
       return;
     }
     
