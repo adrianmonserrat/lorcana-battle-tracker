@@ -11,7 +11,6 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { getInkColorHex } from "@/components/statistics/utils";
 
 interface DeckInputProps {
@@ -47,7 +46,7 @@ export function DeckInput({
         onColorSelect(selectedDeck.colors);
       }
     } else if (deckId === "manual") {
-      onChange("");
+      onChange(""); // Limpiar el campo cuando se selecciona manual
     }
   };
   
@@ -87,15 +86,14 @@ export function DeckInput({
             </Select>
           </div>
           
-          {value && (
-            <Input 
-              id={id} 
-              placeholder={placeholder} 
-              value={value}
-              onChange={e => onChange(e.target.value)}
-              disabled={disabled}
-            />
-          )}
+          {/* Mostrar el campo de entrada siempre cuando se selecciona "manual" o un mazo */}
+          <Input 
+            id={id} 
+            placeholder={placeholder} 
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            disabled={disabled}
+          />
         </div>
       ) : (
         <Input 
