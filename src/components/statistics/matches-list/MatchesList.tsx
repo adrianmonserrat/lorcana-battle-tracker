@@ -8,10 +8,11 @@ import { useLorcana } from "@/context/LorcanaContext";
 import { InkColor, GameFormat } from "@/types";
 
 export function MatchesList({ matches, tournaments }: MatchesListProps) {
-  const { deleteMatch } = useLorcana();
+  const { deleteMatch, decks } = useLorcana();
   const [colorFilter, setColorFilter] = useState<string>("all");
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [formatFilter, setFormatFilter] = useState<string>("all");
+  const [deckFilter, setDeckFilter] = useState<string>("all");
 
   // Combine all matches (regular and tournament)
   const allMatches: EnhancedMatch[] = [
@@ -56,8 +57,13 @@ export function MatchesList({ matches, tournaments }: MatchesListProps) {
     const passesFormatFilter = formatFilter === "all" ?
       true :
       match.gameFormat === formatFilter;
+      
+    // Apply deck filter
+    const passesDeckFilter = deckFilter === "all" ?
+      true :
+      match.myDeck.name === decks.find(d => d.id === deckFilter)?.name;
     
-    return passesColorFilter && passesSourceFilter && passesFormatFilter;
+    return passesColorFilter && passesSourceFilter && passesFormatFilter && passesDeckFilter;
   });
 
   const handleDeleteMatch = (matchId: string, tournamentId?: string) => {
@@ -75,8 +81,11 @@ export function MatchesList({ matches, tournaments }: MatchesListProps) {
           setSourceFilter={setSourceFilter}
           formatFilter={formatFilter}
           setFormatFilter={setFormatFilter}
+          deckFilter={deckFilter}
+          setDeckFilter={setDeckFilter}
           allUsedColors={allUsedColors}
           allGameFormats={allGameFormats}
+          decks={decks}
         />
       </CardHeader>
       <CardContent className="max-h-[600px] overflow-y-auto">

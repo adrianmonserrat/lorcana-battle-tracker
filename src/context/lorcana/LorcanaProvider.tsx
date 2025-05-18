@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Match, Tournament, Stats } from "@/types";
+import { Match, Tournament, Stats, SavedDeck } from "@/types";
 import { toast } from "sonner";
 import { LorcanaContextType, defaultStats } from "./types";
 import { calculateStats, loadDataFromLocalStorage, saveDataToLocalStorage } from "./utils";
@@ -11,13 +11,15 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [matches, setMatches] = useState<Match[]>([]);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [stats, setStats] = useState<Stats>(defaultStats);
+  const [decks, setDecks] = useState<SavedDeck[]>([]);
 
   // Load data from localStorage on initial load
   useEffect(() => {
     try {
-      const { matches: loadedMatches, tournaments: loadedTournaments } = loadDataFromLocalStorage();
+      const { matches: loadedMatches, tournaments: loadedTournaments, decks: loadedDecks = [] } = loadDataFromLocalStorage();
       setMatches(loadedMatches);
       setTournaments(loadedTournaments);
+      setDecks(loadedDecks);
     } catch (error) {
       console.error('Error loading data from localStorage:', error);
       toast.error('Error al cargar los datos guardados');
@@ -30,11 +32,11 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setStats(newStats);
     
     // Save to localStorage
-    const saved = saveDataToLocalStorage(matches, tournaments);
+    const saved = saveDataToLocalStorage(matches, tournaments, decks);
     if (!saved) {
       toast.error('Error al guardar los datos');
     }
-  }, [matches, tournaments]);
+  }, [matches, tournaments, decks]);
 
   const addMatch = (matchData: Omit<Match, "id" | "date">) => {
     const newMatch: Match = {
@@ -101,16 +103,59 @@ export const LorcanaProvider: React.FC<{ children: React.ReactNode }> = ({ child
     toast.success('Torneo eliminado correctamente');
   };
 
+  // Nuevas funciones para gestionar los decks
+  const addDeck = (deckData: Omit<SavedDeck, "id">) => {
+    const newDeck: SavedDeck = {
+      ...deckData,
+      id: crypto.randomUUID()
+    };
+    
+    setDecks(prev => [...prev, newDeck]);
+    toast.success('Mazo guardado correctamente');
+  };
+
+  const updateDeck = (id: string, deckData: Omit<SavedDeck, "id">) => {
+    setDecks(prev => 
+      prev.map(deck => 
+        deck.id === id 
+          ? { ...deckData, id } 
+          : deck
+      )
+    );
+    toast.success('Mazo actualizado correctamente');
+  };
+
+  const deleteDeck = (id: string) => {
+    setDecks(prev => prev.filter(deck => deck.id !== id));
+    toast.success('Mazo eliminado correctamente');
+  };
+
+  const setTournamentDeck = (tournamentId: string, deckId: string | undefined) => {
+    setTournaments(prev => 
+      prev.map(tournament => 
+        tournament.id === tournamentId 
+          ? { ...tournament, selectedDeckId: deckId } 
+          : tournament
+      )
+    );
+    toast.success('Mazo seleccionado para el torneo');
+  };
+
   return (
     <LorcanaContext.Provider value={{
       matches,
       tournaments,
       stats,
+      decks,
       addMatch,
       addTournament,
       addTournamentMatch,
       deleteMatch,
-      deleteTournament
+      deleteTournament,
+      addDeck,
+      updateDeck,
+      deleteDeck,
+      setTournamentDeck
     }}>
       {children}
     </LorcanaContext.Provider>

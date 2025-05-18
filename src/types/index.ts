@@ -9,6 +9,13 @@ export interface Deck {
   colors: InkColor[];
 }
 
+export interface SavedDeck {
+  id: string;
+  name: string;
+  colors: InkColor[];
+  format: GameFormat;
+}
+
 export interface Match {
   id: string;
   date: Date;
@@ -27,6 +34,7 @@ export interface Tournament {
   date: Date;
   location?: string;
   matches: Match[];
+  selectedDeckId?: string; // Id del mazo seleccionado para el torneo
 }
 
 export interface Stats {

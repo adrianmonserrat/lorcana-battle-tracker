@@ -18,17 +18,25 @@ interface MatchFormProps {
 }
 
 export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
-  const { addMatch, addTournamentMatch } = useLorcana();
+  const { addMatch, addTournamentMatch, tournaments, decks } = useLorcana();
   
-  const [gameFormat, setGameFormat] = useState<GameFormat>('Infinity Constructor');
+  const tournament = tournamentId ? tournaments.find(t => t.id === tournamentId) : undefined;
+  const tournamentDeck = tournament?.selectedDeckId 
+    ? decks.find(d => d.id === tournament.selectedDeckId) 
+    : undefined;
+  
+  const [gameFormat, setGameFormat] = useState<GameFormat>(tournamentDeck?.format || 'Infinity Constructor');
   const [matchFormat, setMatchFormat] = useState<MatchFormat>('BO3');
-  const [myDeckName, setMyDeckName] = useState('');
+  const [myDeckName, setMyDeckName] = useState(tournamentDeck?.name || '');
   const [opponentDeckName, setOpponentDeckName] = useState('');
-  const [myColors, setMyColors] = useState<InkColor[]>([]);
+  const [myColors, setMyColors] = useState<InkColor[]>(tournamentDeck?.colors || []);
   const [opponentColors, setOpponentColors] = useState<InkColor[]>([]);
   const [result, setResult] = useState<'Victoria' | 'Derrota' | 'Empate' | ''>('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Filtrar decks por formato
+  const filteredDecks = decks.filter(d => d.format === gameFormat);
 
   // Reset the result if changing from BO2 to another format and result is 'Empate'
   useEffect(() => {
@@ -36,6 +44,15 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
       setResult('');
     }
   }, [matchFormat, result]);
+
+  // Update myDeckName and myColors when tournament deck changes
+  useEffect(() => {
+    if (tournamentDeck) {
+      setMyDeckName(tournamentDeck.name);
+      setMyColors(tournamentDeck.colors);
+      setGameFormat(tournamentDeck.format);
+    }
+  }, [tournamentDeck]);
 
   const handleMyColorToggle = (color: InkColor) => {
     setMyColors(prev => 
@@ -54,11 +71,14 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
   };
 
   const resetForm = () => {
-    setGameFormat('Infinity Constructor');
+    if (!tournamentDeck) {
+      setGameFormat('Infinity Constructor');
+      setMyDeckName('');
+      setMyColors([]);
+    }
+    
     setMatchFormat('BO3');
-    setMyDeckName('');
     setOpponentDeckName('');
-    setMyColors([]);
     setOpponentColors([]);
     setResult('');
     setNotes('');
@@ -120,26 +140,31 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
           <GameFormatSelector 
             value={gameFormat}
             onChange={setGameFormat}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !!tournamentDeck}
           />
 
           {/* My Deck Colors */}
-          <ColorSelector
-            selectedColors={myColors}
-            onColorToggle={handleMyColorToggle}
-            label="Mis Colores"
-            id="my"
-            disabled={isSubmitting}
-          />
+          {!tournamentDeck && (
+            <ColorSelector
+              selectedColors={myColors}
+              onColorToggle={handleMyColorToggle}
+              label="Mis Colores"
+              id="my"
+              disabled={isSubmitting}
+            />
+          )}
           
           {/* My Deck Name */}
           <DeckInput
             id="myDeckName"
-            label="Nombre de Mi Mazo (opcional)"
+            label="Nombre de Mi Mazo"
             value={myDeckName}
             onChange={setMyDeckName}
+            onColorSelect={setMyColors}
             placeholder="Ej: Control Ambar/Amatista"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !!tournamentDeck}
+            decks={filteredDecks}
+            allowSelectDeck={!tournamentDeck}
           />
           
           {/* Opponent Deck Colors */}
