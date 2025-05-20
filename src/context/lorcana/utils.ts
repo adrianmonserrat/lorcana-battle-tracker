@@ -1,7 +1,8 @@
-import { Match, Tournament, Stats, SavedDeck } from "@/types";
+
+import { Match, Tournament, Stats } from "@/types";
 import { defaultStats } from "./types";
 
-export const calculateStats = (matches: Match[], tournaments: Tournament[]): Stats => {
+export function calculateStats(matches: Match[], tournaments: Tournament[]): Stats {
   const newStats = { 
     total: { matches: 0, victories: 0, defeats: 0, ties: 0 },
     byColor: {
@@ -78,45 +79,52 @@ export const calculateStats = (matches: Match[], tournaments: Tournament[]): Sta
   });
   
   return newStats;
-};
+}
 
-export const loadDataFromLocalStorage = () => {
+export function loadDataFromLocalStorage() {
   try {
-    const matches = JSON.parse(localStorage.getItem('lorcana-matches') || '[]');
-    const tournaments = JSON.parse(localStorage.getItem('lorcana-tournaments') || '[]');
-    const decks = JSON.parse(localStorage.getItem('lorcana-decks') || '[]');
+    const savedMatches = localStorage.getItem('lorcana-matches');
+    const savedTournaments = localStorage.getItem('lorcana-tournaments');
     
-    // Ensure dates are parsed correctly
-    matches.forEach((match: any) => {
-      match.date = new Date(match.date);
-    });
+    let matches: Match[] = [];
+    let tournaments: Tournament[] = [];
     
-    tournaments.forEach((tournament: any) => {
-      tournament.date = new Date(tournament.date);
-      tournament.matches.forEach((match: any) => {
-        match.date = new Date(match.date);
-      });
-    });
+    if (savedMatches) {
+      const parsedMatches = JSON.parse(savedMatches);
+      // Convert string dates back to Date objects
+      matches = parsedMatches.map((match: any) => ({
+        ...match,
+        date: new Date(match.date)
+      }));
+    }
     
-    return { matches, tournaments, decks };
-  } catch (e) {
-    console.error('Error parsing data from localStorage:', e);
-    return { matches: [], tournaments: [], decks: [] };
-  }
-};
+    if (savedTournaments) {
+      const parsedTournaments = JSON.parse(savedTournaments);
+      // Convert string dates back to Date objects
+      tournaments = parsedTournaments.map((tournament: any) => ({
+        ...tournament,
+        date: new Date(tournament.date),
+        matches: tournament.matches.map((match: any) => ({
+          ...match,
+          date: new Date(match.date)
+        }))
+      }));
+    }
 
-export const saveDataToLocalStorage = (
-  matches: Match[], 
-  tournaments: Tournament[],
-  decks: SavedDeck[]
-): boolean => {
+    return { matches, tournaments };
+  } catch (error) {
+    console.error('Error loading data from localStorage:', error);
+    return { matches: [], tournaments: [] };
+  }
+}
+
+export function saveDataToLocalStorage(matches: Match[], tournaments: Tournament[]) {
   try {
     localStorage.setItem('lorcana-matches', JSON.stringify(matches));
     localStorage.setItem('lorcana-tournaments', JSON.stringify(tournaments));
-    localStorage.setItem('lorcana-decks', JSON.stringify(decks));
     return true;
-  } catch (e) {
-    console.error('Error saving data to localStorage:', e);
+  } catch (error) {
+    console.error('Error saving data to localStorage:', error);
     return false;
   }
-};
+}

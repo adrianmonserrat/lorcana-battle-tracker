@@ -1,6 +1,7 @@
 
+import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { InkColor, GameFormat, SavedDeck } from "@/types";
+import { InkColor, GameFormat } from "@/types";
 import { getInkColorHex } from "../utils";
 
 interface MatchFiltersProps {
@@ -10,11 +11,8 @@ interface MatchFiltersProps {
   setSourceFilter: (value: string) => void;
   formatFilter: string;
   setFormatFilter: (value: string) => void;
-  deckFilter: string;
-  setDeckFilter: (value: string) => void;
   allUsedColors: Set<string>;
   allGameFormats: Set<string>;
-  decks: SavedDeck[];
 }
 
 export function MatchFilters({
@@ -24,14 +22,11 @@ export function MatchFilters({
   setSourceFilter,
   formatFilter,
   setFormatFilter,
-  deckFilter,
-  setDeckFilter,
   allUsedColors,
-  allGameFormats,
-  decks
+  allGameFormats
 }: MatchFiltersProps) {
   return (
-    <div className="flex flex-col sm:flex-row flex-wrap gap-2">
+    <div className="flex flex-col sm:flex-row gap-2">
       <Select value={colorFilter} onValueChange={setColorFilter}>
         <SelectTrigger className="w-full sm:w-[180px]">
           <SelectValue placeholder="Filtrar por color" />
@@ -78,24 +73,6 @@ export function MatchFilters({
           ))}
         </SelectContent>
       </Select>
-      
-      {decks.length > 0 && (
-        <Select value={deckFilter} onValueChange={setDeckFilter}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Filtrar por mazo" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos los mazos</SelectItem>
-            {decks.map(deck => (
-              <SelectItem key={deck.id} value={deck.id}>
-                <div className="flex items-center">
-                  <span>{deck.name}</span>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
     </div>
   );
 }
