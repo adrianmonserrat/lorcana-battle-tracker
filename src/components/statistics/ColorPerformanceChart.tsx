@@ -7,7 +7,6 @@ interface ColorData {
   name: string;
   total: number;
   victorias: number;
-  empates: number;
   derrotas: number;
   winRate: number;
 }
@@ -33,7 +32,6 @@ export function ColorPerformanceChart({ colorData }: ColorPerformanceChartProps)
             <ChartTooltip />
             <Legend />
             <Bar dataKey="victorias" name="Victorias" fill="#00A651" />
-            <Bar dataKey="empates" name="Empates" fill="#FFB81C" />
             <Bar dataKey="derrotas" name="Derrotas" fill="#E31937" />
           </BarChart>
         </ResponsiveContainer>

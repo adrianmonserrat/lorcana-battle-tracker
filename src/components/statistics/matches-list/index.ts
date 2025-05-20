@@ -1,2 +1,0 @@
-
-export { MatchesList } from './MatchesList';

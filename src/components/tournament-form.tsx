@@ -5,7 +5,6 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useLorcana } from '@/context/LorcanaContext';
-import { toast } from "sonner";
 
 interface TournamentFormProps {
   onSuccess?: () => void;
@@ -15,34 +14,24 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
   const { addTournament } = useLorcana();
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!name.trim()) {
-      toast.error('Por favor ingresa un nombre para el torneo');
+      alert('Por favor ingresa un nombre para el torneo');
       return;
     }
     
-    setIsSubmitting(true);
+    addTournament({
+      name: name.trim(),
+      location: location.trim() || undefined
+    });
     
-    try {
-      addTournament({
-        name: name.trim(),
-        location: location.trim() || undefined
-      });
-      
-      setName('');
-      setLocation('');
-      
-      if (onSuccess) onSuccess();
-    } catch (error) {
-      console.error('Error al crear el torneo:', error);
-      toast.error('Ocurrió un error al crear el torneo');
-    } finally {
-      setIsSubmitting(false);
-    }
+    setName('');
+    setLocation('');
+    
+    if (onSuccess) onSuccess();
   };
 
   return (
@@ -60,7 +49,6 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="Ej: Torneo Local Mayo 2025"
-              disabled={isSubmitting}
             />
           </div>
           
@@ -71,19 +59,12 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
               value={location}
               onChange={e => setLocation(e.target.value)}
               placeholder="Ej: Tienda de Juegos XYZ"
-              disabled={isSubmitting}
             />
           </div>
         </CardContent>
         
         <CardFooter>
-          <Button 
-            type="submit" 
-            className="w-full"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Creando...' : 'Crear Torneo'}
-          </Button>
+          <Button type="submit" className="w-full">Crear Torneo</Button>
         </CardFooter>
       </form>
     </Card>

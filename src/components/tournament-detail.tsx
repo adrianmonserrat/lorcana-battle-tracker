@@ -1,21 +1,11 @@
 
-import { useLorcana } from "@/context/lorcana/LorcanaProvider";
+import { useLorcana } from "@/context/LorcanaContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Match } from "@/types";
-import { Trash2 } from "lucide-react";
-import { 
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger 
-} from "@/components/ui/dialog";
 import { useState } from "react";
+import { Match } from "@/types";
 
 interface TournamentDetailProps {
   tournamentId: string;
@@ -23,8 +13,7 @@ interface TournamentDetailProps {
 }
 
 export function TournamentDetail({ tournamentId, onAddMatch }: TournamentDetailProps) {
-  const { tournaments, deleteMatch } = useLorcana();
-  const [matchToDelete, setMatchToDelete] = useState<string | null>(null);
+  const { tournaments } = useLorcana();
   const tournament = tournaments.find(t => t.id === tournamentId);
   
   if (!tournament) {
@@ -33,17 +22,9 @@ export function TournamentDetail({ tournamentId, onAddMatch }: TournamentDetailP
   
   const victories = tournament.matches.filter(m => m.result === 'Victoria').length;
   const defeats = tournament.matches.filter(m => m.result === 'Derrota').length;
-  const ties = tournament.matches.filter(m => m.result === 'Empate').length;
   const winRate = tournament.matches.length > 0 
     ? Math.round((victories / tournament.matches.length) * 100) 
     : 0;
-
-  const handleDeleteMatch = () => {
-    if (matchToDelete) {
-      deleteMatch(matchToDelete, tournamentId);
-      setMatchToDelete(null);
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -71,12 +52,11 @@ export function TournamentDetail({ tournamentId, onAddMatch }: TournamentDetailP
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">V / E / D</CardTitle>
+            <CardTitle className="text-lg">Victorias / Derrotas</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold">
               <span className="text-emerald-600">{victories}</span> / 
-              <span className="text-amber-600">{ties}</span> / 
               <span className="text-red-600">{defeats}</span>
             </p>
           </CardContent>
@@ -100,11 +80,7 @@ export function TournamentDetail({ tournamentId, onAddMatch }: TournamentDetailP
           {tournament.matches.length > 0 ? (
             <div className="space-y-4">
               {tournament.matches.map((match) => (
-                <MatchCard 
-                  key={match.id} 
-                  match={match} 
-                  onDelete={() => setMatchToDelete(match.id)} 
-                />
+                <MatchCard key={match.id} match={match} />
               ))}
             </div>
           ) : (
@@ -114,64 +90,18 @@ export function TournamentDetail({ tournamentId, onAddMatch }: TournamentDetailP
           )}
         </CardContent>
       </Card>
-
-      <Dialog open={!!matchToDelete} onOpenChange={(open) => !open && setMatchToDelete(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Eliminar Partida</DialogTitle>
-            <DialogDescription>
-              ¿Estás seguro de que deseas eliminar esta partida? Esta acción no se puede deshacer.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setMatchToDelete(null)}>
-              Cancelar
-            </Button>
-            <Button variant="destructive" onClick={handleDeleteMatch}>
-              Eliminar
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
 
-function MatchCard({ match, onDelete }: { match: Match; onDelete: () => void }) {
-  let bgColor = '';
-  let borderColor = '';
-  let textColor = '';
-  
-  if (match.result === 'Victoria') {
-    bgColor = 'bg-lorcana-victory/30';
-    borderColor = 'border-lorcana-victory';
-    textColor = 'text-emerald-700';
-  } else if (match.result === 'Empate') {
-    bgColor = 'bg-lorcana-tie/30';
-    borderColor = 'border-lorcana-tie';
-    textColor = 'text-amber-700';
-  } else {
-    bgColor = 'bg-lorcana-defeat/30';
-    borderColor = 'border-lorcana-defeat';
-    textColor = 'text-red-700';
-  }
+function MatchCard({ match }: { match: Match }) {
+  const isVictory = match.result === 'Victoria';
   
   return (
-    <div className={`p-4 rounded-md border ${bgColor} ${borderColor} relative`}>
-      <div className="absolute top-2 right-2">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="h-8 w-8 text-destructive hover:bg-destructive/10"
-          onClick={onDelete}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </div>
-
+    <div className={`p-4 rounded-md border ${isVictory ? 'bg-lorcana-victory/30 border-lorcana-victory' : 'bg-lorcana-defeat/30 border-lorcana-defeat'}`}>
       <div className="flex flex-col md:flex-row justify-between mb-2">
         <p className="font-medium">{format(match.date, "PPP", { locale: es })}</p>
-        <span className={`font-bold ${textColor}`}>
+        <span className={`font-bold ${isVictory ? 'text-emerald-700' : 'text-red-700'}`}>
           {match.result}
         </span>
       </div>

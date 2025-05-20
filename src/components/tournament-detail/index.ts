@@ -1,2 +1,0 @@
-
-export { TournamentDetail } from "./TournamentDetail";
