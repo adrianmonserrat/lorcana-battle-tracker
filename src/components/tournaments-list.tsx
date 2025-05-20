@@ -1,14 +1,25 @@
 
-import { useLorcana } from "@/context/LorcanaContext";
+import { useState } from "react";
+import { useLorcana } from "@/context/lorcana/LorcanaProvider";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
+import { Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 
 export function TournamentsList() {
-  const { tournaments } = useLorcana();
+  const { tournaments, deleteTournament } = useLorcana();
   const navigate = useNavigate();
+  const [tournamentToDelete, setTournamentToDelete] = useState<string | null>(null);
+  
+  const handleDeleteTournament = () => {
+    if (tournamentToDelete) {
+      deleteTournament(tournamentToDelete);
+      setTournamentToDelete(null);
+    }
+  };
   
   if (tournaments.length === 0) {
     return (
@@ -30,11 +41,42 @@ export function TournamentsList() {
         {tournaments.map(tournament => {
           const victories = tournament.matches.filter(m => m.result === 'Victoria').length;
           const defeats = tournament.matches.filter(m => m.result === 'Derrota').length;
+          const ties = tournament.matches.filter(m => m.result === 'Empate').length;
           
           return (
             <Card key={tournament.id} className="overflow-hidden">
               <CardHeader className="pb-2">
-                <CardTitle>{tournament.name}</CardTitle>
+                <div className="flex justify-between items-start">
+                  <CardTitle>{tournament.name}</CardTitle>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                        onClick={() => setTournamentToDelete(tournament.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Eliminar Torneo</DialogTitle>
+                        <DialogDescription>
+                          ¿Estás seguro de que deseas eliminar este torneo? Esta acción no se puede deshacer.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setTournamentToDelete(null)}>
+                          Cancelar
+                        </Button>
+                        <Button variant="destructive" onClick={handleDeleteTournament}>
+                          Eliminar
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
                 <p className="text-sm text-muted-foreground">
                   {format(tournament.date, "PPP", { locale: es })}
                   {tournament.location && ` - ${tournament.location}`}
@@ -48,9 +90,10 @@ export function TournamentsList() {
                     <p className="text-xl font-bold">{tournament.matches.length}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">V / D</p>
+                    <p className="text-sm text-muted-foreground">V / E / D</p>
                     <p className="text-xl font-bold">
                       <span className="text-emerald-600">{victories}</span> / 
+                      <span className="text-amber-600">{ties}</span> / 
                       <span className="text-red-600">{defeats}</span>
                     </p>
                   </div>

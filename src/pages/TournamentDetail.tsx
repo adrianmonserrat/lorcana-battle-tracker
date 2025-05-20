@@ -1,16 +1,24 @@
 
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { TournamentDetail as TournamentDetailComponent } from '@/components/tournament-detail';
 import { MatchForm } from '@/components/match-form';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle,
+  SheetDescription
+} from '@/components/ui/sheet';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { MainHeader } from '@/components/layouts/main-header';
 
 const TournamentDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isAddingMatch, setIsAddingMatch] = useState(false);
+  const isMobile = useIsMobile();
   
   if (!id) {
     navigate('/torneos');
@@ -19,35 +27,54 @@ const TournamentDetail = () => {
   
   return (
     <div className="min-h-screen">
-      <header className="border-b p-4">
-        <div className="container max-w-6xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Contador Lorcana</h1>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => navigate('/torneos')}>
-              Volver a Torneos
-            </Button>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <MainHeader 
+        showTourneosButton={false}
+        showPartidasButton={false}
+        alternateButtonText="Volver a Torneos"
+        alternateButtonAction={() => navigate('/torneos')}
+      />
       
       <main className="container max-w-6xl mx-auto p-4 md:p-6">
-        <TournamentDetailComponent 
+        <TournamentDetailComponent
           tournamentId={id} 
           onAddMatch={() => setIsAddingMatch(true)} 
         />
         
-        <Dialog open={isAddingMatch} onOpenChange={setIsAddingMatch}>
-          <DialogContent className="max-w-4xl">
-            <DialogHeader>
-              <DialogTitle>Agregar Partida al Torneo</DialogTitle>
-            </DialogHeader>
-            <MatchForm 
-              tournamentId={id} 
-              onSuccess={() => setIsAddingMatch(false)} 
-            />
-          </DialogContent>
-        </Dialog>
+        {isMobile ? (
+          <Sheet open={isAddingMatch} onOpenChange={setIsAddingMatch}>
+            <SheetContent side="bottom" className="h-[90vh] pb-8 overflow-y-auto">
+              <SheetHeader>
+                <SheetTitle>Agregar Partida al Torneo</SheetTitle>
+                <SheetDescription>
+                  Completa el formulario para registrar una nueva partida
+                </SheetDescription>
+              </SheetHeader>
+              <ScrollArea className="h-full pr-4 mt-4">
+                <MatchForm 
+                  tournamentId={id} 
+                  onSuccess={() => setIsAddingMatch(false)} 
+                />
+              </ScrollArea>
+            </SheetContent>
+          </Sheet>
+        ) : (
+          <Sheet open={isAddingMatch} onOpenChange={setIsAddingMatch}>
+            <SheetContent className="w-[95%] sm:max-w-[600px] overflow-y-auto">
+              <SheetHeader>
+                <SheetTitle>Agregar Partida al Torneo</SheetTitle>
+                <SheetDescription>
+                  Completa el formulario para registrar una nueva partida
+                </SheetDescription>
+              </SheetHeader>
+              <ScrollArea className="h-[calc(100vh-150px)] pr-4 mt-4">
+                <MatchForm 
+                  tournamentId={id} 
+                  onSuccess={() => setIsAddingMatch(false)} 
+                />
+              </ScrollArea>
+            </SheetContent>
+          </Sheet>
+        )}
       </main>
     </div>
   );
