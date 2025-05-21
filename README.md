@@ -1,73 +1,94 @@
-# Welcome to your Lovable project
+# Lorcana Match Tracker
 
-## Project info
+Lorcana Match Tracker is a web application designed to help players of the Disney Lorcana Trading Card Game record their tournament matches, track their performance, and view statistics about their games, decks, and opponents.
 
-**URL**: https://lovable.dev/projects/4628bf8b-89cf-4488-98b5-264476c42e1d
+## Features
 
-## How can I edit this code?
+*   **Tournament Tracking:** Easily create and manage your Lorcana tournament entries.
+*   **Detailed Match Logging:** Record comprehensive details for each match, including:
+    *   Your deck and its colors
+    *   Opponent's deck and colors (if known)
+    *   Game format (e.g., Best of 1, Best of 3)
+    *   Match result (Win, Loss, Draw)
+    *   Notes about the match
+*   **Performance Statistics:** Gain insights into your gameplay with statistics such as:
+    *   Overall win/loss/draw ratios
+    *   Performance with different ink colors
+    *   Tournament-specific statistics
+*   **Data Visualization:** View your statistics through charts and graphs.
+*   **Theme Customization:** Switch between light and dark modes for comfortable viewing.
+*   **Persistent Storage:** Tournament and match data are saved in your browser's local storage.
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+This project is built with the following technologies:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4628bf8b-89cf-4488-98b5-264476c42e1d) and start prompting.
+*   **Frontend:**
+    *   [React](https://react.dev/) - A JavaScript library for building user interfaces.
+    *   [TypeScript](https://www.typescriptlang.org/) - A typed superset of JavaScript that compiles to plain JavaScript.
+    *   [Vite](https://vitejs.dev/) - A modern frontend build tool that provides an extremely fast development environment.
+    *   [React Router](https://reactrouter.com/) - For client-side routing.
+    *   [TanStack Query](https://tanstack.com/query/latest) - For data fetching, caching, and server state management.
+*   **UI & Styling:**
+    *   [Shadcn UI](https://ui.shadcn.com/) - A collection of re-usable UI components.
+    *   [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework for rapid UI development.
+    *   [Recharts](https://recharts.org/) - A composable charting library.
+*   **Linting:**
+    *   [ESLint](https://eslint.org/) - For identifying and reporting on patterns in JavaScript/TypeScript.
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+To get a local copy up and running, follow these simple steps:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/your-repository-name.git
+    cd your-repository-name
+    ```
+    *(Replace `your-username/your-repository-name` with the actual path to this repository if you are hosting it on GitHub or a similar platform. If it's a local-only project for now, you might want to adjust this part or add a note.)*
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+2.  **Install NPM packages:**
+    Make sure you have Node.js and npm installed. Then, run the following command in the project root:
+    ```bash
+    npm install
+    ```
 
-Follow these steps:
+3.  **Run the development server:**
+    Once the dependencies are installed, you can start the development server:
+    ```bash
+    npm run dev
+    ```
+    This will usually open the application in your default web browser at `http://localhost:5173` (Vite's default port). Check your terminal for the exact address.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Available Scripts
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+In the project directory, you can run the following scripts:
 
-# Step 3: Install the necessary dependencies.
-npm i
+*   `npm run dev`
+    *   Runs the app in development mode using Vite.
+    *   Open [http://localhost:5173](http://localhost:5173) (or the address shown in your terminal) to view it in the browser.
+    *   The page will reload if you make edits.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+*   `npm run build`
+    *   Builds the app for production to the `dist` folder.
+    *   It correctly bundles React in production mode and optimizes the build for the best performance.
 
-**Edit a file directly in GitHub**
+*   `npm run build:dev`
+    *   Builds the app using Vite's development mode. This is typically used for debugging build issues and is not a standard production build.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+*   `npm run lint`
+    *   Runs ESLint to analyze the code for potential errors and style issues.
 
-**Use GitHub Codespaces**
+*   `npm run preview`
+    *   Serves the production build from the `dist` folder locally. This is useful for checking the final build before deployment.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Future Enhancements (Ideas)
 
-## What technologies are used for this project?
+Here are some ideas for potential future enhancements:
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/4628bf8b-89cf-4488-98b5-264476c42e1d) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+*   **User Accounts:** Allow multiple users to register and manage their own tournament data.
+*   **Cloud Sync:** Synchronize data across multiple devices.
+*   **Advanced Statistics:** Implement more detailed statistical breakdowns (e.g., matchup specific win rates, performance over time).
+*   **Import/Export Data:** Allow users to import or export their tournament data in common formats (e.g., CSV, JSON).
+*   **Card Database Integration:** Link card names or decklists to an external Lorcana card database.
+*   **Decklist Management:** A dedicated section to create, save, and manage decklists.
