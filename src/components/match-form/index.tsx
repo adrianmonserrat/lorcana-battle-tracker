@@ -23,7 +23,7 @@ interface MatchFormProps {
 
 export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
   const { user } = useAuth();
-  const { decks } = useUserDecks();
+  const { decks, loading: decksLoading } = useUserDecks();
   const { addMatch, addTournamentMatch } = useLorcana();
   
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -65,6 +65,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
     if (deck) {
       setMyDeckName(deck.name);
       setMyColors(deck.colors);
+      console.log('Mazo seleccionado:', deck);
     }
   };
 
@@ -118,6 +119,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
       }
       
       resetForm();
+      toast.success('Partida guardada exitosamente');
       if (onSuccess) onSuccess();
     } catch (error) {
       console.error('Error al guardar la partida:', error);
@@ -146,7 +148,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
             />
 
             {/* My Deck Selection */}
-            {user && decks.length > 0 && (
+            {user && !decksLoading && decks.length > 0 && (
               <DeckSelector
                 decks={decks}
                 value={selectedMyDeck}

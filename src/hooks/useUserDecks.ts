@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { InkColor } from '@/types';
 import { toast } from 'sonner';
+import { useAuth } from '@/components/auth/AuthProvider';
 
 export interface UserDeck {
   id: string;
@@ -14,10 +15,17 @@ export interface UserDeck {
 }
 
 export function useUserDecks() {
+  const { user } = useAuth();
   const [decks, setDecks] = useState<UserDeck[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadDecks = async () => {
+    if (!user) {
+      setDecks([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('user_decks')
@@ -42,13 +50,17 @@ export function useUserDecks() {
   };
 
   const createDeck = async (name: string, colors: InkColor[]): Promise<UserDeck> => {
+    if (!user) {
+      throw new Error('Usuario no autenticado');
+    }
+
     try {
       const { data, error } = await supabase
         .from('user_decks')
         .insert({
           name,
           colors: colors as string[],
-          user_id: (await supabase.auth.getUser()).data.user?.id
+          user_id: user.id
         })
         .select()
         .single();
@@ -90,7 +102,7 @@ export function useUserDecks() {
 
   useEffect(() => {
     loadDecks();
-  }, []);
+  }, [user]);
 
   return {
     decks,
