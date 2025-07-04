@@ -39,7 +39,7 @@ const App = () => (
         </LorcanaProvider>
       </AuthProvider>
     </QueryClientProvider>
-  </TooltipProvider>
+  </ThemeProvider>
 );
 
 export default App;
