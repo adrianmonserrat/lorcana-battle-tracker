@@ -10,7 +10,7 @@ const Index = () => {
   
   return (
     <div className="min-h-screen">
-      <MainHeader showTourneosButton={true} showPartidasButton={false} />
+      <MainHeader showTourneosButton={true} showPartidasButton={false} showMisMazosButton={true} />
       
       <main className="container max-w-6xl mx-auto p-4 md:p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

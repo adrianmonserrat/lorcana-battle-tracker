@@ -4,10 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { CurrentDateTime } from '@/components/current-datetime';
+import { useAuth } from '@/components/auth/AuthProvider';
+import { LogOut, User } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface MainHeaderProps {
   showTourneosButton?: boolean;
   showPartidasButton?: boolean;
+  showMisMazosButton?: boolean;
   alternateButtonText?: string;
   alternateButtonAction?: () => void;
 }
@@ -15,10 +19,20 @@ interface MainHeaderProps {
 export function MainHeader({
   showTourneosButton = true,
   showPartidasButton = false,
+  showMisMazosButton = false,
   alternateButtonText,
   alternateButtonAction
 }: MainHeaderProps) {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
   
   return (
     <header className="border-b p-4">
@@ -42,10 +56,33 @@ export function MainHeader({
             </Button>
           )}
           
+          {showMisMazosButton && user && (
+            <Button variant="outline" onClick={() => navigate('/mis-mazos')}>
+              Mis Mazos
+            </Button>
+          )}
+          
           {alternateButtonText && alternateButtonAction && (
             <Button variant="outline" onClick={alternateButtonAction}>
               {alternateButtonText}
             </Button>
+          )}
+          
+          {user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <User className="w-4 h-4 mr-2" />
+                  {user.email}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Cerrar Sesión
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
           
           <ThemeToggle />
