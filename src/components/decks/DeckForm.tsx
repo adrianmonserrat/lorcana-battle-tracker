@@ -6,11 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { InkColor } from '@/types';
 import { ColorSelector } from '@/components/match-form/color-selector';
+import { UserDeck } from '@/hooks/useUserDecks';
 
 interface DeckFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (name: string, colors: InkColor[]) => Promise<void>;
+  onSubmit: (name: string, colors: InkColor[]) => Promise<UserDeck>;
 }
 
 export function DeckForm({ open, onClose, onSubmit }: DeckFormProps) {

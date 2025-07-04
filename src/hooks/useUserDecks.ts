@@ -25,7 +25,14 @@ export function useUserDecks() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setDecks(data || []);
+      
+      // Transform the data to ensure colors are properly typed
+      const typedDecks = (data || []).map(deck => ({
+        ...deck,
+        colors: deck.colors as InkColor[]
+      }));
+      
+      setDecks(typedDecks);
     } catch (error) {
       console.error('Error loading decks:', error);
       toast.error('Error al cargar los mazos');
@@ -34,7 +41,7 @@ export function useUserDecks() {
     }
   };
 
-  const createDeck = async (name: string, colors: InkColor[]) => {
+  const createDeck = async (name: string, colors: InkColor[]): Promise<UserDeck> => {
     try {
       const { data, error } = await supabase
         .from('user_decks')
@@ -48,9 +55,15 @@ export function useUserDecks() {
 
       if (error) throw error;
       
-      setDecks(prev => [data, ...prev]);
+      // Transform the response to ensure colors are properly typed
+      const typedDeck: UserDeck = {
+        ...data,
+        colors: data.colors as InkColor[]
+      };
+      
+      setDecks(prev => [typedDeck, ...prev]);
       toast.success('Mazo creado exitosamente');
-      return data;
+      return typedDeck;
     } catch (error) {
       console.error('Error creating deck:', error);
       toast.error('Error al crear el mazo');
