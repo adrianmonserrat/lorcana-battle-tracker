@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { CurrentDateTime } from '@/components/current-datetime';
 import { useAuth } from '@/components/auth/AuthProvider';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, LogIn } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface MainHeaderProps {
@@ -68,7 +68,7 @@ export function MainHeader({
             </Button>
           )}
           
-          {user && (
+          {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -83,6 +83,11 @@ export function MainHeader({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          ) : (
+            <Button variant="outline" onClick={() => navigate('/auth')}>
+              <LogIn className="w-4 h-4 mr-2" />
+              Iniciar Sesión
+            </Button>
           )}
           
           <ThemeToggle />
