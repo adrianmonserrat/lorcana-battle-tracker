@@ -6,8 +6,10 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { CurrentDateTime } from '@/components/current-datetime';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import { LogOut, User, LogIn, Settings } from 'lucide-react';
+import { LogOut, User, LogIn, Settings, Menu } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MainHeaderProps {
   showTourneosButton?: boolean;
@@ -27,6 +29,7 @@ export function MainHeader({
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { profile } = useUserProfile();
+  const isMobile = useIsMobile();
   
   const handleSignOut = async () => {
     try {
@@ -36,70 +39,128 @@ export function MainHeader({
     }
   };
 
-  const displayName = profile?.display_name || user?.email || 'Usuario';
+  const displayName = profile?.display_name || user?.email?.split('@')[0] || 'Usuario';
+  
+  const NavigationButtons = () => (
+    <>
+      {showTourneosButton && (
+        <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={() => navigate('/torneos')}>
+          Torneos
+        </Button>
+      )}
+      
+      {showPartidasButton && (
+        <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={() => navigate('/')}>
+          Partidas
+        </Button>
+      )}
+      
+      {showMisMazosButton && user && (
+        <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={() => navigate('/mis-mazos')}>
+          {isMobile ? 'Mazos' : 'Mis Mazos'}
+        </Button>
+      )}
+      
+      {alternateButtonText && alternateButtonAction && (
+        <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={alternateButtonAction}>
+          {alternateButtonText}
+        </Button>
+      )}
+    </>
+  );
   
   return (
-    <header className="border-b p-4">
-      <div className="container max-w-6xl mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold hover:text-primary transition-colors">
-          Contador Lorcana
+    <header className="border-b p-2 sm:p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container max-w-7xl mx-auto flex justify-between items-center gap-2">
+        <Link to="/" className="text-lg sm:text-2xl font-bold hover:text-primary transition-colors shrink-0">
+          <span className="hidden sm:inline">Contador Lorcana</span>
+          <span className="sm:hidden">Lorcana</span>
         </Link>
         
-        <CurrentDateTime />
-        
-        <div className="flex items-center gap-2">
-          {showTourneosButton && (
-            <Button variant="outline" onClick={() => navigate('/torneos')}>
-              Torneos
-            </Button>
-          )}
-          
-          {showPartidasButton && (
-            <Button variant="outline" onClick={() => navigate('/')}>
-              Partidas
-            </Button>
-          )}
-          
-          {showMisMazosButton && user && (
-            <Button variant="outline" onClick={() => navigate('/mis-mazos')}>
-              Mis Mazos
-            </Button>
-          )}
-          
-          {alternateButtonText && alternateButtonAction && (
-            <Button variant="outline" onClick={alternateButtonAction}>
-              {alternateButtonText}
-            </Button>
-          )}
-          
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <User className="w-4 h-4 mr-2" />
-                  {displayName}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => navigate('/profile')}>
-                  <Settings className="w-4 h-4 mr-2" />
-                  Mi Perfil
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Cerrar Sesión
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button variant="outline" onClick={() => navigate('/auth')}>
-              <LogIn className="w-4 h-4 mr-2" />
-              Iniciar Sesión
-            </Button>
-          )}
-          
-          <ThemeToggle />
+        <div className="hidden sm:block">
+          <CurrentDateTime />
         </div>
+        
+        {isMobile ? (
+          <div className="flex items-center gap-1">
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="max-w-[120px]">
+                    <User className="w-4 h-4 mr-1" />
+                    <span className="truncate text-xs">{displayName}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <Settings className="w-4 h-4 mr-2" />
+                    Mi Perfil
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Cerrar Sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => navigate('/auth')}>
+                <LogIn className="w-4 h-4 mr-1" />
+                <span className="text-xs">Entrar</span>
+              </Button>
+            )}
+            
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Menu className="w-4 h-4" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-64">
+                <div className="flex flex-col gap-4 mt-8">
+                  <NavigationButtons />
+                  <div className="border-t pt-4">
+                    <CurrentDateTime />
+                  </div>
+                  <div className="border-t pt-4">
+                    <ThemeToggle />
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <NavigationButtons />
+            
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="max-w-[200px]">
+                    <User className="w-4 h-4 mr-2" />
+                    <span className="truncate">{displayName}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <Settings className="w-4 h-4 mr-2" />
+                    Mi Perfil
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Cerrar Sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="outline" onClick={() => navigate('/auth')}>
+                <LogIn className="w-4 h-4 mr-2" />
+                Iniciar Sesión
+              </Button>
+            )}
+            
+            <ThemeToggle />
+          </div>
+        )}
       </div>
     </header>
   );

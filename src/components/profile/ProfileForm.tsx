@@ -38,8 +38,8 @@ export function ProfileForm() {
 
   if (loading) {
     return (
-      <Card>
-        <CardContent className="p-6">
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardContent className="p-4 sm:p-6">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
             <p>Cargando perfil...</p>
@@ -50,25 +50,28 @@ export function ProfileForm() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Perfil de Usuario</CardTitle>
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader className="p-4 sm:p-6">
+        <CardTitle className="text-xl sm:text-2xl">Perfil de Usuario</CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <CardContent className="p-4 sm:p-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-sm font-medium">Email</Label>
             <Input
               id="email"
               type="email"
               value={user?.email || ''}
-              disabled
-              className="bg-gray-100"
+              readOnly
+              className="bg-muted text-muted-foreground cursor-not-allowed"
             />
+            <p className="text-xs text-muted-foreground">
+              El email no se puede modificar
+            </p>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="displayName">Nombre para mostrar</Label>
+            <Label htmlFor="displayName" className="text-sm font-medium">Nombre para mostrar</Label>
             <Input
               id="displayName"
               type="text"
@@ -76,8 +79,9 @@ export function ProfileForm() {
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Ingresa tu nombre o apodo"
               disabled={isUpdating}
+              className="w-full"
             />
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Este nombre se mostrará en lugar de tu email en la aplicación
             </p>
           </div>
@@ -85,6 +89,7 @@ export function ProfileForm() {
           <Button 
             type="submit" 
             disabled={isUpdating || !displayName.trim() || displayName === profile?.display_name}
+            className="w-full sm:w-auto"
           >
             {isUpdating ? 'Actualizando...' : 'Actualizar Perfil'}
           </Button>

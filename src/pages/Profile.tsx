@@ -13,19 +13,19 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background">
         <MainHeader showTourneosButton={true} showPartidasButton={true} />
         
-        <main className="container max-w-6xl mx-auto p-4 md:p-6">
+        <main className="container max-w-7xl mx-auto p-2 sm:p-4 md:p-6">
           <Card className="max-w-md mx-auto">
-            <CardHeader>
-              <CardTitle className="text-center">Acceso Requerido</CardTitle>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-center text-lg sm:text-xl">Acceso Requerido</CardTitle>
             </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <p className="text-muted-foreground">
+            <CardContent className="text-center space-y-4 p-4 sm:p-6">
+              <p className="text-muted-foreground text-sm sm:text-base">
                 Necesitas iniciar sesión para gestionar tu perfil.
               </p>
-              <Button onClick={() => setShowAuthModal(true)}>
+              <Button onClick={() => setShowAuthModal(true)} className="w-full sm:w-auto">
                 Iniciar Sesión
               </Button>
             </CardContent>
@@ -41,12 +41,12 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <MainHeader showTourneosButton={true} showPartidasButton={true} showMisMazosButton={true} />
       
-      <main className="container max-w-6xl mx-auto p-4 md:p-6">
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">Mi Perfil</h1>
+      <main className="container max-w-7xl mx-auto p-2 sm:p-4 md:p-6">
+        <div className="w-full max-w-2xl mx-auto space-y-4 sm:space-y-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left px-2 sm:px-0">Mi Perfil</h1>
           <ProfileForm />
         </div>
       </main>
