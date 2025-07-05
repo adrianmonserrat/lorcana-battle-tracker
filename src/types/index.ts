@@ -49,7 +49,7 @@ export interface Stats {
   byTournament: Record<string, {
     matches: number;
     victories: number;
-    defeats: defeats;
+    defeats: number;
     ties: number;
   }>;
 }
