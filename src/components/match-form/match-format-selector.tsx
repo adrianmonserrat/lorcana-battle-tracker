@@ -1,7 +1,6 @@
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UseFormReturn } from 'react-hook-form';
 
 interface MatchFormatSelectorProps {
@@ -17,28 +16,16 @@ export function MatchFormatSelector({ form }: MatchFormatSelectorProps) {
         <FormItem>
           <FormLabel>Formato de Partida</FormLabel>
           <FormControl>
-            <RadioGroup
-              onValueChange={field.onChange}
-              value={field.value}
-              className="grid grid-cols-2 gap-2"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="BO1" id="bo1" />
-                <Label htmlFor="bo1">BO1 (Mejor de 1)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="BO2" id="bo2" />
-                <Label htmlFor="bo2">BO2 (Mejor de 2)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="BO3" id="bo3" />
-                <Label htmlFor="bo3">BO3 (Mejor de 3)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="BO5" id="bo5" />
-                <Label htmlFor="bo5">BO5 (Mejor de 5)</Label>
-              </div>
-            </RadioGroup>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecciona el formato" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="best-of-1">Mejor de 1 (Bo1)</SelectItem>
+                <SelectItem value="best-of-3">Mejor de 3 (Bo3)</SelectItem>
+                <SelectItem value="best-of-5">Mejor de 5 (Bo5)</SelectItem>
+              </SelectContent>
+            </Select>
           </FormControl>
           <FormMessage />
         </FormItem>

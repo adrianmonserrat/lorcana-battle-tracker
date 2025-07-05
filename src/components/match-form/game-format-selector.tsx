@@ -1,7 +1,6 @@
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UseFormReturn } from 'react-hook-form';
 
 interface GameFormatSelectorProps {
@@ -17,20 +16,17 @@ export function GameFormatSelector({ form }: GameFormatSelectorProps) {
         <FormItem>
           <FormLabel>Formato de Juego</FormLabel>
           <FormControl>
-            <RadioGroup
-              onValueChange={field.onChange}
-              value={field.value}
-              className="flex flex-col space-y-1"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Infinity Constructor" id="infinity" />
-                <Label htmlFor="infinity">Infinity Constructor</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Estándar" id="standard" />
-                <Label htmlFor="standard">Estándar</Label>
-              </div>
-            </RadioGroup>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecciona el formato" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="casual">Casual</SelectItem>
+                <SelectItem value="ranked">Clasificatoria</SelectItem>
+                <SelectItem value="tournament">Torneo</SelectItem>
+                <SelectItem value="friendly">Amistosa</SelectItem>
+              </SelectContent>
+            </Select>
           </FormControl>
           <FormMessage />
         </FormItem>

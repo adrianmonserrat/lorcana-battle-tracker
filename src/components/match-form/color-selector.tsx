@@ -1,14 +1,16 @@
 
-import { Button } from "@/components/ui/button";
-import { InkColor } from "@/types";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { InkColor } from '@/types';
 
-const colors: { name: InkColor; bg: string; text: string }[] = [
-  { name: 'Ambar', bg: 'bg-amber-500', text: 'text-amber-50' },
-  { name: 'Amatista', bg: 'bg-purple-500', text: 'text-purple-50' },
-  { name: 'Esmeralda', bg: 'bg-emerald-500', text: 'text-emerald-50' },
-  { name: 'Rubí', bg: 'bg-red-500', text: 'text-red-50' },
-  { name: 'Zafiro', bg: 'bg-blue-500', text: 'text-blue-50' },
-  { name: 'Acero', bg: 'bg-gray-500', text: 'text-gray-50' },
+const COLORS: { value: InkColor; label: string; color: string }[] = [
+  { value: 'amber', label: 'Ámbar', color: 'bg-lorcana-amber' },
+  { value: 'amethyst', label: 'Amatista', color: 'bg-lorcana-amethyst' },
+  { value: 'emerald', label: 'Esmeralda', color: 'bg-lorcana-emerald' },
+  { value: 'ruby', label: 'Rubí', color: 'bg-lorcana-ruby' },
+  { value: 'sapphire', label: 'Zafiro', color: 'bg-lorcana-sapphire' },
+  { value: 'steel', label: 'Acero', color: 'bg-lorcana-steel' },
 ];
 
 interface ColorSelectorProps {
@@ -17,24 +19,30 @@ interface ColorSelectorProps {
 }
 
 export function ColorSelector({ selectedColors, onColorsChange }: ColorSelectorProps) {
-  const toggleColor = (colorName: string) => {
-    const newColors = selectedColors.includes(colorName)
-      ? selectedColors.filter(c => c !== colorName)
-      : [...selectedColors, colorName];
+  const handleColorToggle = (color: string) => {
+    const newColors = selectedColors.includes(color)
+      ? selectedColors.filter(c => c !== color)
+      : [...selectedColors, color];
+    
     onColorsChange(newColors);
   };
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-      {colors.map((color) => (
+      {COLORS.map((color) => (
         <Button
-          key={color.name}
+          key={color.value}
           type="button"
-          variant={selectedColors.includes(color.name) ? "default" : "outline"}
-          className={`h-12 ${selectedColors.includes(color.name) ? `${color.bg} ${color.text} hover:opacity-90` : ''}`}
-          onClick={() => toggleColor(color.name)}
+          variant={selectedColors.includes(color.value) ? "default" : "outline"}
+          size="sm"
+          onClick={() => handleColorToggle(color.value)}
+          className={cn(
+            "flex items-center gap-2 justify-start",
+            selectedColors.includes(color.value) && "ring-2 ring-primary"
+          )}
         >
-          {color.name}
+          <div className={cn("w-4 h-4 rounded-full border", color.color)} />
+          <span className="text-sm">{color.label}</span>
         </Button>
       ))}
     </div>

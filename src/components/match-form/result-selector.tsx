@@ -1,7 +1,7 @@
 
-import { Button } from "@/components/ui/button";
-import { Trophy, X, MinusCircle } from "lucide-react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { UseFormReturn } from 'react-hook-form';
 
 interface ResultSelectorProps {
@@ -9,50 +9,32 @@ interface ResultSelectorProps {
 }
 
 export function ResultSelector({ form }: ResultSelectorProps) {
-  const matchFormat = form.watch('matchFormat');
-  const showTieOption = matchFormat === 'BO2';
-  
   return (
     <FormField
       control={form.control}
       name="result"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Resultado</FormLabel>
+          <FormLabel>Resultado de la Partida</FormLabel>
           <FormControl>
-            <div className={`grid ${showTieOption ? 'grid-cols-3' : 'grid-cols-2'} gap-2 sm:gap-4`}>
-              <Button 
-                type="button"
-                variant={field.value === 'Victoria' ? 'default' : 'outline'} 
-                className={`h-20 sm:h-24 ${field.value === 'Victoria' ? 'bg-lorcana-victory text-green-800 hover:bg-lorcana-victory/90' : ''}`}
-                onClick={() => field.onChange('Victoria')}
-              >
-                <Trophy className="mr-2 h-5 w-5" />
-                Victoria
-              </Button>
-              
-              {showTieOption && (
-                <Button 
-                  type="button"
-                  variant={field.value === 'Empate' ? 'default' : 'outline'}
-                  className={`h-20 sm:h-24 ${field.value === 'Empate' ? 'bg-lorcana-tie text-amber-800 hover:bg-lorcana-tie/90' : ''}`}
-                  onClick={() => field.onChange('Empate')}
-                >
-                  <MinusCircle className="mr-2 h-5 w-5" />
-                  Empate
-                </Button>
-              )}
-              
-              <Button 
-                type="button"
-                variant={field.value === 'Derrota' ? 'default' : 'outline'}
-                className={`h-20 sm:h-24 ${field.value === 'Derrota' ? 'bg-lorcana-defeat text-red-800 hover:bg-lorcana-defeat/90' : ''}`}
-                onClick={() => field.onChange('Derrota')}
-              >
-                <X className="mr-2 h-5 w-5" />
-                Derrota
-              </Button>
-            </div>
+            <RadioGroup
+              onValueChange={field.onChange}
+              value={field.value}
+              className="flex flex-col space-y-2"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="victory" id="victory" />
+                <Label htmlFor="victory" className="cursor-pointer">Victoria</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="defeat" id="defeat" />
+                <Label htmlFor="defeat" className="cursor-pointer">Derrota</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="tie" id="tie" />
+                <Label htmlFor="tie" className="cursor-pointer">Empate</Label>
+              </div>
+            </RadioGroup>
           </FormControl>
           <FormMessage />
         </FormItem>
