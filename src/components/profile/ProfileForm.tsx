@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,8 +10,13 @@ import { useAuth } from '@/components/auth/AuthProvider';
 export function ProfileForm() {
   const { user } = useAuth();
   const { profile, loading, updateProfile } = useUserProfile();
-  const [displayName, setDisplayName] = useState(profile?.display_name || '');
+  const [displayName, setDisplayName] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // Sync displayName with profile data when it changes
+  useEffect(() => {
+    setDisplayName(profile?.display_name || '');
+  }, [profile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +28,7 @@ export function ProfileForm() {
     setIsUpdating(true);
     try {
       await updateProfile(displayName.trim());
+      // displayName will be updated automatically through useEffect when profile changes
     } catch (error) {
       // Error is already handled in the hook
     } finally {
