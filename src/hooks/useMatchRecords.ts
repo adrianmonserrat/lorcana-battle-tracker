@@ -127,13 +127,15 @@ export function useMatchRecords() {
       
       // Si la partida tenía un mazo asociado, recalcular las estadísticas
       if (matchToDelete?.user_deck_id && user) {
-        const { error: rpcError } = await supabase.rpc('recalculate_deck_statistics', {
-          p_user_id: user.id,
-          p_deck_id: matchToDelete.user_deck_id as string
-        } as any);
-        
-        if (rpcError) {
+        try {
+          // Call the RPC function using a more explicit approach to avoid TypeScript issues
+          await supabase.rpc('recalculate_deck_statistics', {
+            p_user_id: user.id,
+            p_deck_id: matchToDelete.user_deck_id
+          });
+        } catch (rpcError) {
           console.error('Error recalculating deck statistics:', rpcError);
+          // Don't throw here as the main deletion was successful
         }
       }
       
