@@ -129,8 +129,8 @@ export function useMatchRecords() {
       if (matchToDelete?.user_deck_id && user) {
         const { error: rpcError } = await supabase.rpc('recalculate_deck_statistics', {
           p_user_id: user.id,
-          p_deck_id: matchToDelete.user_deck_id
-        });
+          p_deck_id: matchToDelete.user_deck_id as string
+        } as any);
         
         if (rpcError) {
           console.error('Error recalculating deck statistics:', rpcError);
