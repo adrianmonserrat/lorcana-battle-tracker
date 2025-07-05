@@ -20,14 +20,22 @@ export function Statistics() {
   const { decks } = useUserDecks();
   const { tournaments } = useLorcana();
   
-  // Calculate statistics from Supabase matches
+  // Local state to track deleted matches for immediate UI updates
+  const [deletedMatchIds, setDeletedMatchIds] = useState<Set<string>>(new Set());
+  
+  // Filter out deleted matches from the local state
+  const activeMatches = useMemo(() => {
+    return supabaseMatches.filter(match => !deletedMatchIds.has(match.id));
+  }, [supabaseMatches, deletedMatchIds]);
+  
+  // Calculate statistics from active matches (excluding locally deleted ones)
   const statsData = useMemo(() => {
     let victories = 0;
     let defeats = 0;
     let ties = 0;
     
     // Filter matches based on selected filter
-    const filteredMatches = supabaseMatches.filter(match => {
+    const filteredMatches = activeMatches.filter(match => {
       if (selectedFilter === 'all') return true;
       if (selectedFilter === 'infinity') return match.game_format === 'Infinity Constructor';
       if (selectedFilter === 'expansiones') return match.game_format === 'Estándar';
@@ -92,7 +100,12 @@ export function Statistics() {
       colorData,
       filteredMatches
     };
-  }, [supabaseMatches, selectedFilter]);
+  }, [activeMatches, selectedFilter]);
+
+  // Handle immediate match deletion in UI
+  const handleMatchDelete = (matchId: string) => {
+    setDeletedMatchIds(prev => new Set([...prev, matchId]));
+  };
   
   if (loading) {
     return (
@@ -183,7 +196,8 @@ export function Statistics() {
               notes: match.notes
             };
           })}
-          tournaments={tournaments} 
+          tournaments={tournaments}
+          onMatchDelete={handleMatchDelete}
         />
       </StatisticsLayout>
     </ProtectedRoute>

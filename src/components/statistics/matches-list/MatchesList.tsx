@@ -7,7 +7,7 @@ import { MatchCard } from "./MatchCard";
 import { useLorcana } from "@/context/LorcanaContext";
 import { InkColor, GameFormat } from "@/types";
 
-export function MatchesList({ matches, tournaments }: MatchesListProps) {
+export function MatchesList({ matches, tournaments, onMatchDelete }: MatchesListProps) {
   const { deleteMatch } = useLorcana();
   const [colorFilter, setColorFilter] = useState<string>("all");
   const [sourceFilter, setSourceFilter] = useState<string>("all");
@@ -66,6 +66,18 @@ export function MatchesList({ matches, tournaments }: MatchesListProps) {
     }
   };
 
+  const handleDeleteMatch = (matchId: string, tournamentId?: string) => {
+    if (tournamentId) {
+      // Handle tournament match deletion
+      handleDeleteTournamentMatch(matchId, tournamentId);
+    } else {
+      // Handle regular match deletion - call the immediate update callback
+      if (onMatchDelete) {
+        onMatchDelete(matchId);
+      }
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-col space-y-4">
@@ -88,7 +100,7 @@ export function MatchesList({ matches, tournaments }: MatchesListProps) {
               <MatchCard 
                 key={match.id} 
                 match={match} 
-                onDeleteMatch={handleDeleteTournamentMatch}
+                onDeleteMatch={handleDeleteMatch}
               />
             ))}
           </div>

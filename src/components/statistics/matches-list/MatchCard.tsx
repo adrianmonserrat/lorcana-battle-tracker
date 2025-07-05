@@ -29,7 +29,9 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
   const handleDelete = async () => {
     try {
       if (!match.tournamentName) {
-        // Es una partida de Supabase, usar el hook para eliminarla
+        // Es una partida de Supabase - llamar primero al callback para actualización inmediata
+        onDeleteMatch(match.id);
+        // Luego eliminar de Supabase (esto se ejecuta en segundo plano)
         await deleteSupabaseMatch(match.id);
       } else {
         // Es una partida de torneo, usar el callback original
