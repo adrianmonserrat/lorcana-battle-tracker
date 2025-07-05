@@ -10,14 +10,10 @@ import { StatisticsFilter, StatsFilter } from "./StatisticsFilter";
 import { FilteredStatsProvider } from "./FilteredStatsProvider";
 import { StatisticsLayout } from "./StatisticsLayout";
 import { ProtectedRoute } from "../auth/ProtectedRoute";
-import { DeckStatistics } from "../decks/DeckStatistics";
-import { useCombinedStats } from "@/hooks/useCombinedStats";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function Statistics() {
   const [selectedFilter, setSelectedFilter] = useState<StatsFilter>('all');
   const { tournaments } = useLorcana();
-  const combinedStats = useCombinedStats();
   
   return (
     <ProtectedRoute>
@@ -30,7 +26,7 @@ export function Statistics() {
           />
         }
       >
-        {/* Estadísticas combinadas generales */}
+        {/* Estadísticas generales solamente */}
         <FilteredStatsProvider selectedFilter={selectedFilter}>
           {({ victories, defeats, ties, totalMatches, winRate, resultData, colorData, tournamentData, filteredMatches }) => (
             <>
@@ -63,18 +59,6 @@ export function Statistics() {
             </>
           )}
         </FilteredStatsProvider>
-
-        {/* Estadísticas detalladas de mazos */}
-        {combinedStats.deckStats.length > 0 && (
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Estadísticas Detalladas por Mazo</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DeckStatistics />
-            </CardContent>
-          </Card>
-        )}
       </StatisticsLayout>
     </ProtectedRoute>
   );
