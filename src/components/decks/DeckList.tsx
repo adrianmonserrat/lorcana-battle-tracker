@@ -1,9 +1,9 @@
 
 import { DeckCard } from './DeckCard';
-import { Deck } from '@/hooks/useUserDecks';
+import { UserDeck } from '@/hooks/useUserDecks';
 
 interface DeckListProps {
-  decks: Deck[];
+  decks: UserDeck[];
   loading: boolean;
   onDelete: (deckId: string) => void;
 }
