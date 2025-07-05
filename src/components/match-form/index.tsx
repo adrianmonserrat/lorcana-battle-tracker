@@ -1,259 +1,103 @@
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/components/auth/AuthProvider';
-import { useUserDecks, UserDeck } from '@/hooks/useUserDecks';
+import { Form } from '@/components/ui/form';
 import { useMatchRecords } from '@/hooks/useMatchRecords';
+import { toast } from 'sonner';
 import { InkColor, GameFormat, MatchFormat } from '@/types';
-import { GameFormatSelector } from './game-format-selector';
-import { ColorSelector } from './color-selector';
-import { DeckInput } from './deck-input';
+
 import { DeckSelector } from './deck-selector';
 import { OpponentDeckSelector } from './opponent-deck-selector';
-import { MatchFormatSelector } from './match-format-selector';
 import { ResultSelector } from './result-selector';
+import { GameFormatSelector } from './game-format-selector';
+import { MatchFormatSelector } from './match-format-selector';
 import { NotesInput } from './notes-input';
-import { AuthModal } from '@/components/auth/AuthModal';
-import { toast } from "sonner";
 
-interface MatchFormProps {
-  tournamentId?: string;
-  onSuccess?: () => void;
-}
+const formSchema = z.object({
+  userDeckId: z.string().optional(),
+  opponentDeckName: z.string().min(1, 'El nombre del mazo oponente es requerido'),
+  opponentDeckColors: z.array(z.string()).min(1, 'Selecciona al menos un color'),
+  result: z.enum(['Victoria', 'Derrota', 'Empate']),
+  gameFormat: z.enum(['Estándar', 'Infinity Constructor']),
+  matchFormat: z.enum(['BO1', 'BO3']),
+  notes: z.string().optional(),
+});
 
-export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
-  const { user } = useAuth();
-  const { decks, loading: decksLoading } = useUserDecks();
-  const { createMatch } = useMatchRecords();
-  
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [gameFormat, setGameFormat] = useState<GameFormat>('Infinity Constructor');
-  const [matchFormat, setMatchFormat] = useState<MatchFormat>('BO3');
-  const [myDeckName, setMyDeckName] = useState('');
-  const [opponentDeckName, setOpponentDeckName] = useState('');
-  const [myColors, setMyColors] = useState<InkColor[]>([]);
-  const [opponentColors, setOpponentColors] = useState<InkColor[]>([]);
-  const [selectedMyDeck, setSelectedMyDeck] = useState('');
-  const [selectedMyDeckId, setSelectedMyDeckId] = useState<string | undefined>(undefined);
-  const [selectedOpponentDeck, setSelectedOpponentDeck] = useState('');
-  const [result, setResult] = useState<'Victoria' | 'Derrota' | 'Empate' | ''>('');
-  const [notes, setNotes] = useState('');
+type FormData = z.infer<typeof formSchema>;
+
+export function MatchForm() {
+  const { createMatch, loading } = useMatchRecords();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      opponentDeckName: '',
+      opponentDeckColors: [],
+      result: 'Victoria',
+      gameFormat: 'Estándar',
+      matchFormat: 'BO3',
+      notes: '',
+    },
+  });
 
-  // Reset the result if changing from BO2 to another format and result is 'Empate'
-  useEffect(() => {
-    if (matchFormat !== 'BO2' && result === 'Empate') {
-      setResult('');
-    }
-  }, [matchFormat, result]);
-
-  const handleMyColorToggle = (color: InkColor) => {
-    setMyColors(prev => 
-      prev.includes(color) 
-        ? prev.filter(c => c !== color) 
-        : [...prev, color]
-    );
-  };
-
-  const handleOpponentColorToggle = (color: InkColor) => {
-    setOpponentColors(prev => 
-      prev.includes(color) 
-        ? prev.filter(c => c !== color) 
-        : [...prev, color]
-    );
-  };
-
-  const handleMyDeckSelect = (deck: UserDeck | null) => {
-    if (deck) {
-      setMyDeckName(deck.name);
-      setMyColors(deck.colors);
-      setSelectedMyDeckId(deck.id);
-      console.log('Mi mazo seleccionado:', deck);
-    } else {
-      setSelectedMyDeckId(undefined);
-    }
-  };
-
-  const handleOpponentDeckSelect = (deck: UserDeck | null) => {
-    if (deck) {
-      setOpponentDeckName(deck.name);
-      setOpponentColors(deck.colors);
-      console.log('Mazo del oponente seleccionado:', deck);
-    }
-  };
-
-  const resetForm = () => {
-    setGameFormat('Infinity Constructor');
-    setMatchFormat('BO3');
-    setMyDeckName('');
-    setOpponentDeckName('');
-    setMyColors([]);
-    setOpponentColors([]);
-    setSelectedMyDeck('');
-    setSelectedMyDeckId(undefined);
-    setSelectedOpponentDeck('');
-    setResult('');
-    setNotes('');
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!user) {
-      setShowAuthModal(true);
-      return;
-    }
-    
-    if (myColors.length === 0 || opponentColors.length === 0 || !result) {
-      toast.error('Por favor selecciona colores y resultado');
-      return;
-    }
-    
-    setIsSubmitting(true);
-    
+  const onSubmit = async (data: FormData) => {
     try {
-      await createMatch({
-        user_deck_id: selectedMyDeckId,
-        opponent_deck_name: opponentDeckName.trim() || 'Sin nombre',
-        opponent_deck_colors: opponentColors,
-        result,
-        game_format: gameFormat,
-        match_format: matchFormat,
-        notes: notes.trim() || undefined
-      });
+      setIsSubmitting(true);
       
-      resetForm();
-      if (onSuccess) onSuccess();
+      await createMatch({
+        user_deck_id: data.userDeckId,
+        opponent_deck_name: data.opponentDeckName,
+        opponent_deck_colors: data.opponentDeckColors as InkColor[],
+        result: data.result,
+        game_format: data.gameFormat as GameFormat,
+        match_format: data.matchFormat as MatchFormat,
+        notes: data.notes,
+      });
+
+      // Reset form after successful submission
+      form.reset();
+      
+      // Show success message
+      toast.success('¡Partida registrada exitosamente!');
+      
     } catch (error) {
-      console.error('Error al guardar la partida:', error);
-      toast.error('Ocurrió un error al guardar la partida');
+      console.error('Error creating match:', error);
+      toast.error('Error al registrar la partida');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <>
-      <Card className="w-full max-w-3xl mx-auto mb-8">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold">
-            {tournamentId ? 'Registrar Partida de Torneo' : 'Registrar Nueva Partida'}
-          </CardTitle>
-        </CardHeader>
-        
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-6">
-            {/* Game Format */}
-            <GameFormatSelector 
-              value={gameFormat}
-              onChange={setGameFormat}
-              disabled={isSubmitting}
-            />
-
-            {/* My Deck Selection */}
-            {user && !decksLoading && decks.length > 0 && (
-              <DeckSelector
-                decks={decks}
-                value={selectedMyDeck}
-                onChange={setSelectedMyDeck}
-                onDeckSelect={handleMyDeckSelect}
-                label="Seleccionar Mi Mazo (opcional)"
-                placeholder="Elegir un mazo guardado"
-                disabled={isSubmitting}
-              />
-            )}
-
-            {/* My Deck Colors */}
-            <ColorSelector
-              selectedColors={myColors}
-              onColorToggle={handleMyColorToggle}
-              label="Mis Colores"
-              id="my"
-              disabled={isSubmitting}
-            />
+    <Card className="max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle>Registrar Nueva Partida</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <DeckSelector form={form} />
+            <OpponentDeckSelector form={form} />
+            <ResultSelector form={form} />
+            <GameFormatSelector form={form} />
+            <MatchFormatSelector form={form} />
+            <NotesInput form={form} />
             
-            {/* My Deck Name */}
-            <DeckInput
-              id="myDeckName"
-              label="Nombre de Mi Mazo (opcional)"
-              value={myDeckName}
-              onChange={setMyDeckName}
-              placeholder="Ej: Control Ambar/Amatista"
-              disabled={isSubmitting}
-            />
-
-            {/* Opponent Deck Selection */}
-            {user && !decksLoading && decks.length > 0 && (
-              <OpponentDeckSelector
-                decks={decks}
-                value={selectedOpponentDeck}
-                onChange={setSelectedOpponentDeck}
-                onDeckSelect={handleOpponentDeckSelect}
-                label="Asignar Mazo Mío al Oponente (opcional)"
-                placeholder="Elegir uno de mis mazos para el oponente"
-                disabled={isSubmitting}
-              />
-            )}
-            
-            {/* Opponent Deck Colors */}
-            <ColorSelector
-              selectedColors={opponentColors}
-              onColorToggle={handleOpponentColorToggle}
-              label="Colores del Oponente"
-              id="opp"
-              disabled={isSubmitting}
-            />
-            
-            {/* Opponent Deck Name */}
-            <DeckInput
-              id="opponentDeckName"
-              label="Nombre del Mazo Oponente (opcional)"
-              value={opponentDeckName}
-              onChange={setOpponentDeckName}
-              placeholder="Ej: Aggro Rubí/Esmeralda"
-              disabled={isSubmitting}
-            />
-            
-            {/* Match Format */}
-            <MatchFormatSelector
-              value={matchFormat}
-              onChange={setMatchFormat}
-              disabled={isSubmitting}
-            />
-            
-            {/* Result */}
-            <ResultSelector
-              value={result}
-              onChange={setResult}
-              disabled={isSubmitting}
-              matchFormat={matchFormat}
-            />
-            
-            {/* Notes */}
-            <NotesInput
-              value={notes}
-              onChange={setNotes}
-              disabled={isSubmitting}
-            />
-          </CardContent>
-          
-          <CardFooter>
             <Button 
               type="submit" 
-              className="w-full"
-              disabled={isSubmitting}
+              className="w-full" 
+              disabled={loading || isSubmitting}
             >
-              {isSubmitting ? 'Guardando...' : 'Guardar Partida'}
+              {isSubmitting ? 'Registrando...' : 'Registrar Partida'}
             </Button>
-          </CardFooter>
-        </form>
-      </Card>
-
-      <AuthModal 
-        open={showAuthModal} 
-        onClose={() => setShowAuthModal(false)} 
-      />
-    </>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }

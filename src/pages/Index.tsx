@@ -4,7 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MainHeader } from '@/components/layouts/main-header';
 import { MatchForm } from '@/components/match-form';
 import { Statistics } from '@/components/statistics';
-import { RecentMatches } from '@/components/matches/RecentMatches';
 import { DecksSection } from '@/components/decks/DecksSection';
 import { DeckStatistics } from '@/components/decks/DeckStatistics';
 import { useAuth } from '@/components/auth/AuthProvider';
@@ -28,14 +27,10 @@ const Index = () => {
       <main className="container max-w-7xl mx-auto p-2 sm:p-4 md:p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="overflow-x-auto mb-6 sm:mb-8">
-            <TabsList className="grid grid-cols-4 min-w-[600px] sm:min-w-0 h-auto">
+            <TabsList className="grid grid-cols-3 min-w-[500px] sm:min-w-0 h-auto">
               <TabsTrigger value="registrarPartida" className="text-xs sm:text-sm p-2 sm:p-3">
                 <span className="hidden sm:inline">Registrar Partida</span>
                 <span className="sm:hidden">Registrar</span>
-              </TabsTrigger>
-              <TabsTrigger value="partidas" className="text-xs sm:text-sm p-2 sm:p-3">
-                <span className="hidden sm:inline">Partidas Recientes</span>
-                <span className="sm:hidden">Partidas</span>
               </TabsTrigger>
               <TabsTrigger value="estadisticas" className="text-xs sm:text-sm p-2 sm:p-3">
                 <span className="hidden sm:inline">Estadísticas</span>
@@ -50,10 +45,6 @@ const Index = () => {
           
           <TabsContent value="registrarPartida" className="mt-0">
             <MatchForm />
-          </TabsContent>
-          
-          <TabsContent value="partidas" className="mt-0">
-            <RecentMatches />
           </TabsContent>
           
           <TabsContent value="estadisticas" className="mt-0">
