@@ -33,6 +33,7 @@ export function useDeckStatistics() {
     }
 
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from('deck_statistics')
         .select(`
@@ -56,10 +57,12 @@ export function useDeckStatistics() {
         deck_format: stat.user_decks?.format
       }));
 
+      console.log('Estadísticas de mazos cargadas:', transformedData);
       setStatistics(transformedData);
     } catch (error) {
       console.error('Error loading deck statistics:', error);
       toast.error('Error al cargar las estadísticas de mazos');
+      setStatistics([]);
     } finally {
       setLoading(false);
     }
@@ -75,7 +78,13 @@ export function useDeckStatistics() {
 
       if (error) throw error;
       
-      setStatistics(prev => prev.filter(stat => stat.id !== statisticId));
+      // Actualizar el estado local inmediatamente
+      setStatistics(prev => {
+        const updated = prev.filter(stat => stat.id !== statisticId);
+        console.log('Estadísticas actualizadas después de eliminar:', updated);
+        return updated;
+      });
+      
       toast.success('Estadística eliminada exitosamente');
     } catch (error) {
       console.error('Error deleting statistic:', error);
