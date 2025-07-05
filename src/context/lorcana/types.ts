@@ -6,7 +6,7 @@ export interface LorcanaContextType {
   tournaments: Tournament[];
   stats: Stats;
   addMatch: (match: Omit<Match, "id" | "date">) => void;
-  addTournament: (tournament: Omit<Tournament, "id" | "date" | "matches">) => void;
+  addTournament: (tournament: Omit<Tournament, "id" | "matches">) => void;
   addTournamentMatch: (tournamentId: string, match: Omit<Match, "id" | "date" | "tournamentId">) => void;
   deleteMatch: (matchId: string, tournamentId?: string) => void;
   deleteTournament: (tournamentId: string) => void;
