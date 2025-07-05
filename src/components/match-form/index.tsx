@@ -2,9 +2,9 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useLorcana } from '@/context/LorcanaContext';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useUserDecks, UserDeck } from '@/hooks/useUserDecks';
+import { useMatchRecords } from '@/hooks/useMatchRecords';
 import { InkColor, GameFormat, MatchFormat } from '@/types';
 import { GameFormatSelector } from './game-format-selector';
 import { ColorSelector } from './color-selector';
@@ -24,7 +24,7 @@ interface MatchFormProps {
 export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
   const { user } = useAuth();
   const { decks, loading: decksLoading } = useUserDecks();
-  const { addMatch, addTournamentMatch } = useLorcana();
+  const { createMatch } = useMatchRecords();
   
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [gameFormat, setGameFormat] = useState<GameFormat>('Infinity Constructor');
@@ -34,6 +34,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
   const [myColors, setMyColors] = useState<InkColor[]>([]);
   const [opponentColors, setOpponentColors] = useState<InkColor[]>([]);
   const [selectedMyDeck, setSelectedMyDeck] = useState('');
+  const [selectedMyDeckId, setSelectedMyDeckId] = useState<string | undefined>(undefined);
   const [result, setResult] = useState<'Victoria' | 'Derrota' | 'Empate' | ''>('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,7 +66,10 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
     if (deck) {
       setMyDeckName(deck.name);
       setMyColors(deck.colors);
+      setSelectedMyDeckId(deck.id);
       console.log('Mazo seleccionado:', deck);
+    } else {
+      setSelectedMyDeckId(undefined);
     }
   };
 
@@ -77,11 +81,12 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
     setMyColors([]);
     setOpponentColors([]);
     setSelectedMyDeck('');
+    setSelectedMyDeckId(undefined);
     setResult('');
     setNotes('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!user) {
@@ -97,29 +102,17 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
     setIsSubmitting(true);
     
     try {
-      const matchData = {
-        gameFormat,
-        matchFormat,
-        myDeck: {
-          name: myDeckName.trim() || 'Sin nombre',
-          colors: myColors
-        },
-        opponentDeck: {
-          name: opponentDeckName.trim() || 'Sin nombre',
-          colors: opponentColors
-        },
+      await createMatch({
+        user_deck_id: selectedMyDeckId,
+        opponent_deck_name: opponentDeckName.trim() || 'Sin nombre',
+        opponent_deck_colors: opponentColors,
         result,
+        game_format: gameFormat,
+        match_format: matchFormat,
         notes: notes.trim() || undefined
-      };
-      
-      if (tournamentId) {
-        addTournamentMatch(tournamentId, matchData);
-      } else {
-        addMatch(matchData);
-      }
+      });
       
       resetForm();
-      toast.success('Partida guardada exitosamente');
       if (onSuccess) onSuccess();
     } catch (error) {
       console.error('Error al guardar la partida:', error);

@@ -9,6 +9,140 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      deck_statistics: {
+        Row: {
+          created_at: string
+          deck_id: string
+          defeats: number | null
+          id: string
+          ties: number | null
+          total_matches: number | null
+          updated_at: string
+          user_id: string
+          victories: number | null
+          win_rate: number | null
+        }
+        Insert: {
+          created_at?: string
+          deck_id: string
+          defeats?: number | null
+          id?: string
+          ties?: number | null
+          total_matches?: number | null
+          updated_at?: string
+          user_id: string
+          victories?: number | null
+          win_rate?: number | null
+        }
+        Update: {
+          created_at?: string
+          deck_id?: string
+          defeats?: number | null
+          id?: string
+          ties?: number | null
+          total_matches?: number | null
+          updated_at?: string
+          user_id?: string
+          victories?: number | null
+          win_rate?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deck_statistics_deck_id_fkey"
+            columns: ["deck_id"]
+            isOneToOne: false
+            referencedRelation: "user_decks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      match_records: {
+        Row: {
+          created_at: string
+          game_format: string
+          id: string
+          match_format: string
+          notes: string | null
+          opponent_deck_colors: string[]
+          opponent_deck_id: string | null
+          opponent_deck_name: string
+          result: string
+          user_deck_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_format: string
+          id?: string
+          match_format: string
+          notes?: string | null
+          opponent_deck_colors: string[]
+          opponent_deck_id?: string | null
+          opponent_deck_name: string
+          result: string
+          user_deck_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          game_format?: string
+          id?: string
+          match_format?: string
+          notes?: string | null
+          opponent_deck_colors?: string[]
+          opponent_deck_id?: string | null
+          opponent_deck_name?: string
+          result?: string
+          user_deck_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_records_opponent_deck_id_fkey"
+            columns: ["opponent_deck_id"]
+            isOneToOne: false
+            referencedRelation: "opponent_decks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_records_user_deck_id_fkey"
+            columns: ["user_deck_id"]
+            isOneToOne: false
+            referencedRelation: "user_decks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opponent_decks: {
+        Row: {
+          colors: string[]
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          colors: string[]
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          colors?: string[]
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
