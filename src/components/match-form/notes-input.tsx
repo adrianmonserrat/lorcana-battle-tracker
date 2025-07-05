@@ -1,25 +1,30 @@
 
-import { Label } from "@/components/ui/label";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Textarea } from "@/components/ui/textarea";
+import { UseFormReturn } from 'react-hook-form';
 
 interface NotesInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  disabled?: boolean;
+  form: UseFormReturn<any>;
 }
 
-export function NotesInput({ value, onChange, disabled = false }: NotesInputProps) {
+export function NotesInput({ form }: NotesInputProps) {
   return (
-    <div className="space-y-2">
-      <Label htmlFor="notes">Notas (opcional)</Label>
-      <Textarea 
-        id="notes" 
-        placeholder="Notas sobre la partida..." 
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        className="min-h-[80px] sm:min-h-[100px]"
-        disabled={disabled}
-      />
-    </div>
+    <FormField
+      control={form.control}
+      name="notes"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Notas (opcional)</FormLabel>
+          <FormControl>
+            <Textarea 
+              placeholder="Notas sobre la partida..." 
+              className="min-h-[80px] sm:min-h-[100px]"
+              {...field}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 }

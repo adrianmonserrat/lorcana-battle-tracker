@@ -29,7 +29,12 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export function MatchForm() {
+interface MatchFormProps {
+  tournamentId?: string;
+  onSuccess?: () => void;
+}
+
+export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
   const { createMatch, loading } = useMatchRecords();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -65,6 +70,11 @@ export function MatchForm() {
       // Show success message
       toast.success('¡Partida registrada exitosamente!');
       
+      // Call onSuccess callback if provided (for tournament context)
+      if (onSuccess) {
+        onSuccess();
+      }
+      
     } catch (error) {
       console.error('Error creating match:', error);
       toast.error('Error al registrar la partida');
@@ -76,7 +86,9 @@ export function MatchForm() {
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Registrar Nueva Partida</CardTitle>
+        <CardTitle>
+          {tournamentId ? 'Agregar Partida al Torneo' : 'Registrar Nueva Partida'}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>

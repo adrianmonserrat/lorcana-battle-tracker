@@ -1,53 +1,48 @@
 
+import { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { UserDeck } from '@/hooks/useUserDecks';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { UseFormReturn } from 'react-hook-form';
+import { useUserDecks } from '@/hooks/useUserDecks';
 
 interface DeckSelectorProps {
-  decks: UserDeck[];
-  value: string;
-  onChange: (deckId: string) => void;
-  onDeckSelect: (deck: UserDeck | null) => void;
-  label: string;
-  placeholder: string;
-  disabled?: boolean;
+  form: UseFormReturn<any>;
 }
 
-export function DeckSelector({ 
-  decks, 
-  value, 
-  onChange, 
-  onDeckSelect, 
-  label, 
-  placeholder, 
-  disabled = false 
-}: DeckSelectorProps) {
-  const handleValueChange = (deckId: string) => {
-    onChange(deckId);
-    const selectedDeck = decks.find(deck => deck.id === deckId) || null;
-    onDeckSelect(selectedDeck);
-  };
+export function DeckSelector({ form }: DeckSelectorProps) {
+  const { decks, loading } = useUserDecks();
 
   return (
-    <div className="space-y-2">
-      <Label>{label}</Label>
-      <Select value={value} onValueChange={handleValueChange} disabled={disabled}>
-        <SelectTrigger>
-          <SelectValue placeholder={placeholder} />
-        </SelectTrigger>
-        <SelectContent>
-          {decks.map((deck) => (
-            <SelectItem key={deck.id} value={deck.id}>
-              <div className="flex items-center gap-2">
-                <span>{deck.name}</span>
-                <span className="text-xs text-muted-foreground">
-                  ({deck.colors.join(', ')}) - {deck.format}
-                </span>
-              </div>
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <FormField
+      control={form.control}
+      name="userDeckId"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Mi Mazo (opcional)</FormLabel>
+          <Select onValueChange={field.onChange} value={field.value} disabled={loading}>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder={loading ? "Cargando mazos..." : "Selecciona tu mazo"} />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectItem value="">Sin mazo asignado</SelectItem>
+              {decks.map((deck) => (
+                <SelectItem key={deck.id} value={deck.id}>
+                  <div className="flex items-center gap-2">
+                    <span>{deck.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      ({deck.colors.join(', ')}) - {deck.format}
+                    </span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 }
