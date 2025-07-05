@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
 import { InkColor } from '@/types';
 import { UserDeck } from '@/hooks/useUserDecks';
+import { Badge } from '@/components/ui/badge';
 
 interface DeckCardProps {
   deck: UserDeck;
@@ -40,15 +41,23 @@ export function DeckCard({ deck, onDelete }: DeckCardProps) {
       </CardHeader>
       
       <CardContent>
-        <div className="flex flex-wrap gap-2">
-          {deck.colors.map((color) => (
-            <span
-              key={color}
-              className={`px-2 py-1 rounded-md text-xs font-medium border ${getColorClass(color)}`}
-            >
-              {color}
-            </span>
-          ))}
+        <div className="space-y-3">
+          <div className="flex flex-wrap gap-2">
+            {deck.colors.map((color) => (
+              <span
+                key={color}
+                className={`px-2 py-1 rounded-md text-xs font-medium border ${getColorClass(color)}`}
+              >
+                {color}
+              </span>
+            ))}
+          </div>
+          
+          <div>
+            <Badge variant="outline" className="text-xs">
+              {deck.format}
+            </Badge>
+          </div>
         </div>
         
         <p className="text-sm text-muted-foreground mt-3">

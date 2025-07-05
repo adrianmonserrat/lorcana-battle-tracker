@@ -41,7 +41,7 @@ export function DeckSelector({
               <div className="flex items-center gap-2">
                 <span>{deck.name}</span>
                 <span className="text-xs text-muted-foreground">
-                  ({deck.colors.join(', ')})
+                  ({deck.colors.join(', ')}) - {deck.format}
                 </span>
               </div>
             </SelectItem>

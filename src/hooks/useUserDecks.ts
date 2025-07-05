@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { InkColor } from '@/types';
+import { InkColor, GameFormat } from '@/types';
 import { toast } from 'sonner';
 import { useAuth } from '@/components/auth/AuthProvider';
 
@@ -10,6 +10,7 @@ export interface UserDeck {
   user_id: string;
   name: string;
   colors: InkColor[];
+  format: GameFormat;
   created_at: string;
   updated_at: string;
 }
@@ -34,10 +35,11 @@ export function useUserDecks() {
 
       if (error) throw error;
       
-      // Transform the data to ensure colors are properly typed
+      // Transform the data to ensure colors and format are properly typed
       const typedDecks = (data || []).map(deck => ({
         ...deck,
-        colors: deck.colors as InkColor[]
+        colors: deck.colors as InkColor[],
+        format: deck.format as GameFormat
       }));
       
       setDecks(typedDecks);
@@ -49,7 +51,7 @@ export function useUserDecks() {
     }
   };
 
-  const createDeck = async (name: string, colors: InkColor[]): Promise<UserDeck> => {
+  const createDeck = async (name: string, colors: InkColor[], format: GameFormat = 'Estándar'): Promise<UserDeck> => {
     if (!user) {
       throw new Error('Usuario no autenticado');
     }
@@ -60,6 +62,7 @@ export function useUserDecks() {
         .insert({
           name,
           colors: colors as string[],
+          format,
           user_id: user.id
         })
         .select()
@@ -67,10 +70,11 @@ export function useUserDecks() {
 
       if (error) throw error;
       
-      // Transform the response to ensure colors are properly typed
+      // Transform the response to ensure colors and format are properly typed
       const typedDeck: UserDeck = {
         ...data,
-        colors: data.colors as InkColor[]
+        colors: data.colors as InkColor[],
+        format: data.format as GameFormat
       };
       
       setDecks(prev => [typedDeck, ...prev]);

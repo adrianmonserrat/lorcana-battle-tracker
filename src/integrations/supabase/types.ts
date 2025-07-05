@@ -171,6 +171,7 @@ export type Database = {
         Row: {
           colors: string[]
           created_at: string
+          format: string
           id: string
           name: string
           updated_at: string
@@ -179,6 +180,7 @@ export type Database = {
         Insert: {
           colors: string[]
           created_at?: string
+          format?: string
           id?: string
           name: string
           updated_at?: string
@@ -187,6 +189,7 @@ export type Database = {
         Update: {
           colors?: string[]
           created_at?: string
+          format?: string
           id?: string
           name?: string
           updated_at?: string
