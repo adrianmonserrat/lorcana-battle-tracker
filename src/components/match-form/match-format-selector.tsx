@@ -21,9 +21,9 @@ export function MatchFormatSelector({ form }: MatchFormatSelectorProps) {
                 <SelectValue placeholder="Selecciona el formato" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="best-of-1">Mejor de 1 (Bo1)</SelectItem>
-                <SelectItem value="best-of-3">Mejor de 3 (Bo3)</SelectItem>
-                <SelectItem value="best-of-5">Mejor de 5 (Bo5)</SelectItem>
+                <SelectItem value="BO1">Mejor de 1 (Bo1)</SelectItem>
+                <SelectItem value="BO3">Mejor de 3 (Bo3)</SelectItem>
+                <SelectItem value="BO5">Mejor de 5 (Bo5)</SelectItem>
               </SelectContent>
             </Select>
           </FormControl>

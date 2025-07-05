@@ -23,16 +23,16 @@ export function ResultSelector({ form }: ResultSelectorProps) {
               className="flex flex-col space-y-2"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="victory" id="victory" />
-                <Label htmlFor="victory" className="cursor-pointer">Victoria</Label>
+                <RadioGroupItem value="Victoria" id="victoria" />
+                <Label htmlFor="victoria" className="cursor-pointer">Victoria</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="defeat" id="defeat" />
-                <Label htmlFor="defeat" className="cursor-pointer">Derrota</Label>
+                <RadioGroupItem value="Derrota" id="derrota" />
+                <Label htmlFor="derrota" className="cursor-pointer">Derrota</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="tie" id="tie" />
-                <Label htmlFor="tie" className="cursor-pointer">Empate</Label>
+                <RadioGroupItem value="Empate" id="empate" />
+                <Label htmlFor="empate" className="cursor-pointer">Empate</Label>
               </div>
             </RadioGroup>
           </FormControl>

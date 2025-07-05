@@ -21,10 +21,8 @@ export function GameFormatSelector({ form }: GameFormatSelectorProps) {
                 <SelectValue placeholder="Selecciona el formato" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="casual">Casual</SelectItem>
-                <SelectItem value="ranked">Clasificatoria</SelectItem>
-                <SelectItem value="tournament">Torneo</SelectItem>
-                <SelectItem value="friendly">Amistosa</SelectItem>
+                <SelectItem value="Estándar">Estándar</SelectItem>
+                <SelectItem value="Infinity Constructor">Infinity Constructor</SelectItem>
               </SelectContent>
             </Select>
           </FormControl>
