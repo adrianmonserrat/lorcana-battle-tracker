@@ -10,6 +10,7 @@ import { GameFormatSelector } from './game-format-selector';
 import { ColorSelector } from './color-selector';
 import { DeckInput } from './deck-input';
 import { DeckSelector } from './deck-selector';
+import { OpponentDeckSelector } from './opponent-deck-selector';
 import { MatchFormatSelector } from './match-format-selector';
 import { ResultSelector } from './result-selector';
 import { NotesInput } from './notes-input';
@@ -35,6 +36,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
   const [opponentColors, setOpponentColors] = useState<InkColor[]>([]);
   const [selectedMyDeck, setSelectedMyDeck] = useState('');
   const [selectedMyDeckId, setSelectedMyDeckId] = useState<string | undefined>(undefined);
+  const [selectedOpponentDeck, setSelectedOpponentDeck] = useState('');
   const [result, setResult] = useState<'Victoria' | 'Derrota' | 'Empate' | ''>('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,9 +69,17 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
       setMyDeckName(deck.name);
       setMyColors(deck.colors);
       setSelectedMyDeckId(deck.id);
-      console.log('Mazo seleccionado:', deck);
+      console.log('Mi mazo seleccionado:', deck);
     } else {
       setSelectedMyDeckId(undefined);
+    }
+  };
+
+  const handleOpponentDeckSelect = (deck: UserDeck | null) => {
+    if (deck) {
+      setOpponentDeckName(deck.name);
+      setOpponentColors(deck.colors);
+      console.log('Mazo del oponente seleccionado:', deck);
     }
   };
 
@@ -82,6 +92,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
     setOpponentColors([]);
     setSelectedMyDeck('');
     setSelectedMyDeckId(undefined);
+    setSelectedOpponentDeck('');
     setResult('');
     setNotes('');
   };
@@ -171,6 +182,19 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps) {
               placeholder="Ej: Control Ambar/Amatista"
               disabled={isSubmitting}
             />
+
+            {/* Opponent Deck Selection */}
+            {user && !decksLoading && decks.length > 0 && (
+              <OpponentDeckSelector
+                decks={decks}
+                value={selectedOpponentDeck}
+                onChange={setSelectedOpponentDeck}
+                onDeckSelect={handleOpponentDeckSelect}
+                label="Asignar Mazo Mío al Oponente (opcional)"
+                placeholder="Elegir uno de mis mazos para el oponente"
+                disabled={isSubmitting}
+              />
+            )}
             
             {/* Opponent Deck Colors */}
             <ColorSelector

@@ -28,7 +28,10 @@ export function ProfileForm() {
     setIsUpdating(true);
     try {
       await updateProfile(displayName.trim());
-      // displayName will be updated automatically through useEffect when profile changes
+      // Force a page refresh to update all components that use the profile
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       // Error is already handled in the hook
     } finally {

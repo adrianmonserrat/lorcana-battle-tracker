@@ -10,6 +10,7 @@ import { LogOut, User, LogIn, Settings, Menu } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useEffect } from 'react';
 
 interface MainHeaderProps {
   showTourneosButton?: boolean;
@@ -28,8 +29,19 @@ export function MainHeader({
 }: MainHeaderProps) {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { profile } = useUserProfile();
+  const { profile, refreshProfile } = useUserProfile();
   const isMobile = useIsMobile();
+  
+  // Refresh profile data periodically to ensure header stays updated
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (user) {
+        refreshProfile();
+      }
+    }, 5000); // Refresh every 5 seconds when user is logged in
+
+    return () => clearInterval(interval);
+  }, [user, refreshProfile]);
   
   const handleSignOut = async () => {
     try {
