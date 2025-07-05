@@ -19,12 +19,8 @@ export function DeckForm({ open, onClose, onSubmit }: DeckFormProps) {
   const [colors, setColors] = useState<InkColor[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleColorToggle = (color: InkColor) => {
-    setColors(prev => 
-      prev.includes(color) 
-        ? prev.filter(c => c !== color) 
-        : [...prev, color]
-    );
+  const handleColorsChange = (selectedColors: string[]) => {
+    setColors(selectedColors as InkColor[]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,13 +70,13 @@ export function DeckForm({ open, onClose, onSubmit }: DeckFormProps) {
             />
           </div>
           
-          <ColorSelector
-            selectedColors={colors}
-            onColorToggle={handleColorToggle}
-            label="Colores del Mazo"
-            id="deck"
-            disabled={loading}
-          />
+          <div className="space-y-2">
+            <Label>Colores del Mazo</Label>
+            <ColorSelector
+              selectedColors={colors}
+              onColorsChange={handleColorsChange}
+            />
+          </div>
           
           <div className="flex gap-2">
             <Button 
