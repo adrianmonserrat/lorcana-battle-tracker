@@ -113,9 +113,6 @@ export function useMatchRecords() {
 
   const deleteMatch = async (id: string) => {
     try {
-      // Obtener la partida antes de eliminarla para saber si tiene mazo asociado
-      const matchToDelete = matches.find(match => match.id === id);
-      
       const { error } = await supabase
         .from('match_records')
         .delete()
@@ -124,25 +121,6 @@ export function useMatchRecords() {
       if (error) throw error;
       
       setMatches(prev => prev.filter(match => match.id !== id));
-      
-      // Si la partida tenía un mazo asociado, recalcular las estadísticas
-      if (matchToDelete?.user_deck_id && user) {
-        try {
-          // Use type assertion to work around TypeScript not recognizing the RPC function
-          const { error: rpcError } = await (supabase as any).rpc('recalculate_deck_statistics', {
-            p_user_id: user.id,
-            p_deck_id: matchToDelete.user_deck_id
-          });
-          
-          if (rpcError) {
-            console.error('Error recalculating deck statistics:', rpcError);
-          }
-        } catch (rpcError) {
-          console.error('Error recalculating deck statistics:', rpcError);
-          // Don't throw here as the main deletion was successful
-        }
-      }
-      
       toast.success('Partida eliminada exitosamente');
     } catch (error) {
       console.error('Error deleting match:', error);

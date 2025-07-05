@@ -202,7 +202,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      recalculate_deck_statistics: {
+        Args: { p_user_id: string; p_deck_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

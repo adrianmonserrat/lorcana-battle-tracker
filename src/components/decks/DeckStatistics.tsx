@@ -21,11 +21,6 @@ import {
 export function DeckStatistics() {
   const { statistics, loading, deleteStatistic, refreshStatistics } = useDeckStatistics();
 
-  // Auto-refresh cuando el componente se monta
-  useEffect(() => {
-    refreshStatistics();
-  }, []);
-
   const getColorClass = (color: InkColor) => {
     switch(color) {
       case 'Ambar': return 'bg-lorcana-amber/20 text-lorcana-amber border-lorcana-amber/30';

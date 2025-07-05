@@ -92,8 +92,34 @@ export function useDeckStatistics() {
     }
   };
 
+  // Set up real-time subscription to automatically refresh when statistics change
   useEffect(() => {
+    if (!user) return;
+
     loadStatistics();
+
+    // Subscribe to changes in deck_statistics table
+    const subscription = supabase
+      .channel('deck_statistics_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'deck_statistics',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('Deck statistics changed:', payload);
+          // Reload statistics when any change occurs
+          loadStatistics();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [user]);
 
   return {
