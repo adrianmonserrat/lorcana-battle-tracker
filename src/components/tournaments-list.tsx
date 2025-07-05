@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useLorcana } from "@/context/lorcana/LorcanaProvider";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
@@ -42,6 +43,10 @@ export function TournamentsList() {
           const victories = tournament.matches.filter(m => m.result === 'Victoria').length;
           const defeats = tournament.matches.filter(m => m.result === 'Derrota').length;
           const ties = tournament.matches.filter(m => m.result === 'Empate').length;
+          const points = victories * 3;
+          const progress = tournament.totalMatches > 0
+            ? Math.round((tournament.matches.length / tournament.totalMatches) * 100)
+            : 0;
           
           return (
             <Card key={tournament.id} className="overflow-hidden">
@@ -83,26 +88,26 @@ export function TournamentsList() {
                 </p>
               </CardHeader>
               
-              <CardContent>
-                <div className="flex justify-between items-center">
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Progreso: {tournament.matches.length}/{tournament.totalMatches}</span>
+                    <span>{progress}%</span>
+                  </div>
+                  <Progress value={progress} className="w-full" />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Partidas</p>
-                    <p className="text-xl font-bold">{tournament.matches.length}</p>
+                    <p className="text-sm text-muted-foreground">Puntos</p>
+                    <p className="text-xl font-bold text-blue-600">{points}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">V / E / D</p>
-                    <p className="text-xl font-bold">
+                    <p className="text-lg font-bold">
                       <span className="text-emerald-600">{victories}</span> / 
                       <span className="text-amber-600">{ties}</span> / 
                       <span className="text-red-600">{defeats}</span>
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">% Victoria</p>
-                    <p className="text-xl font-bold">
-                      {tournament.matches.length > 0 
-                        ? Math.round((victories / tournament.matches.length) * 100) 
-                        : 0}%
                     </p>
                   </div>
                 </div>

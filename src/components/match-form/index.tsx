@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { useMatchRecords } from '@/hooks/useMatchRecords';
 import { useUserDecks } from '@/hooks/useUserDecks';
+import { useLorcana } from '@/context/lorcana/LorcanaProvider';
 import { toast } from 'sonner';
 import { InkColor, GameFormat, MatchFormat } from '@/types';
 
@@ -40,6 +41,7 @@ interface MatchFormProps {
 export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
   const { createMatch, loading } = useMatchRecords();
   const { decks } = useUserDecks();
+  const { addTournamentMatch } = useLorcana();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<FormData>({
@@ -78,24 +80,43 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
         toast.error('Debes especificar tu mazo o seleccionar uno existente');
         return;
       }
-      
-      await createMatch({
-        user_deck_id: data.userDeckId,
-        opponent_deck_name: data.opponentDeckName,
-        opponent_deck_colors: data.opponentDeckColors as InkColor[],
-        result: data.result,
-        game_format: data.gameFormat as GameFormat,
-        match_format: data.matchFormat as MatchFormat,
-        notes: data.notes,
-      });
+
+      if (tournamentId) {
+        // Si es una partida de torneo, usar la función del contexto local
+        addTournamentMatch(tournamentId, {
+          myDeck: {
+            name: data.userDeckName || 'Mi Mazo',
+            colors: data.userDeckColors as InkColor[] || []
+          },
+          opponentDeck: {
+            name: data.opponentDeckName,
+            colors: data.opponentDeckColors as InkColor[]
+          },
+          result: data.result,
+          gameFormat: data.gameFormat as GameFormat,
+          matchFormat: data.matchFormat as MatchFormat,
+          notes: data.notes,
+        });
+      } else {
+        // Si es una partida normal, usar Supabase
+        await createMatch({
+          user_deck_id: data.userDeckId,
+          opponent_deck_name: data.opponentDeckName,
+          opponent_deck_colors: data.opponentDeckColors as InkColor[],
+          result: data.result,
+          game_format: data.gameFormat as GameFormat,
+          match_format: data.matchFormat as MatchFormat,
+          notes: data.notes,
+        });
+      }
 
       // Reset form after successful submission
       form.reset();
       
       // Show success message
-      toast.success('¡Partida registrada exitosamente!');
+      toast.success(tournamentId ? '¡Partida de torneo registrada exitosamente!' : '¡Partida registrada exitosamente!');
       
-      // Call onSuccess callback if provided (for tournament context)
+      // Call onSuccess callback if provided
       if (onSuccess) {
         onSuccess();
       }
@@ -130,7 +151,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
               className="w-full" 
               disabled={loading || isSubmitting}
             >
-              {isSubmitting ? 'Registrando...' : 'Registrar Partida'}
+              {isSubmitting ? 'Registrando...' : tournamentId ? 'Registrar Partida de Torneo' : 'Registrar Partida'}
             </Button>
           </form>
         </Form>

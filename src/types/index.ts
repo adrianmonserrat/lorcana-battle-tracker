@@ -26,6 +26,7 @@ export interface Tournament {
   name: string;
   date: Date;
   location?: string;
+  totalMatches: number; // Número total de partidas planificadas
   matches: Match[];
 }
 
