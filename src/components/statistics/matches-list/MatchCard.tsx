@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { EnhancedMatch } from "./types";
 import { getInkColorHex } from "../utils";
+import { useMatchRecords } from "@/hooks/useMatchRecords";
 
 interface MatchCardProps {
   match: EnhancedMatch;
@@ -23,6 +24,22 @@ interface MatchCardProps {
 }
 
 export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
+  const { deleteMatch: deleteSupabaseMatch } = useMatchRecords();
+
+  const handleDelete = async () => {
+    try {
+      if (!match.tournamentName) {
+        // Es una partida de Supabase, usar el hook para eliminarla
+        await deleteSupabaseMatch(match.id);
+      } else {
+        // Es una partida de torneo, usar el callback original
+        onDeleteMatch(match.id, match.tournamentName);
+      }
+    } catch (error) {
+      console.error('Error deleting match:', error);
+    }
+  };
+
   return (
     <div className={`border-l-4 rounded-md border ${
       match.result === 'Victoria' 
@@ -52,32 +69,30 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
           </div>
         </div>
         
-        {!match.tournamentName && (
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10">
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Eliminar partida</AlertDialogTitle>
-                <AlertDialogDescription>
-                  ¿Estás seguro que quieres eliminar esta partida? Esta acción no se puede deshacer.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction 
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  onClick={() => onDeleteMatch(match.id)}
-                >
-                  Eliminar
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10">
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Eliminar partida</AlertDialogTitle>
+              <AlertDialogDescription>
+                ¿Estás seguro que quieres eliminar esta partida? Esta acción no se puede deshacer.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction 
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={handleDelete}
+              >
+                Eliminar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       
       <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -60,8 +60,10 @@ export function MatchesList({ matches, tournaments }: MatchesListProps) {
     return passesColorFilter && passesSourceFilter && passesFormatFilter;
   });
 
-  const handleDeleteMatch = (matchId: string, tournamentId?: string) => {
-    deleteMatch(matchId, tournamentId);
+  const handleDeleteTournamentMatch = (matchId: string, tournamentId?: string) => {
+    if (tournamentId) {
+      deleteMatch(matchId, tournamentId);
+    }
   };
 
   return (
@@ -86,7 +88,7 @@ export function MatchesList({ matches, tournaments }: MatchesListProps) {
               <MatchCard 
                 key={match.id} 
                 match={match} 
-                onDeleteMatch={handleDeleteMatch}
+                onDeleteMatch={handleDeleteTournamentMatch}
               />
             ))}
           </div>
