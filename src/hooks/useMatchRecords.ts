@@ -49,10 +49,14 @@ export function useMatchRecords() {
 
       if (error) throw error;
       
-      // Transform the data to ensure colors are properly typed
-      const typedMatches = (data || []).map(match => ({
+      // Transform the data to ensure all fields are properly typed
+      const typedMatches: MatchRecord[] = (data || []).map(match => ({
         ...match,
-        opponent_deck_colors: match.opponent_deck_colors as InkColor[]
+        opponent_deck_colors: match.opponent_deck_colors as InkColor[],
+        result: match.result as 'Victoria' | 'Derrota' | 'Empate',
+        game_format: match.game_format as GameFormat,
+        match_format: match.match_format as MatchFormat,
+        notes: match.notes || undefined
       }));
       
       setMatches(typedMatches);
@@ -87,10 +91,14 @@ export function useMatchRecords() {
 
       if (error) throw error;
       
-      // Transform the response to ensure colors are properly typed
+      // Transform the response to ensure all fields are properly typed
       const typedMatch: MatchRecord = {
         ...data,
-        opponent_deck_colors: data.opponent_deck_colors as InkColor[]
+        opponent_deck_colors: data.opponent_deck_colors as InkColor[],
+        result: data.result as 'Victoria' | 'Derrota' | 'Empate',
+        game_format: data.game_format as GameFormat,
+        match_format: data.match_format as MatchFormat,
+        notes: data.notes || undefined
       };
       
       setMatches(prev => [typedMatch, ...prev]);
