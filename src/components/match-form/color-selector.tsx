@@ -16,10 +16,13 @@ const COLORS: { value: InkColor; label: string; color: string }[] = [
 interface ColorSelectorProps {
   selectedColors: string[];
   onColorsChange: (colors: string[]) => void;
+  disabled?: boolean;
 }
 
-export function ColorSelector({ selectedColors, onColorsChange }: ColorSelectorProps) {
+export function ColorSelector({ selectedColors, onColorsChange, disabled = false }: ColorSelectorProps) {
   const handleColorToggle = (color: string) => {
+    if (disabled) return;
+    
     const newColors = selectedColors.includes(color)
       ? selectedColors.filter(c => c !== color)
       : [...selectedColors, color];
@@ -36,9 +39,11 @@ export function ColorSelector({ selectedColors, onColorsChange }: ColorSelectorP
           variant={selectedColors.includes(color.value) ? "default" : "outline"}
           size="sm"
           onClick={() => handleColorToggle(color.value)}
+          disabled={disabled}
           className={cn(
             "flex items-center gap-2 justify-start",
-            selectedColors.includes(color.value) && "ring-2 ring-primary"
+            selectedColors.includes(color.value) && "ring-2 ring-primary",
+            disabled && "opacity-50 cursor-not-allowed"
           )}
         >
           <div className={cn("w-4 h-4 rounded-full border", color.color)} />
