@@ -2,8 +2,10 @@
 export type InkColor = 'Ambar' | 'Amatista' | 'Esmeralda' | 'Rubí' | 'Zafiro' | 'Acero';
 
 export type GameFormat = 'Infinity Constructor' | 'Estándar';
-export type MatchFormat = 'BO1' | 'BO2' | 'BO3' | 'BO5';
-export type MatchResult = '2-0' | '2-1' | '1-2' | '0-2' | 'Empate';
+export type MatchFormat = 'BO1' | 'BO3' | 'BO5';
+export type MatchResultBO3 = '2-0' | '2-1' | '1-2' | '0-2' | 'Empate';
+export type MatchResultBO5 = '3-0' | '3-1' | '3-2' | '2-3' | '1-3' | '0-3' | 'Empate';
+export type MatchResult = MatchResultBO3 | MatchResultBO5;
 
 export interface Deck {
   name: string;

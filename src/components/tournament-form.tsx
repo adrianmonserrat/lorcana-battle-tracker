@@ -16,6 +16,7 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   name: z.string().min(1, "El nombre del torneo es requerido"),
@@ -44,7 +45,8 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
       name: "",
       location: "",
       date: new Date(),
-      totalMatches: 3
+      totalMatches: 3,
+      defaultDeckId: ""
     },
   });
 
@@ -53,13 +55,13 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
       setIsSubmitting(true);
       
       // Find the selected default deck
-      const defaultDeck = data.defaultDeckId 
+      const defaultDeck = data.defaultDeckId && data.defaultDeckId !== ""
         ? decks.find(deck => deck.id === data.defaultDeckId)
         : undefined;
       
       addTournament({
         name: data.name,
-        location: data.location,
+        location: data.location || undefined,
         date: data.date,
         totalMatches: data.totalMatches,
         defaultDeck: defaultDeck ? {
@@ -68,13 +70,23 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
         } : undefined
       });
       
-      form.reset();
+      // Reset form with proper default values
+      form.reset({
+        name: "",
+        location: "",
+        date: new Date(),
+        totalMatches: 3,
+        defaultDeckId: ""
+      });
+      
+      toast.success('¡Torneo creado exitosamente!');
       
       if (onSuccess) {
         onSuccess();
       }
     } catch (error) {
       console.error('Error creating tournament:', error);
+      toast.error('Error al crear el torneo');
     } finally {
       setIsSubmitting(false);
     }
@@ -129,12 +141,12 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
 
           <div className="space-y-2">
             <Label>Mazo por Defecto (Opcional)</Label>
-            <Select onValueChange={(value) => form.setValue("defaultDeckId", value)}>
+            <Select onValueChange={(value) => form.setValue("defaultDeckId", value)} value={form.watch("defaultDeckId")}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecciona un mazo para usar en todo el torneo" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Sin mazo por defecto</SelectItem>
+                <SelectItem value="no-deck">Sin mazo por defecto</SelectItem>
                 {decks.map((deck) => (
                   <SelectItem key={deck.id} value={deck.id}>
                     {deck.name} ({deck.colors.join(', ')})

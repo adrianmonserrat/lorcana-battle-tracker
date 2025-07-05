@@ -17,6 +17,7 @@ import { OpponentDeckSelector } from './opponent-deck-selector';
 import { DetailedResultSelector } from './detailed-result-selector';
 import { GameFormatSelector } from './game-format-selector';
 import { MatchFormatSelector } from './match-format-selector';
+import { ResultSelector } from './result-selector';
 import { NotesInput } from './notes-input';
 
 const formSchema = z.object({
@@ -26,7 +27,7 @@ const formSchema = z.object({
   opponentDeckName: z.string().min(1, 'El nombre del mazo oponente es requerido'),
   opponentDeckColors: z.array(z.string()).min(1, 'Selecciona al menos un color'),
   result: z.enum(['Victoria', 'Derrota', 'Empate']),
-  detailedResult: z.enum(['2-0', '2-1', '1-2', '0-2', 'Empate']),
+  detailedResult: z.string().optional(),
   gameFormat: z.enum(['Estándar', 'Infinity Constructor']),
   matchFormat: z.enum(['BO1', 'BO3', 'BO5']),
   notes: z.string().optional(),
@@ -55,7 +56,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
       opponentDeckColors: [],
       userDeckColors: [],
       result: 'Victoria',
-      detailedResult: '2-0',
+      detailedResult: '',
       gameFormat: 'Estándar',
       matchFormat: 'BO3',
       notes: '',
@@ -132,7 +133,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
         userDeckColors: tournament?.defaultDeck?.colors || [],
         userDeckName: tournament?.defaultDeck?.name || '',
         result: 'Victoria',
-        detailedResult: '2-0',
+        detailedResult: '',
         gameFormat: 'Estándar',
         matchFormat: 'BO3',
         notes: '',
@@ -154,6 +155,10 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
     }
   };
 
+  const matchFormat = form.watch('matchFormat');
+  const showDetailedResult = matchFormat === 'BO3' || matchFormat === 'BO5';
+  const showResultSelector = matchFormat === 'BO1';
+
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
@@ -169,11 +174,12 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {!tournament?.defaultDeck && <DeckSelector form={form} />}
-            <OpponentDeckSelector form={form} />
-            <DetailedResultSelector form={form} />
             <GameFormatSelector form={form} />
             <MatchFormatSelector form={form} />
+            {!tournament?.defaultDeck && <DeckSelector form={form} />}
+            <OpponentDeckSelector form={form} />
+            {showDetailedResult && <DetailedResultSelector form={form} />}
+            {showResultSelector && <ResultSelector form={form} />}
             <NotesInput form={form} />
             
             <Button 
