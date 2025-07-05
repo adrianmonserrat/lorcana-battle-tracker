@@ -3,6 +3,7 @@ export type InkColor = 'Ambar' | 'Amatista' | 'Esmeralda' | 'Rubí' | 'Zafiro' |
 
 export type GameFormat = 'Infinity Constructor' | 'Estándar';
 export type MatchFormat = 'BO1' | 'BO2' | 'BO3' | 'BO5';
+export type MatchResult = '2-0' | '2-1' | '1-2' | '0-2' | 'Empate';
 
 export interface Deck {
   name: string;
@@ -17,6 +18,7 @@ export interface Match {
   myDeck: Deck;
   opponentDeck: Deck;
   result: 'Victoria' | 'Derrota' | 'Empate';
+  detailedResult?: MatchResult;
   notes?: string;
   tournamentId?: string;
 }
@@ -27,6 +29,7 @@ export interface Tournament {
   date: Date;
   location?: string;
   totalMatches: number; // Número total de partidas planificadas
+  defaultDeck?: Deck; // Mazo por defecto para el torneo
   matches: Match[];
 }
 
@@ -46,7 +49,7 @@ export interface Stats {
   byTournament: Record<string, {
     matches: number;
     victories: number;
-    defeats: number;
+    defeats: defeats;
     ties: number;
   }>;
 }

@@ -4,12 +4,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useLorcana } from "@/context/lorcana/LorcanaProvider";
+import { useUserDecks } from "@/hooks/useUserDecks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -21,7 +23,8 @@ const formSchema = z.object({
   date: z.date({
     required_error: "La fecha del torneo es requerida",
   }),
-  totalMatches: z.number().min(1, "Debe haber al menos 1 partida").max(20, "Máximo 20 partidas")
+  totalMatches: z.number().min(1, "Debe haber al menos 1 partida").max(20, "Máximo 20 partidas"),
+  defaultDeckId: z.string().optional()
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -32,6 +35,7 @@ interface TournamentFormProps {
 
 export function TournamentForm({ onSuccess }: TournamentFormProps) {
   const { addTournament } = useLorcana();
+  const { decks } = useUserDecks();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<FormData>({
@@ -48,11 +52,20 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
     try {
       setIsSubmitting(true);
       
+      // Find the selected default deck
+      const defaultDeck = data.defaultDeckId 
+        ? decks.find(deck => deck.id === data.defaultDeckId)
+        : undefined;
+      
       addTournament({
         name: data.name,
         location: data.location,
         date: data.date,
-        totalMatches: data.totalMatches
+        totalMatches: data.totalMatches,
+        defaultDeck: defaultDeck ? {
+          name: defaultDeck.name,
+          colors: defaultDeck.colors
+        } : undefined
       });
       
       form.reset();
@@ -112,6 +125,26 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
             {form.formState.errors.totalMatches && (
               <p className="text-sm text-red-600">{form.formState.errors.totalMatches.message}</p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Mazo por Defecto (Opcional)</Label>
+            <Select onValueChange={(value) => form.setValue("defaultDeckId", value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecciona un mazo para usar en todo el torneo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Sin mazo por defecto</SelectItem>
+                {decks.map((deck) => (
+                  <SelectItem key={deck.id} value={deck.id}>
+                    {deck.name} ({deck.colors.join(', ')})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Si seleccionas un mazo, se usará automáticamente en todas las partidas del torneo
+            </p>
           </div>
 
           <div className="space-y-2">

@@ -1,5 +1,5 @@
 
-import { Tournament, Match, InkColor, GameFormat, MatchFormat } from "@/types";
+import { Tournament, Match, InkColor, GameFormat, MatchFormat, MatchResult } from "@/types";
 
 export interface EnhancedMatch extends Omit<Match, 'myDeck' | 'opponentDeck'> {
   myDeck: {
@@ -10,6 +10,7 @@ export interface EnhancedMatch extends Omit<Match, 'myDeck' | 'opponentDeck'> {
     name: string;
     colors: InkColor[];
   };
+  detailedResult?: MatchResult;
   tournamentName?: string;
 }
 

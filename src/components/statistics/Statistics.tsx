@@ -28,7 +28,7 @@ export function Statistics() {
     return supabaseMatches.filter(match => !deletedMatchIds.has(match.id));
   }, [supabaseMatches, deletedMatchIds]);
   
-  // Calculate statistics from active matches (excluding locally deleted ones)
+  // Calculate statistics from active matches INCLUDING tournament matches
   const statsData = useMemo(() => {
     let victories = 0;
     let defeats = 0;
@@ -42,11 +42,29 @@ export function Statistics() {
       return true;
     });
     
-    // Count results
+    // Count results from Supabase matches
     filteredMatches.forEach(match => {
       if (match.result === 'Victoria') victories++;
       else if (match.result === 'Derrota') defeats++;
       else if (match.result === 'Empate') ties++;
+    });
+
+    // Count results from tournament matches
+    tournaments.forEach(tournament => {
+      tournament.matches.forEach(match => {
+        // Apply the same filter logic
+        const passesFilter = selectedFilter === 'all' ? 
+          true : 
+          selectedFilter === 'infinity' ? 
+            match.gameFormat === 'Infinity Constructor' :
+            match.gameFormat === 'Estándar';
+        
+        if (passesFilter) {
+          if (match.result === 'Victoria') victories++;
+          else if (match.result === 'Derrota') defeats++;
+          else if (match.result === 'Empate') ties++;
+        }
+      });
     });
     
     const totalMatches = victories + defeats + ties;
@@ -69,7 +87,7 @@ export function Statistics() {
       'Acero': { matches: 0, victories: 0, ties: 0, defeats: 0 }
     };
     
-    // Note: Since we don't have user deck colors in match_records, we'll count opponent colors for now
+    // Count opponent colors from Supabase matches
     filteredMatches.forEach(match => {
       match.opponent_deck_colors.forEach(color => {
         if (colorStats[color]) {
@@ -77,6 +95,28 @@ export function Statistics() {
           if (match.result === 'Victoria') colorStats[color].victories++;
           else if (match.result === 'Derrota') colorStats[color].defeats++;
           else if (match.result === 'Empate') colorStats[color].ties++;
+        }
+      });
+    });
+
+    // Count opponent colors from tournament matches
+    tournaments.forEach(tournament => {
+      tournament.matches.forEach(match => {
+        const passesFilter = selectedFilter === 'all' ? 
+          true : 
+          selectedFilter === 'infinity' ? 
+            match.gameFormat === 'Infinity Constructor' :
+            match.gameFormat === 'Estándar';
+        
+        if (passesFilter) {
+          match.opponentDeck.colors.forEach(color => {
+            if (colorStats[color]) {
+              colorStats[color].matches++;
+              if (match.result === 'Victoria') colorStats[color].victories++;
+              else if (match.result === 'Derrota') colorStats[color].defeats++;
+              else if (match.result === 'Empate') colorStats[color].ties++;
+            }
+          });
         }
       });
     });
@@ -100,7 +140,7 @@ export function Statistics() {
       colorData,
       filteredMatches
     };
-  }, [activeMatches, selectedFilter]);
+  }, [activeMatches, selectedFilter, tournaments]);
 
   // Handle immediate match deletion in UI
   const handleMatchDelete = (matchId: string) => {

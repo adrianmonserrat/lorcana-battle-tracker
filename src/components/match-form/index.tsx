@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -10,11 +10,11 @@ import { useMatchRecords } from '@/hooks/useMatchRecords';
 import { useUserDecks } from '@/hooks/useUserDecks';
 import { useLorcana } from '@/context/lorcana/LorcanaProvider';
 import { toast } from 'sonner';
-import { InkColor, GameFormat, MatchFormat } from '@/types';
+import { InkColor, GameFormat, MatchFormat, MatchResult } from '@/types';
 
 import { DeckSelector } from './deck-selector';
 import { OpponentDeckSelector } from './opponent-deck-selector';
-import { ResultSelector } from './result-selector';
+import { DetailedResultSelector } from './detailed-result-selector';
 import { GameFormatSelector } from './game-format-selector';
 import { MatchFormatSelector } from './match-format-selector';
 import { NotesInput } from './notes-input';
@@ -26,6 +26,7 @@ const formSchema = z.object({
   opponentDeckName: z.string().min(1, 'El nombre del mazo oponente es requerido'),
   opponentDeckColors: z.array(z.string()).min(1, 'Selecciona al menos un color'),
   result: z.enum(['Victoria', 'Derrota', 'Empate']),
+  detailedResult: z.enum(['2-0', '2-1', '1-2', '0-2', 'Empate']),
   gameFormat: z.enum(['Estándar', 'Infinity Constructor']),
   matchFormat: z.enum(['BO1', 'BO3', 'BO5']),
   notes: z.string().optional(),
@@ -41,8 +42,11 @@ interface MatchFormProps {
 export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
   const { createMatch, loading } = useMatchRecords();
   const { decks } = useUserDecks();
-  const { addTournamentMatch } = useLorcana();
+  const { addTournamentMatch, tournaments } = useLorcana();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Find the tournament if we have a tournamentId
+  const tournament = tournamentId ? tournaments.find(t => t.id === tournamentId) : null;
   
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -51,17 +55,27 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
       opponentDeckColors: [],
       userDeckColors: [],
       result: 'Victoria',
+      detailedResult: '2-0',
       gameFormat: 'Estándar',
       matchFormat: 'BO3',
       notes: '',
     },
   });
 
+  // Set default deck from tournament if available
+  useEffect(() => {
+    if (tournament?.defaultDeck) {
+      form.setValue('userDeckName', tournament.defaultDeck.name);
+      form.setValue('userDeckColors', tournament.defaultDeck.colors);
+      // Don't set userDeckId since this is from tournament default, not user's deck
+    }
+  }, [tournament, form]);
+
   // Watch for changes in selected deck to auto-select colors
   const selectedDeckId = form.watch('userDeckId');
   
   // Update colors when deck selection changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedDeckId && decks.length > 0) {
       const selectedDeck = decks.find(deck => deck.id === selectedDeckId);
       if (selectedDeck) {
@@ -93,6 +107,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
             colors: data.opponentDeckColors as InkColor[]
           },
           result: data.result,
+          detailedResult: data.detailedResult as MatchResult,
           gameFormat: data.gameFormat as GameFormat,
           matchFormat: data.matchFormat as MatchFormat,
           notes: data.notes,
@@ -111,7 +126,17 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
       }
 
       // Reset form after successful submission
-      form.reset();
+      form.reset({
+        opponentDeckName: '',
+        opponentDeckColors: [],
+        userDeckColors: tournament?.defaultDeck?.colors || [],
+        userDeckName: tournament?.defaultDeck?.name || '',
+        result: 'Victoria',
+        detailedResult: '2-0',
+        gameFormat: 'Estándar',
+        matchFormat: 'BO3',
+        notes: '',
+      });
       
       // Show success message
       toast.success(tournamentId ? '¡Partida de torneo registrada exitosamente!' : '¡Partida registrada exitosamente!');
@@ -134,14 +159,19 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
       <CardHeader>
         <CardTitle>
           {tournamentId ? 'Agregar Partida al Torneo' : 'Registrar Nueva Partida'}
+          {tournament?.defaultDeck && (
+            <p className="text-sm text-muted-foreground mt-1">
+              Usando mazo por defecto: {tournament.defaultDeck.name}
+            </p>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <DeckSelector form={form} />
+            {!tournament?.defaultDeck && <DeckSelector form={form} />}
             <OpponentDeckSelector form={form} />
-            <ResultSelector form={form} />
+            <DetailedResultSelector form={form} />
             <GameFormatSelector form={form} />
             <MatchFormatSelector form={form} />
             <NotesInput form={form} />

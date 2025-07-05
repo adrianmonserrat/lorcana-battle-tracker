@@ -42,6 +42,28 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
     }
   };
 
+  // Determine result display text and color
+  const getResultDisplay = () => {
+    if (match.detailedResult) {
+      if (match.detailedResult === 'Empate') {
+        return { text: 'Empate', color: 'text-amber-500' };
+      } else if (match.detailedResult === '2-0' || match.detailedResult === '2-1') {
+        return { text: `Victoria ${match.detailedResult}`, color: 'text-emerald-500' };
+      } else {
+        return { text: `Derrota ${match.detailedResult}`, color: 'text-red-500' };
+      }
+    } else {
+      // Fallback to basic result
+      return match.result === 'Victoria' 
+        ? { text: 'Victoria', color: 'text-emerald-500' }
+        : match.result === 'Empate' 
+          ? { text: 'Empate', color: 'text-amber-500' }
+          : { text: 'Derrota', color: 'text-red-500' };
+    }
+  };
+
+  const resultDisplay = getResultDisplay();
+
   return (
     <div className={`border-l-4 rounded-md border ${
       match.result === 'Victoria' 
@@ -53,13 +75,7 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
       <div className="flex justify-between items-start">
         <div>
           <div className="font-medium text-lg">
-            {match.result === 'Victoria' ? (
-              <span className="text-emerald-500">Victoria</span>
-            ) : match.result === 'Empate' ? (
-              <span className="text-amber-500">Empate</span>
-            ) : (
-              <span className="text-red-500">Derrota</span>
-            )}
+            <span className={resultDisplay.color}>{resultDisplay.text}</span>
             {match.tournamentName && (
               <span className="ml-2 text-sm text-muted-foreground">
                 (Torneo: {match.tournamentName})
