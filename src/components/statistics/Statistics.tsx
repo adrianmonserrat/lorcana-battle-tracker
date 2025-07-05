@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { StatisticCards } from "./StatisticCards";
 import { ResultPieChart } from "./ResultPieChart";
@@ -8,6 +9,7 @@ import { StatisticsFilter, StatsFilter } from "./StatisticsFilter";
 import { StatisticsLayout } from "./StatisticsLayout";
 import { ProtectedRoute } from "../auth/ProtectedRoute";
 import { useMatchRecords } from "@/hooks/useMatchRecords";
+import { useUserDecks } from "@/hooks/useUserDecks";
 import { useLorcana } from "@/context/lorcana/LorcanaProvider";
 import { useMemo } from "react";
 import { calculateWinRate } from "./utils";
@@ -15,6 +17,7 @@ import { calculateWinRate } from "./utils";
 export function Statistics() {
   const [selectedFilter, setSelectedFilter] = useState<StatsFilter>('all');
   const { matches: supabaseMatches, loading } = useMatchRecords();
+  const { decks } = useUserDecks();
   const { tournaments } = useLorcana();
   
   // Calculate statistics from Supabase matches
@@ -157,22 +160,29 @@ export function Statistics() {
         
         {/* All matches list */}
         <MatchesList 
-          matches={statsData.filteredMatches.map(match => ({
-            id: match.id,
-            myDeck: {
-              name: 'Mi Mazo',
-              colors: ['Ambar'] // Default color since we don't have this data
-            },
-            opponentDeck: {
-              name: match.opponent_deck_name,
-              colors: match.opponent_deck_colors
-            },
-            result: match.result,
-            gameFormat: match.game_format,
-            matchFormat: match.match_format,
-            date: new Date(match.created_at),
-            notes: match.notes
-          }))}
+          matches={statsData.filteredMatches.map(match => {
+            // Find the user deck to get the correct colors
+            const userDeck = match.user_deck_id 
+              ? decks.find(deck => deck.id === match.user_deck_id)
+              : null;
+            
+            return {
+              id: match.id,
+              myDeck: {
+                name: userDeck?.name || 'Mi Mazo',
+                colors: userDeck?.colors || ['Ambar'] // Use actual deck colors or default
+              },
+              opponentDeck: {
+                name: match.opponent_deck_name,
+                colors: match.opponent_deck_colors
+              },
+              result: match.result,
+              gameFormat: match.game_format,
+              matchFormat: match.match_format,
+              date: new Date(match.created_at),
+              notes: match.notes
+            };
+          })}
           tournaments={tournaments} 
         />
       </StatisticsLayout>
