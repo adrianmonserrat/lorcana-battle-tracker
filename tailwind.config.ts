@@ -63,16 +63,16 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Lorcana colors
+				// Lorcana colors - más suaves y pasteles
 				lorcana: {
-					amber: '#FFB81C',
-					amethyst: '#9452A5',
-					emerald: '#00A651',
-					ruby: '#E31937',
-					sapphire: '#0070BA',
-					steel: '#8A898C',
-					victory: '#E1F8E8',
-					defeat: '#FCEBEB',
+					amber: 'hsl(42, 78%, 65%)',
+					amethyst: 'hsl(290, 35%, 60%)',
+					emerald: 'hsl(142, 70%, 45%)',
+					ruby: 'hsl(348, 70%, 55%)',
+					sapphire: 'hsl(208, 85%, 50%)',
+					steel: 'hsl(210, 15%, 55%)',
+					victory: 'hsl(142, 45%, 92%)',
+					defeat: 'hsl(348, 45%, 92%)',
 				}
 			},
 			borderRadius: {

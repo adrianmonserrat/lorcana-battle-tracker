@@ -1,13 +1,24 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { useDeckStatistics } from '@/hooks/useDeckStatistics';
-import { useUserDecks } from '@/hooks/useUserDecks';
 import { Badge } from '@/components/ui/badge';
+import { Trash2 } from 'lucide-react';
 import { InkColor } from '@/types';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export function DeckStatistics() {
-  const { statistics, loading: statsLoading } = useDeckStatistics();
-  const { decks, loading: decksLoading } = useUserDecks();
+  const { statistics, loading, deleteStatistic } = useDeckStatistics();
 
   const getColorClass = (color: InkColor) => {
     switch(color) {
@@ -21,7 +32,7 @@ export function DeckStatistics() {
     }
   };
 
-  if (statsLoading || decksLoading) {
+  if (loading) {
     return (
       <Card>
         <CardHeader>
@@ -42,7 +53,7 @@ export function DeckStatistics() {
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground">
-            No hay estadísticas disponibles. ¡Juega algunas partidas para ver las estadísticas de tus mazos!
+            No hay estadísticas disponibles. ¡Juega algunas partidas con tus mazos para ver las estadísticas!
           </p>
         </CardContent>
       </Card>
@@ -56,56 +67,87 @@ export function DeckStatistics() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {statistics.map((stat) => {
-            const deck = decks.find(d => d.id === stat.deck_id);
-            if (!deck) return null;
-
-            return (
-              <div key={stat.id} className="border rounded-lg p-4">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="font-semibold text-lg">{deck.name}</h3>
-                    <div className="flex gap-2 mt-1">
-                      {deck.colors.map((color) => (
-                        <Badge
-                          key={color}
-                          variant="outline"
-                          className={getColorClass(color)}
-                        >
-                          {color}
-                        </Badge>
-                      ))}
+          {statistics.map((stat) => (
+            <div key={stat.id} className="border rounded-lg p-4">
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex-1">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-semibold text-lg">{stat.deck_name || 'Mazo Desconocido'}</h3>
+                      <div className="flex gap-2 mt-1">
+                        {stat.deck_colors?.map((color) => (
+                          <Badge
+                            key={color}
+                            variant="outline"
+                            className={getColorClass(color as InkColor)}
+                          >
+                            {color}
+                          </Badge>
+                        ))}
+                      </div>
+                      {stat.deck_format && (
+                        <div className="text-sm text-muted-foreground mt-1">
+                          Formato: {stat.deck_format}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-green-600">
-                      {stat.win_rate.toFixed(1)}%
+                    <div className="flex items-center gap-2">
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-green-600">
+                          {stat.win_rate.toFixed(1)}%
+                        </div>
+                        <div className="text-sm text-muted-foreground">Win Rate</div>
+                      </div>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>¿Eliminar estadísticas?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Esta acción eliminará permanentemente las estadísticas de "{stat.deck_name}". 
+                              No se puede deshacer esta acción.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={() => deleteStatistic(stat.id)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Eliminar
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
-                    <div className="text-sm text-muted-foreground">Win Rate</div>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-4 gap-4 text-center">
-                  <div>
-                    <div className="text-lg font-semibold">{stat.total_matches}</div>
-                    <div className="text-sm text-muted-foreground">Total</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-semibold text-green-600">{stat.victories}</div>
-                    <div className="text-sm text-muted-foreground">Victorias</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-semibold text-red-600">{stat.defeats}</div>
-                    <div className="text-sm text-muted-foreground">Derrotas</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-semibold text-yellow-600">{stat.ties}</div>
-                    <div className="text-sm text-muted-foreground">Empates</div>
                   </div>
                 </div>
               </div>
-            );
-          })}
+              
+              <div className="grid grid-cols-4 gap-4 text-center">
+                <div>
+                  <div className="text-lg font-semibold">{stat.total_matches}</div>
+                  <div className="text-sm text-muted-foreground">Total</div>
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-green-600">{stat.victories}</div>
+                  <div className="text-sm text-muted-foreground">Victorias</div>
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-red-600">{stat.defeats}</div>
+                  <div className="text-sm text-muted-foreground">Derrotas</div>
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-yellow-600">{stat.ties}</div>
+                  <div className="text-sm text-muted-foreground">Empates</div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>

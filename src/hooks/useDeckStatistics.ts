@@ -15,6 +15,9 @@ export interface DeckStatistics {
   win_rate: number;
   created_at: string;
   updated_at: string;
+  deck_name?: string;
+  deck_colors?: string[];
+  deck_format?: string;
 }
 
 export function useDeckStatistics() {
@@ -34,18 +37,49 @@ export function useDeckStatistics() {
         .from('deck_statistics')
         .select(`
           *,
-          user_decks!inner(name, colors)
+          user_decks!deck_statistics_deck_id_fkey(
+            name,
+            colors,
+            format
+          )
         `)
+        .eq('user_id', user.id)
         .order('total_matches', { ascending: false });
 
       if (error) throw error;
       
-      setStatistics(data || []);
+      // Transform data to include deck information
+      const transformedData = (data || []).map(stat => ({
+        ...stat,
+        deck_name: stat.user_decks?.name,
+        deck_colors: stat.user_decks?.colors,
+        deck_format: stat.user_decks?.format
+      }));
+
+      setStatistics(transformedData);
     } catch (error) {
       console.error('Error loading deck statistics:', error);
       toast.error('Error al cargar las estadísticas de mazos');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const deleteStatistic = async (statisticId: string) => {
+    try {
+      const { error } = await supabase
+        .from('deck_statistics')
+        .delete()
+        .eq('id', statisticId)
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+      
+      setStatistics(prev => prev.filter(stat => stat.id !== statisticId));
+      toast.success('Estadística eliminada exitosamente');
+    } catch (error) {
+      console.error('Error deleting statistic:', error);
+      toast.error('Error al eliminar la estadística');
     }
   };
 
@@ -56,6 +90,7 @@ export function useDeckStatistics() {
   return {
     statistics,
     loading,
+    deleteStatistic,
     refreshStatistics: loadStatistics
   };
 }
