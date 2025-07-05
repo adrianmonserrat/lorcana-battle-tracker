@@ -16,13 +16,13 @@ export function MatchCard({ match, onDelete }: MatchCardProps) {
   let textColor = '';
   
   if (match.result === 'Victoria') {
-    bgColor = 'bg-green-50';
-    borderColor = 'border-green-200';
-    textColor = 'text-green-700';
+    bgColor = 'bg-emerald-50';
+    borderColor = 'border-emerald-200';
+    textColor = 'text-emerald-700';
   } else if (match.result === 'Empate') {
-    bgColor = 'bg-yellow-50';
-    borderColor = 'border-yellow-200';
-    textColor = 'text-yellow-700';
+    bgColor = 'bg-amber-50';
+    borderColor = 'border-amber-200';
+    textColor = 'text-amber-700';
   } else {
     bgColor = 'bg-red-50';
     borderColor = 'border-red-200';
@@ -30,21 +30,19 @@ export function MatchCard({ match, onDelete }: MatchCardProps) {
   }
   
   return (
-    <div className={`p-4 rounded-lg border-2 ${bgColor} ${borderColor} relative`}>
-      {/* Botón de eliminar con posicionamiento absoluto */}
-      <div className="absolute top-2 right-2">
-        <Button 
-          variant="ghost" 
-          size="sm"
-          className="h-8 w-8 p-0 text-destructive hover:bg-destructive/10 hover:text-destructive"
-          onClick={onDelete}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </div>
+    <div className={`p-4 rounded-lg border-2 ${bgColor} ${borderColor} relative min-h-[120px]`}>
+      {/* Botón de eliminar en la esquina superior derecha */}
+      <Button 
+        variant="ghost" 
+        size="sm"
+        className="absolute top-2 right-2 h-8 w-8 p-0 text-destructive hover:bg-destructive/10 hover:text-destructive z-10"
+        onClick={onDelete}
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
 
-      {/* Contenido con margen derecho para evitar superposición */}
-      <div className="mr-10">
+      {/* Contenido con padding derecho para evitar superposición */}
+      <div className="pr-12">
         <div className="flex flex-col md:flex-row justify-between mb-3">
           <p className="font-medium text-sm md:text-base">
             {format(match.date, "PPP", { locale: es })}
