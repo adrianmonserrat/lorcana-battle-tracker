@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { useMatchRecords } from '@/hooks/useMatchRecords';
+import { useUserDecks } from '@/hooks/useUserDecks';
 import { toast } from 'sonner';
 import { InkColor, GameFormat, MatchFormat } from '@/types';
 
@@ -23,7 +24,7 @@ const formSchema = z.object({
   opponentDeckColors: z.array(z.string()).min(1, 'Selecciona al menos un color'),
   result: z.enum(['Victoria', 'Derrota', 'Empate']),
   gameFormat: z.enum(['Estándar', 'Infinity Constructor']),
-  matchFormat: z.enum(['BO1', 'BO3']),
+  matchFormat: z.enum(['BO1', 'BO3', 'BO5']),
   notes: z.string().optional(),
 });
 
@@ -36,6 +37,7 @@ interface MatchFormProps {
 
 export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
   const { createMatch, loading } = useMatchRecords();
+  const { decks } = useUserDecks();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<FormData>({
@@ -49,6 +51,19 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
       notes: '',
     },
   });
+
+  // Watch for changes in selected deck to auto-select colors
+  const selectedDeckId = form.watch('userDeckId');
+  
+  // Update colors when deck selection changes
+  React.useEffect(() => {
+    if (selectedDeckId && decks.length > 0) {
+      const selectedDeck = decks.find(deck => deck.id === selectedDeckId);
+      if (selectedDeck) {
+        form.setValue('opponentDeckColors', selectedDeck.colors);
+      }
+    }
+  }, [selectedDeckId, decks, form]);
 
   const onSubmit = async (data: FormData) => {
     try {
