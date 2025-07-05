@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { CurrentDateTime } from '@/components/current-datetime';
 import { useAuth } from '@/components/auth/AuthProvider';
-import { LogOut, User, LogIn } from 'lucide-react';
+import { useUserProfile } from '@/hooks/useUserProfile';
+import { LogOut, User, LogIn, Settings } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface MainHeaderProps {
@@ -25,6 +26,7 @@ export function MainHeader({
 }: MainHeaderProps) {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { profile } = useUserProfile();
   
   const handleSignOut = async () => {
     try {
@@ -33,6 +35,8 @@ export function MainHeader({
       console.error('Error signing out:', error);
     }
   };
+
+  const displayName = profile?.display_name || user?.email || 'Usuario';
   
   return (
     <header className="border-b p-4">
@@ -73,10 +77,14 @@ export function MainHeader({
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <User className="w-4 h-4 mr-2" />
-                  {user.email}
+                  {displayName}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
+                  <Settings className="w-4 h-4 mr-2" />
+                  Mi Perfil
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="w-4 h-4 mr-2" />
                   Cerrar Sesión

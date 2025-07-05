@@ -10,6 +10,7 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
 import TournamentsList from "./pages/TournamentsList";
 import TournamentNew from "./pages/TournamentNew";
 import TournamentDetail from "./pages/TournamentDetail";
@@ -30,6 +31,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/torneos" element={<TournamentsList />} />
                 <Route path="/torneos/nuevo" element={<TournamentNew />} />
                 <Route path="/torneos/:id" element={<TournamentDetail />} />
