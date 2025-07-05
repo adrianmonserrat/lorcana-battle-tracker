@@ -5,12 +5,12 @@ import { cn } from '@/lib/utils';
 import { InkColor } from '@/types';
 
 const COLORS: { value: InkColor; label: string; color: string }[] = [
-  { value: 'amber', label: 'Ámbar', color: 'bg-lorcana-amber' },
-  { value: 'amethyst', label: 'Amatista', color: 'bg-lorcana-amethyst' },
-  { value: 'emerald', label: 'Esmeralda', color: 'bg-lorcana-emerald' },
-  { value: 'ruby', label: 'Rubí', color: 'bg-lorcana-ruby' },
-  { value: 'sapphire', label: 'Zafiro', color: 'bg-lorcana-sapphire' },
-  { value: 'steel', label: 'Acero', color: 'bg-lorcana-steel' },
+  { value: 'Ambar', label: 'Ámbar', color: 'bg-lorcana-amber' },
+  { value: 'Amatista', label: 'Amatista', color: 'bg-lorcana-amethyst' },
+  { value: 'Esmeralda', label: 'Esmeralda', color: 'bg-lorcana-emerald' },
+  { value: 'Rubí', label: 'Rubí', color: 'bg-lorcana-ruby' },
+  { value: 'Zafiro', label: 'Zafiro', color: 'bg-lorcana-sapphire' },
+  { value: 'Acero', label: 'Acero', color: 'bg-lorcana-steel' },
 ];
 
 interface ColorSelectorProps {
