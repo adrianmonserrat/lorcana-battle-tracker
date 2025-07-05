@@ -30,8 +30,8 @@ export function MatchCard({ match, onDelete }: MatchCardProps) {
   }
   
   return (
-    <div className={`p-4 rounded-md border ${bgColor} ${borderColor} relative`}>
-      <div className="absolute top-2 right-2">
+    <div className={`p-4 rounded-md border ${bgColor} ${borderColor} relative pr-12`}>
+      <div className="absolute top-2 right-2 z-10">
         <Button 
           variant="ghost" 
           size="icon" 
