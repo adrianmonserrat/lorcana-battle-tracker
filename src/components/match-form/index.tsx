@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,6 +20,8 @@ import { NotesInput } from './notes-input';
 
 const formSchema = z.object({
   userDeckId: z.string().optional(),
+  userDeckName: z.string().optional(),
+  userDeckColors: z.array(z.string()).optional(),
   opponentDeckName: z.string().min(1, 'El nombre del mazo oponente es requerido'),
   opponentDeckColors: z.array(z.string()).min(1, 'Selecciona al menos un color'),
   result: z.enum(['Victoria', 'Derrota', 'Empate']),
@@ -44,6 +47,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
     defaultValues: {
       opponentDeckName: '',
       opponentDeckColors: [],
+      userDeckColors: [],
       result: 'Victoria',
       gameFormat: 'Estándar',
       matchFormat: 'BO3',
@@ -59,7 +63,8 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
     if (selectedDeckId && decks.length > 0) {
       const selectedDeck = decks.find(deck => deck.id === selectedDeckId);
       if (selectedDeck) {
-        form.setValue('opponentDeckColors', selectedDeck.colors);
+        form.setValue('userDeckColors', selectedDeck.colors);
+        form.setValue('userDeckName', selectedDeck.name);
       }
     }
   }, [selectedDeckId, decks, form]);
@@ -67,6 +72,12 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
   const onSubmit = async (data: FormData) => {
     try {
       setIsSubmitting(true);
+      
+      // Validar que tengamos los datos necesarios del mazo del usuario
+      if (!data.userDeckId && (!data.userDeckName || !data.userDeckColors || data.userDeckColors.length === 0)) {
+        toast.error('Debes especificar tu mazo o seleccionar uno existente');
+        return;
+      }
       
       await createMatch({
         user_deck_id: data.userDeckId,
