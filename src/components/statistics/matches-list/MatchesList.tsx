@@ -12,6 +12,7 @@ export function MatchesList({ matches, tournaments, onMatchDelete }: MatchesList
   const [colorFilter, setColorFilter] = useState<string>("all");
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [formatFilter, setFormatFilter] = useState<string>("all");
+  const [initialTurnFilter, setInitialTurnFilter] = useState<string>("all");
 
   // Combine all matches (regular and tournament)
   const allMatches: EnhancedMatch[] = [
@@ -57,7 +58,12 @@ export function MatchesList({ matches, tournaments, onMatchDelete }: MatchesList
       true :
       match.gameFormat === formatFilter;
     
-    return passesColorFilter && passesSourceFilter && passesFormatFilter;
+    // Apply initial turn filter
+    const passesInitialTurnFilter = initialTurnFilter === "all" ?
+      true :
+      match.initialTurn === initialTurnFilter;
+    
+    return passesColorFilter && passesSourceFilter && passesFormatFilter && passesInitialTurnFilter;
   });
 
   const handleDeleteTournamentMatch = (matchId: string, tournamentId?: string) => {
@@ -89,6 +95,8 @@ export function MatchesList({ matches, tournaments, onMatchDelete }: MatchesList
           setSourceFilter={setSourceFilter}
           formatFilter={formatFilter}
           setFormatFilter={setFormatFilter}
+          initialTurnFilter={initialTurnFilter}
+          setInitialTurnFilter={setInitialTurnFilter}
           allUsedColors={allUsedColors}
           allGameFormats={allGameFormats}
         />

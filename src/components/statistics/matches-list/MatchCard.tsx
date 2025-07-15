@@ -118,9 +118,23 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
         <DeckInfo title="Mazo Rival" deck={match.opponentDeck} />
       </div>
       
-      <div className="mt-2 text-sm">
-        <span className="font-medium">Formato: </span>
-        <span>{match.gameFormat} ({match.matchFormat})</span>
+      <div className="mt-2 text-sm space-y-1">
+        <div>
+          <span className="font-medium">Formato: </span>
+          <span>{match.gameFormat} ({match.matchFormat})</span>
+        </div>
+        {match.initialTurn && (
+          <div>
+            <span className="font-medium">Turno: </span>
+            <span className={`px-2 py-0.5 rounded-full text-xs ${
+              match.initialTurn === 'OTP' 
+                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' 
+                : 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+            }`}>
+              {match.initialTurn === 'OTP' ? 'OTP (On the Play)' : 'OTD (On the Draw)'}
+            </span>
+          </div>
+        )}
       </div>
       
       {match.notes && (

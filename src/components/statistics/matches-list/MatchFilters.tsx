@@ -11,6 +11,8 @@ interface MatchFiltersProps {
   setSourceFilter: (value: string) => void;
   formatFilter: string;
   setFormatFilter: (value: string) => void;
+  initialTurnFilter: string;
+  setInitialTurnFilter: (value: string) => void;
   allUsedColors: Set<string>;
   allGameFormats: Set<string>;
 }
@@ -22,6 +24,8 @@ export function MatchFilters({
   setSourceFilter,
   formatFilter,
   setFormatFilter,
+  initialTurnFilter,
+  setInitialTurnFilter,
   allUsedColors,
   allGameFormats
 }: MatchFiltersProps) {
@@ -71,6 +75,17 @@ export function MatchFilters({
           {[...allGameFormats].map(format => (
             <SelectItem key={format} value={format}>{format}</SelectItem>
           ))}
+        </SelectContent>
+      </Select>
+      
+      <Select value={initialTurnFilter} onValueChange={setInitialTurnFilter}>
+        <SelectTrigger className="w-full sm:w-[180px]">
+          <SelectValue placeholder="Filtrar por turno" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Todos los turnos</SelectItem>
+          <SelectItem value="OTP">OTP (On the Play)</SelectItem>
+          <SelectItem value="OTD">OTD (On the Draw)</SelectItem>
         </SelectContent>
       </Select>
     </div>

@@ -12,6 +12,8 @@ export interface Deck {
   colors: InkColor[];
 }
 
+export type InitialTurn = 'OTP' | 'OTD';
+
 export interface Match {
   id: string;
   date: Date;
@@ -23,6 +25,7 @@ export interface Match {
   detailedResult?: MatchResult;
   notes?: string;
   tournamentId?: string;
+  initialTurn: InitialTurn;
 }
 
 export interface Tournament {

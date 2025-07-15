@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { StatisticCards } from "./StatisticCards";
+import { InitialTurnStats } from "./InitialTurnStats";
 import { ResultPieChart } from "./ResultPieChart";
 import { ColorPerformanceChart } from "./ColorPerformanceChart";
 import { TournamentStatsChart } from "./TournamentStatsChart";
@@ -185,6 +186,11 @@ export function Statistics() {
           winRate={statsData.winRate}
         />
         
+        {/* Initial Turn Statistics */}
+        {statsData.totalMatches > 0 && (
+          <InitialTurnStats matches={statsData.filteredMatches} />
+        )}
+        
         {statsData.totalMatches > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ResultPieChart resultData={statsData.resultData} />
@@ -232,6 +238,7 @@ export function Statistics() {
               result: match.result,
               gameFormat: match.game_format,
               matchFormat: match.match_format,
+              initialTurn: match.initial_turn || 'OTP',
               date: new Date(match.created_at),
               notes: match.notes
             };

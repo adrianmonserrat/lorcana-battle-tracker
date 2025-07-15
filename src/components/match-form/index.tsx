@@ -10,7 +10,7 @@ import { useMatchRecords } from '@/hooks/useMatchRecords';
 import { useUserDecks } from '@/hooks/useUserDecks';
 import { useLorcana } from '@/context/lorcana/LorcanaProvider';
 import { toast } from 'sonner';
-import { InkColor, GameFormat, MatchFormat, MatchResult } from '@/types';
+import { InkColor, GameFormat, MatchFormat, MatchResult, InitialTurn } from '@/types';
 
 import { DeckSelector } from './deck-selector';
 import { OpponentDeckSelector } from './opponent-deck-selector';
@@ -19,6 +19,7 @@ import { GameFormatSelector } from './game-format-selector';
 import { MatchFormatSelector } from './match-format-selector';
 import { ResultSelector } from './result-selector';
 import { NotesInput } from './notes-input';
+import { InitialTurnSelector } from './initial-turn-selector';
 
 const formSchema = z.object({
   userDeckId: z.string().optional(),
@@ -30,6 +31,7 @@ const formSchema = z.object({
   detailedResult: z.string().optional(),
   gameFormat: z.enum(['Estándar', 'Infinity Constructor']),
   matchFormat: z.enum(['BO1', 'BO3', 'BO5']),
+  initialTurn: z.enum(['OTP', 'OTD'], { required_error: 'Selecciona el turno inicial' }),
   notes: z.string().optional(),
 });
 
@@ -51,16 +53,17 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
   
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      opponentDeckName: '',
-      opponentDeckColors: [],
-      userDeckColors: [],
-      result: 'Victoria',
-      detailedResult: '',
-      gameFormat: 'Estándar',
-      matchFormat: 'BO3',
-      notes: '',
-    },
+      defaultValues: {
+        opponentDeckName: '',
+        opponentDeckColors: [],
+        userDeckColors: [],
+        result: 'Victoria',
+        detailedResult: '',
+        gameFormat: 'Estándar',
+        matchFormat: 'BO3',
+        initialTurn: 'OTP',
+        notes: '',
+      },
   });
 
   // Set default deck from tournament if available
@@ -111,6 +114,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
           detailedResult: data.detailedResult as MatchResult,
           gameFormat: data.gameFormat as GameFormat,
           matchFormat: data.matchFormat as MatchFormat,
+          initialTurn: data.initialTurn as InitialTurn,
           notes: data.notes,
         });
       } else {
@@ -122,6 +126,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
           result: data.result,
           game_format: data.gameFormat as GameFormat,
           match_format: data.matchFormat as MatchFormat,
+          initial_turn: data.initialTurn,
           notes: data.notes,
         });
       }
@@ -136,6 +141,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
         detailedResult: '',
         gameFormat: 'Estándar',
         matchFormat: 'BO3',
+        initialTurn: 'OTP',
         notes: '',
       });
       
@@ -176,6 +182,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <GameFormatSelector form={form} />
             <MatchFormatSelector form={form} />
+            <InitialTurnSelector form={form} />
             {!tournament?.defaultDeck && <DeckSelector form={form} />}
             <OpponentDeckSelector form={form} />
             {showDetailedResult && <DetailedResultSelector form={form} />}

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from 'sonner';
-import { InkColor, GameFormat, MatchFormat } from '@/types';
+import { InkColor, GameFormat, MatchFormat, InitialTurn } from '@/types';
 
 export interface MatchRecord {
   id: string;
@@ -15,6 +15,7 @@ export interface MatchRecord {
   result: 'Victoria' | 'Derrota' | 'Empate';
   game_format: GameFormat;
   match_format: MatchFormat;
+  initial_turn?: InitialTurn;
   notes?: string;
   created_at: string;
 }
@@ -26,6 +27,7 @@ export interface CreateMatchRecord {
   result: 'Victoria' | 'Derrota' | 'Empate';
   game_format: GameFormat;
   match_format: MatchFormat;
+  initial_turn: InitialTurn;
   notes?: string;
 }
 
@@ -56,6 +58,7 @@ export function useMatchRecords() {
         result: match.result as 'Victoria' | 'Derrota' | 'Empate',
         game_format: match.game_format as GameFormat,
         match_format: match.match_format as MatchFormat,
+        initial_turn: match.initial_turn as InitialTurn,
         notes: match.notes || undefined
       }));
       
@@ -84,6 +87,7 @@ export function useMatchRecords() {
           result: matchData.result,
           game_format: matchData.game_format,
           match_format: matchData.match_format,
+          initial_turn: matchData.initial_turn,
           notes: matchData.notes
         })
         .select()
@@ -98,6 +102,7 @@ export function useMatchRecords() {
         result: data.result as 'Victoria' | 'Derrota' | 'Empate',
         game_format: data.game_format as GameFormat,
         match_format: data.match_format as MatchFormat,
+        initial_turn: data.initial_turn as InitialTurn,
         notes: data.notes || undefined
       };
       
