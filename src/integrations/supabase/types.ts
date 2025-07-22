@@ -214,6 +214,18 @@ export type Database = {
         Args: { p_user_id: string; p_deck_id: string }
         Returns: undefined
       }
+      validate_deck_name: {
+        Args: { deck_name: string }
+        Returns: boolean
+      }
+      validate_notes: {
+        Args: { notes_text: string }
+        Returns: boolean
+      }
+      validate_string_input: {
+        Args: { input_value: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
