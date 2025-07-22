@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from './AuthProvider';
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
-import { isValidEmail, validatePasswordStrength, authRateLimiter } from '@/lib/security';
+import { isValidEmail, validatePasswordStrength } from '@/lib/security';
+import { checkRateLimit } from '@/lib/rateLimiter';
 import { toast } from 'sonner';
 
 interface AuthModalProps {
@@ -25,12 +26,6 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Rate limiting check
-    if (authRateLimiter.isRateLimited(email || 'anonymous')) {
-      toast.error('Demasiados intentos. Espera un momento antes de intentar nuevamente.');
-      return;
-    }
 
     // Input validation
     if (!email || !password) {
@@ -56,6 +51,15 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
       }
     }
 
+    // Enhanced rate limiting check
+    const action = isSignUp ? 'auth_signup' : 'auth_login';
+    const rateLimitResult = await checkRateLimit(action);
+    
+    if (!rateLimitResult.allowed) {
+      toast.error(`Demasiados intentos. ${rateLimitResult.resetTime ? `Intenta nuevamente después de ${new Date(rateLimitResult.resetTime).toLocaleTimeString()}` : 'Espera un momento antes de intentar nuevamente.'}`);
+      return;
+    }
+
     setLoading(true);
     setAttemptCount(prev => prev + 1);
 
@@ -71,11 +75,10 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
         await signIn(email, password);
         toast.success('Sesión iniciada exitosamente');
         onClose();
-        // Reset form and rate limiter on success
+        // Reset form on success
         setEmail('');
         setPassword('');
         setConfirmPassword('');
-        authRateLimiter.reset(email);
       }
     } catch (error: any) {
       console.error('Auth error:', error);

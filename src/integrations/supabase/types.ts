@@ -175,6 +175,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limit_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          identifier: string
+          ip_address: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          identifier: string
+          ip_address: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          identifier?: string
+          ip_address?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_decks: {
         Row: {
           colors: string[]
@@ -210,6 +237,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_old_rate_limit_logs: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      create_rate_limit_table_if_not_exists: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       recalculate_deck_statistics: {
         Args: { p_user_id: string; p_deck_id: string }
         Returns: undefined
