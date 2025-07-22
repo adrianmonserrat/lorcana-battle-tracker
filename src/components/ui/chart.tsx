@@ -74,26 +74,29 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
+  // Create safe CSS variables using React.CSSProperties
+  const cssVariables = React.useMemo(() => {
+    const variables: Record<string, string> = {}
+    
+    Object.entries(THEMES).forEach(([theme]) => {
+      colorConfig.forEach(([key, itemConfig]) => {
+        const color =
+          itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+          itemConfig.color
+        if (color && /^#([0-9A-F]{3}){1,2}$/i.test(color) || /^hsl\(/.test(color) || /^rgb\(/.test(color)) {
+          variables[`--color-${key}`] = color
+        }
+      })
+    })
+    
+    return variables
+  }, [colorConfig])
+
   return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
-${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
-}
-`
-          )
-          .join("\n"),
-      }}
+    <div
+      data-chart-style={id}
+      style={cssVariables as React.CSSProperties}
+      className="[&]:contents"
     />
   )
 }
