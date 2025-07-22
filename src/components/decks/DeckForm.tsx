@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { InkColor } from '@/types';
 import { ColorSelector } from '@/components/match-form/color-selector';
 import { UserDeck } from '@/hooks/useUserDecks';
+import { sanitizeInput } from '@/lib/security';
 
 interface DeckFormProps {
   open: boolean;
@@ -64,9 +65,11 @@ export function DeckForm({ open, onClose, onSubmit }: DeckFormProps) {
             <Input
               id="deckName"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName(sanitizeInput(e.target.value))}
               placeholder="Ej: Control Ambar/Amatista"
               disabled={loading}
+              maxLength={50}
+              required
             />
           </div>
           

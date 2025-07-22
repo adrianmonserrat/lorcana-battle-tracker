@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LorcanaProvider } from "@/context/LorcanaContext";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -29,13 +30,13 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
                 <Route path="/auth" element={<Auth />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/torneos" element={<TournamentsList />} />
-                <Route path="/torneos/nuevo" element={<TournamentNew />} />
-                <Route path="/torneos/:id" element={<TournamentDetail />} />
-                <Route path="/mis-mazos" element={<MisMazos />} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/torneos" element={<ProtectedRoute><TournamentsList /></ProtectedRoute>} />
+                <Route path="/torneos/nuevo" element={<ProtectedRoute><TournamentNew /></ProtectedRoute>} />
+                <Route path="/torneos/:id" element={<ProtectedRoute><TournamentDetail /></ProtectedRoute>} />
+                <Route path="/mis-mazos" element={<ProtectedRoute><MisMazos /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
