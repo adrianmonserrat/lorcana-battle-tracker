@@ -24,8 +24,8 @@ const requirements: PasswordRequirement[] = [
     test: (password) => /[0-9]/.test(password)
   },
   {
-    label: 'Mínimo 6 caracteres',
-    test: (password) => password.length >= 6
+    label: 'Mínimo 8 caracteres',
+    test: (password) => password.length >= 8
   }
 ];
 
