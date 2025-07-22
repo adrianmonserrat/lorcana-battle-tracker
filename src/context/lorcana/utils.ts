@@ -83,8 +83,9 @@ export function calculateStats(matches: Match[], tournaments: Tournament[]): Sta
 
 export function loadDataFromLocalStorage() {
   try {
-    const savedMatches = localStorage.getItem('lorcana-matches');
-    const savedTournaments = localStorage.getItem('lorcana-tournaments');
+    // Secure localStorage access with validation
+    const savedMatches = localStorage?.getItem('lorcana-matches');
+    const savedTournaments = localStorage?.getItem('lorcana-tournaments');
     
     let matches: Match[] = [];
     let tournaments: Tournament[] = [];
@@ -120,9 +121,13 @@ export function loadDataFromLocalStorage() {
 
 export function saveDataToLocalStorage(matches: Match[], tournaments: Tournament[]) {
   try {
-    localStorage.setItem('lorcana-matches', JSON.stringify(matches));
-    localStorage.setItem('lorcana-tournaments', JSON.stringify(tournaments));
-    return true;
+    // Secure localStorage access with validation
+    if (typeof Storage !== 'undefined' && localStorage) {
+      localStorage.setItem('lorcana-matches', JSON.stringify(matches));
+      localStorage.setItem('lorcana-tournaments', JSON.stringify(tournaments));
+      return true;
+    }
+    return false;
   } catch (error) {
     console.error('Error saving data to localStorage:', error);
     return false;

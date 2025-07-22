@@ -1,15 +1,18 @@
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useAuth } from '@/components/auth/AuthProvider';
+import { toast } from '@/hooks/use-toast';
 
 export function ProfileForm() {
   const { user } = useAuth();
   const { profile, loading, updateProfile } = useUserProfile();
+  const navigate = useNavigate();
   const [displayName, setDisplayName] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -28,12 +31,19 @@ export function ProfileForm() {
     setIsUpdating(true);
     try {
       await updateProfile(displayName.trim());
-      // Force a page refresh to update all components that use the profile
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      toast({
+        title: "Perfil actualizado",
+        description: "Tu perfil se ha actualizado correctamente.",
+      });
+      // Navigate to refresh the profile data safely
+      navigate(0);
     } catch (error) {
       // Error is already handled in the hook
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar el perfil. Inténtalo de nuevo.",
+        variant: "destructive",
+      });
     } finally {
       setIsUpdating(false);
     }
