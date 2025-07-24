@@ -10,7 +10,7 @@ export interface MatchRecord {
   user_id: string;
   user_deck_id?: string;
   opponent_deck_id?: string;
-  opponent_deck_name: string;
+  opponent_deck_name?: string;
   opponent_deck_colors: InkColor[];
   result: 'Victoria' | 'Derrota' | 'Empate';
   game_format: GameFormat;
@@ -22,7 +22,7 @@ export interface MatchRecord {
 
 export interface CreateMatchRecord {
   user_deck_id?: string;
-  opponent_deck_name: string;
+  opponent_deck_name?: string;
   opponent_deck_colors: InkColor[];
   result: 'Victoria' | 'Derrota' | 'Empate';
   game_format: GameFormat;
@@ -82,7 +82,7 @@ export function useMatchRecords() {
         .insert({
           user_id: user.id,
           user_deck_id: matchData.user_deck_id,
-          opponent_deck_name: matchData.opponent_deck_name,
+          opponent_deck_name: matchData.opponent_deck_name || null,
           opponent_deck_colors: matchData.opponent_deck_colors as string[],
           result: matchData.result,
           game_format: matchData.game_format,

@@ -93,10 +93,10 @@ export function OpponentDeckSelector({ form }: OpponentDeckSelectorProps) {
         name="opponentDeckName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Nombre del Mazo Oponente</FormLabel>
+            <FormLabel>Nombre del Mazo Oponente (Opcional)</FormLabel>
             <FormControl>
               <Input 
-                placeholder="Ej: Mazo Azul/Rojo" 
+                placeholder="Ej: Mazo Azul/Rojo (opcional)" 
                 {...field}
                 disabled={selectionMode === 'existing'}
               />

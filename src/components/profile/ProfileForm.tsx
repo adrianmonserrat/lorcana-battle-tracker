@@ -35,8 +35,6 @@ export function ProfileForm() {
         title: "Perfil actualizado",
         description: "Tu perfil se ha actualizado correctamente.",
       });
-      // Navigate to refresh the profile data safely
-      navigate(0);
     } catch (error) {
       // Error is already handled in the hook
       toast({

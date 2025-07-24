@@ -25,7 +25,7 @@ const formSchema = z.object({
   userDeckId: z.string().optional(),
   userDeckName: z.string().optional(),
   userDeckColors: z.array(z.string()).optional(),
-  opponentDeckName: z.string().min(1, 'El nombre del mazo oponente es requerido'),
+  opponentDeckName: z.string().optional(),
   opponentDeckColors: z.array(z.string()).min(1, 'Selecciona al menos un color'),
   result: z.enum(['Victoria', 'Derrota', 'Empate']),
   detailedResult: z.string().optional(),
@@ -53,17 +53,17 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
   
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-      defaultValues: {
-        opponentDeckName: '',
-        opponentDeckColors: [],
-        userDeckColors: [],
-        result: 'Victoria',
-        detailedResult: '',
-        gameFormat: 'Estándar',
-        matchFormat: 'BO3',
-        initialTurn: 'OTP',
-        notes: '',
-      },
+    defaultValues: {
+      opponentDeckName: '',
+      opponentDeckColors: [],
+      userDeckColors: [],
+      result: 'Victoria' as const,
+      detailedResult: '',
+      gameFormat: 'Estándar' as const,
+      matchFormat: 'BO3' as const,
+      initialTurn: 'OTP' as const,
+      notes: '',
+    },
   });
 
   // Set default deck from tournament if available
@@ -137,11 +137,11 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
         opponentDeckColors: [],
         userDeckColors: tournament?.defaultDeck?.colors || [],
         userDeckName: tournament?.defaultDeck?.name || '',
-        result: 'Victoria',
+        result: 'Victoria' as const,
         detailedResult: '',
-        gameFormat: 'Estándar',
-        matchFormat: 'BO3',
-        initialTurn: 'OTP',
+        gameFormat: 'Estándar' as const,
+        matchFormat: 'BO3' as const,
+        initialTurn: 'OTP' as const,
         notes: '',
       });
       
