@@ -22,9 +22,9 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <ThemeProvider defaultTheme="light">
-    <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
+  <LanguageProvider>
+    <ThemeProvider defaultTheme="light">
+      <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <LorcanaProvider>
             <TooltipProvider>
@@ -45,9 +45,9 @@ const App = () => (
             </TooltipProvider>
           </LorcanaProvider>
         </AuthProvider>
-      </LanguageProvider>
-    </QueryClientProvider>
-  </ThemeProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
+  </LanguageProvider>
 );
 
 export default App;
