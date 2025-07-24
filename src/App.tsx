@@ -27,22 +27,22 @@ const App = () => (
       <LanguageProvider>
         <AuthProvider>
           <LorcanaProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                <Route path="/torneos" element={<ProtectedRoute><TournamentsList /></ProtectedRoute>} />
-                <Route path="/torneos/nuevo" element={<ProtectedRoute><TournamentNew /></ProtectedRoute>} />
-                <Route path="/torneos/:id" element={<ProtectedRoute><TournamentDetail /></ProtectedRoute>} />
-                <Route path="/mis-mazos" element={<ProtectedRoute><MisMazos /></ProtectedRoute>} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                  <Route path="/torneos" element={<ProtectedRoute><TournamentsList /></ProtectedRoute>} />
+                  <Route path="/torneos/nuevo" element={<ProtectedRoute><TournamentNew /></ProtectedRoute>} />
+                  <Route path="/torneos/:id" element={<ProtectedRoute><TournamentDetail /></ProtectedRoute>} />
+                  <Route path="/mis-mazos" element={<ProtectedRoute><MisMazos /></ProtectedRoute>} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
           </LorcanaProvider>
         </AuthProvider>
       </LanguageProvider>
