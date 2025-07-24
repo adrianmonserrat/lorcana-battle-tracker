@@ -71,7 +71,7 @@ export type Database = {
           notes: string | null
           opponent_deck_colors: string[]
           opponent_deck_id: string | null
-          opponent_deck_name: string
+          opponent_deck_name: string | null
           result: string
           user_deck_id: string | null
           user_id: string
@@ -85,7 +85,7 @@ export type Database = {
           notes?: string | null
           opponent_deck_colors: string[]
           opponent_deck_id?: string | null
-          opponent_deck_name: string
+          opponent_deck_name?: string | null
           result: string
           user_deck_id?: string | null
           user_id: string
@@ -99,7 +99,7 @@ export type Database = {
           notes?: string | null
           opponent_deck_colors?: string[]
           opponent_deck_id?: string | null
-          opponent_deck_name?: string
+          opponent_deck_name?: string | null
           result?: string
           user_deck_id?: string | null
           user_id?: string
