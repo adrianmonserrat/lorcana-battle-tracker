@@ -206,5 +206,6 @@
   "match.detailed_result.2_3_loss": "2-3 (Niederlage - Verloren mit zwei Siegen)",
   "match.detailed_result.1_3_loss": "1-3 (Niederlage - Verloren mit einem Sieg)",
   "match.detailed_result.0_3_loss": "0-3 (Niederlage - Alle Spiele verloren)",
-  "match.detailed_result.tie": "Unentschieden"
+  "match.detailed_result.tie": "Unentschieden",
+  "deck.form.name.placeholder": "z.B. Bernstein/Amethyst Kontrolle"
 }

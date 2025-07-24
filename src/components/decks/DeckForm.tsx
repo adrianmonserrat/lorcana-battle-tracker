@@ -8,6 +8,7 @@ import { InkColor } from '@/types';
 import { ColorSelector } from '@/components/match-form/color-selector';
 import { UserDeck } from '@/hooks/useUserDecks';
 import { sanitizeInput } from '@/lib/security';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface DeckFormProps {
   open: boolean;
@@ -16,6 +17,7 @@ interface DeckFormProps {
 }
 
 export function DeckForm({ open, onClose, onSubmit }: DeckFormProps) {
+  const { t } = useLanguage();
   const [name, setName] = useState('');
   const [colors, setColors] = useState<InkColor[]>([]);
   const [loading, setLoading] = useState(false);
@@ -56,17 +58,17 @@ export function DeckForm({ open, onClose, onSubmit }: DeckFormProps) {
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Crear Nuevo Mazo</DialogTitle>
+          <DialogTitle>{t('deck.form.title')}</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="deckName">Nombre del Mazo</Label>
+            <Label htmlFor="deckName">{t('deck.form.name')}</Label>
             <Input
               id="deckName"
               value={name}
               onChange={(e) => setName(sanitizeInput(e.target.value))}
-              placeholder="Ej: Control Ambar/Amatista"
+              placeholder={t('deck.form.name.placeholder')}
               disabled={loading}
               maxLength={50}
               required
@@ -74,7 +76,7 @@ export function DeckForm({ open, onClose, onSubmit }: DeckFormProps) {
           </div>
           
           <div className="space-y-2">
-            <Label>Colores del Mazo</Label>
+            <Label>{t('deck.form.colors')}</Label>
             <ColorSelector
               selectedColors={colors}
               onColorsChange={handleColorsChange}
@@ -89,14 +91,14 @@ export function DeckForm({ open, onClose, onSubmit }: DeckFormProps) {
               disabled={loading}
               className="flex-1"
             >
-              Cancelar
+              {t('deck.form.cancel')}
             </Button>
             <Button 
               type="submit" 
               disabled={loading || !name.trim() || colors.length === 0}
               className="flex-1"
             >
-              {loading ? 'Creando...' : 'Crear Mazo'}
+              {loading ? t('deck.form.submitting') : t('deck.form.submit')}
             </Button>
           </div>
         </form>

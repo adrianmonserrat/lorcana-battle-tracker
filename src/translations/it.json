@@ -206,5 +206,6 @@
   "match.detailed_result.2_3_loss": "2-3 (Sconfitta - Persa vincendo due)",
   "match.detailed_result.1_3_loss": "1-3 (Sconfitta - Persa vincendo una)",
   "match.detailed_result.0_3_loss": "0-3 (Sconfitta - Perse tutte le partite)",
-  "match.detailed_result.tie": "Pareggio"
+  "match.detailed_result.tie": "Pareggio",
+  "deck.form.name.placeholder": "Es: Controllo Ambra/Ametista"
 }

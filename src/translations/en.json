@@ -206,5 +206,6 @@
   "match.detailed_result.2_3_loss": "2-3 (Defeat - Lost winning two)",
   "match.detailed_result.1_3_loss": "1-3 (Defeat - Lost winning one)",
   "match.detailed_result.0_3_loss": "0-3 (Defeat - Lost all games)",
-  "match.detailed_result.tie": "Tie"
+  "match.detailed_result.tie": "Tie",
+  "deck.form.name.placeholder": "e.g. Amber/Amethyst Control"
 }

@@ -206,5 +206,6 @@
   "match.detailed_result.2_3_loss": "2-3 (Défaite - Perdu en gagnant deux)",
   "match.detailed_result.1_3_loss": "1-3 (Défaite - Perdu en gagnant une)",
   "match.detailed_result.0_3_loss": "0-3 (Défaite - Perdu toutes les parties)",
-  "match.detailed_result.tie": "Égalité"
+  "match.detailed_result.tie": "Égalité",
+  "deck.form.name.placeholder": "Ex: Contrôle Ambre/Améthyste"
 }
