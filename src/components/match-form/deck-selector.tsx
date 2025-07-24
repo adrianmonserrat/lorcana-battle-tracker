@@ -7,6 +7,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { useUserDecks } from '@/hooks/useUserDecks';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { ColorSelector } from './color-selector';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface DeckSelectorProps {
   form: UseFormReturn<any>;
@@ -16,6 +17,7 @@ export function DeckSelector({ form }: DeckSelectorProps) {
   const { user } = useAuth();
   const { decks, loading } = useUserDecks();
   const [selectionMode, setSelectionMode] = useState<'existing' | 'manual'>('existing');
+  const { t } = useLanguage();
 
   const handleModeChange = (mode: 'existing' | 'manual') => {
     setSelectionMode(mode);
@@ -43,7 +45,7 @@ export function DeckSelector({ form }: DeckSelectorProps) {
   return (
     <div className="space-y-4">
       <div>
-        <FormLabel>Configuración de tu Mazo</FormLabel>
+        <FormLabel>{t('match.deck_configuration')}</FormLabel>
         <div className="flex gap-2 mt-2">
           <button
             type="button"
@@ -55,7 +57,7 @@ export function DeckSelector({ form }: DeckSelectorProps) {
             }`}
             disabled={!user}
           >
-            Mazo Existente
+            {t('match.existing_deck')}
           </button>
           <button
             type="button"
@@ -66,7 +68,7 @@ export function DeckSelector({ form }: DeckSelectorProps) {
                 : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
             }`}
           >
-            Manual
+            {t('match.manual')}
           </button>
         </div>
       </div>
@@ -77,7 +79,7 @@ export function DeckSelector({ form }: DeckSelectorProps) {
           name="userDeckId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Seleccionar Mazo Existente</FormLabel>
+              <FormLabel>{t('match.select_existing_deck')}</FormLabel>
               <FormControl>
                 <Select
                   value={field.value || ""}
@@ -87,24 +89,24 @@ export function DeckSelector({ form }: DeckSelectorProps) {
                   <SelectTrigger>
                     <SelectValue placeholder={
                       !user 
-                        ? "Inicia sesión para seleccionar un mazo" 
+                        ? t('match.login_to_select_deck')
                         : loading 
-                          ? "Cargando mazos..." 
-                          : "Selecciona un mazo"
+                          ? t('deck.loading')
+                          : t('match.select_deck')
                     } />
                   </SelectTrigger>
                   <SelectContent>
                     {!user ? (
                       <SelectItem value="no-user" disabled>
-                        Inicia sesión para ver tus mazos
+                        {t('match.login_to_see_decks')}
                       </SelectItem>
                     ) : loading ? (
                       <SelectItem value="loading" disabled>
-                        Cargando...
+                        {t('common.loading')}
                       </SelectItem>
                     ) : decks.length === 0 ? (
                       <SelectItem value="no-decks" disabled>
-                        No tienes mazos creados
+                        {t('deck.no_decks_created')}
                       </SelectItem>
                     ) : (
                       decks.map((deck) => (
@@ -127,10 +129,10 @@ export function DeckSelector({ form }: DeckSelectorProps) {
         name="userDeckName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Nombre de tu Mazo</FormLabel>
+            <FormLabel>{t('match.deck_name')}</FormLabel>
             <FormControl>
               <Input 
-                placeholder="Ej: Control Ambar/Amatista" 
+                placeholder={t('match.deck_name_placeholder')}
                 {...field}
                 disabled={selectionMode === 'existing'}
               />
@@ -145,7 +147,7 @@ export function DeckSelector({ form }: DeckSelectorProps) {
         name="userDeckColors"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Colores de tu Mazo</FormLabel>
+            <FormLabel>{t('match.deck_colors')}</FormLabel>
             <FormControl>
               <ColorSelector
                 selectedColors={field.value || []}

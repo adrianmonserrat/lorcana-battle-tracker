@@ -6,30 +6,32 @@ import { Plus } from 'lucide-react';
 import { DeckForm } from './DeckForm';
 import { DeckCard } from './DeckCard';
 import { useUserDecks } from '@/hooks/useUserDecks';
+import { useLanguage } from '@/context/LanguageContext';
 
 export function DecksSection() {
   const [showForm, setShowForm] = useState(false);
   const { decks, loading, createDeck, deleteDeck } = useUserDecks();
+  const { t } = useLanguage();
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle>Mis Mazos</CardTitle>
+            <CardTitle>{t('tabs.my_decks')}</CardTitle>
             <Button onClick={() => setShowForm(true)}>
               <Plus className="w-4 h-4 mr-2" />
-              Crear Nuevo Mazo
+              {t('deck.create_new')}
             </Button>
           </div>
         </CardHeader>
         
         <CardContent>
           {loading ? (
-            <p className="text-center text-muted-foreground">Cargando mazos...</p>
+            <p className="text-center text-muted-foreground">{t('deck.loading')}</p>
           ) : decks.length === 0 ? (
             <p className="text-center text-muted-foreground">
-              No tienes mazos creados. ¡Crea tu primer mazo!
+              {t('deck.no_decks_message')}
             </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

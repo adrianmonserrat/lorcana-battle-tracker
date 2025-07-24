@@ -6,6 +6,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { ColorSelector } from './color-selector';
 import { useUserDecks } from '@/hooks/useUserDecks';
 import { useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface OpponentDeckSelectorProps {
   form: UseFormReturn<any>;
@@ -14,6 +15,7 @@ interface OpponentDeckSelectorProps {
 export function OpponentDeckSelector({ form }: OpponentDeckSelectorProps) {
   const { decks } = useUserDecks();
   const [selectionMode, setSelectionMode] = useState<'manual' | 'existing'>('manual');
+  const { t } = useLanguage();
 
   const handleExistingDeckSelect = (deckId: string) => {
     const selectedDeck = decks.find(deck => deck.id === deckId);
@@ -35,7 +37,7 @@ export function OpponentDeckSelector({ form }: OpponentDeckSelectorProps) {
   return (
     <div className="space-y-4">
       <div>
-        <FormLabel>Configuración del Mazo Oponente</FormLabel>
+        <FormLabel>{t('match.opponent_deck_configuration')}</FormLabel>
         <div className="flex gap-2 mt-2">
           <button
             type="button"
@@ -46,7 +48,7 @@ export function OpponentDeckSelector({ form }: OpponentDeckSelectorProps) {
                 : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
             }`}
           >
-            Manual
+            {t('match.manual')}
           </button>
           <button
             type="button"
@@ -57,23 +59,23 @@ export function OpponentDeckSelector({ form }: OpponentDeckSelectorProps) {
                 : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
             }`}
           >
-            Mazo Existente
+            {t('match.existing_deck')}
           </button>
         </div>
       </div>
 
       {selectionMode === 'existing' && (
         <FormItem>
-          <FormLabel>Seleccionar Mazo Existente como Oponente</FormLabel>
+          <FormLabel>{t('match.select_existing_opponent_deck')}</FormLabel>
           <FormControl>
             <Select onValueChange={handleExistingDeckSelect}>
               <SelectTrigger>
-                <SelectValue placeholder="Selecciona un mazo existente" />
+                <SelectValue placeholder={t('match.select_existing_deck')} />
               </SelectTrigger>
               <SelectContent>
                 {decks.length === 0 ? (
                   <SelectItem value="no-decks" disabled>
-                    No tienes mazos creados
+                    {t('deck.no_decks_created')}
                   </SelectItem>
                 ) : (
                   decks.map((deck) => (
@@ -93,10 +95,10 @@ export function OpponentDeckSelector({ form }: OpponentDeckSelectorProps) {
         name="opponentDeckName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Nombre del Mazo Oponente (Opcional)</FormLabel>
+            <FormLabel>{t('match.opponent_deck_name')}</FormLabel>
             <FormControl>
               <Input 
-                placeholder="Ej: Mazo Azul/Rojo (opcional)" 
+                placeholder={t('match.opponent_deck_name_placeholder')}
                 {...field}
                 disabled={selectionMode === 'existing'}
               />
@@ -111,7 +113,7 @@ export function OpponentDeckSelector({ form }: OpponentDeckSelectorProps) {
         name="opponentDeckColors"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Colores del Mazo Oponente</FormLabel>
+            <FormLabel>{t('match.opponent_deck_colors')}</FormLabel>
             <FormControl>
               <ColorSelector
                 selectedColors={field.value || []}

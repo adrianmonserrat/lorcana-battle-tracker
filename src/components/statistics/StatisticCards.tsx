@@ -1,5 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface StatisticCardsProps {
   totalMatches: number;
@@ -10,11 +11,12 @@ interface StatisticCardsProps {
 }
 
 export function StatisticCards({ totalMatches, victories, defeats, ties, winRate }: StatisticCardsProps) {
+  const { t } = useLanguage();
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">Total de Partidas</CardTitle>
+          <CardTitle className="text-lg">{t('statistics.total_matches')}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-4xl font-bold">{totalMatches}</p>
@@ -23,7 +25,7 @@ export function StatisticCards({ totalMatches, victories, defeats, ties, winRate
       
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">V / E / D</CardTitle>
+          <CardTitle className="text-lg">{t('statistics.wins_ties_defeats')}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-4xl font-bold">
@@ -36,7 +38,7 @@ export function StatisticCards({ totalMatches, victories, defeats, ties, winRate
       
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">% de Victoria</CardTitle>
+          <CardTitle className="text-lg">{t('statistics.win_rate')}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-4xl font-bold">{winRate}%</p>

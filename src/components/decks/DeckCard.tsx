@@ -5,6 +5,7 @@ import { Trash2 } from 'lucide-react';
 import { InkColor } from '@/types';
 import { UserDeck } from '@/hooks/useUserDecks';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface DeckCardProps {
   deck: UserDeck;
@@ -12,6 +13,7 @@ interface DeckCardProps {
 }
 
 export function DeckCard({ deck, onDelete }: DeckCardProps) {
+  const { t } = useLanguage();
   const getColorClass = (color: InkColor) => {
     switch(color) {
       case 'Ambar': return 'bg-lorcana-amber/20 text-lorcana-amber border-lorcana-amber/30';
@@ -46,10 +48,10 @@ export function DeckCard({ deck, onDelete }: DeckCardProps) {
             {deck.colors.map((color) => (
               <span
                 key={color}
-                className={`px-2 py-1 rounded-md text-xs font-medium border ${getColorClass(color)}`}
-              >
-                {color}
-              </span>
+                 className={`px-2 py-1 rounded-md text-xs font-medium border ${getColorClass(color)}`}
+               >
+                 {t(`colors.${color.toLowerCase().replace('í', 'i')}`)}
+               </span>
             ))}
           </div>
           
@@ -61,7 +63,7 @@ export function DeckCard({ deck, onDelete }: DeckCardProps) {
         </div>
         
         <p className="text-sm text-muted-foreground mt-3">
-          Creado el {new Date(deck.created_at).toLocaleDateString('es-ES')}
+          {t('deck.created_at')} {new Date(deck.created_at).toLocaleDateString()}
         </p>
       </CardContent>
     </Card>
