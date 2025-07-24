@@ -18,38 +18,37 @@ export const useLanguage = () => {
   return context;
 };
 
-// Import all translations
+// Simple translations object to avoid import issues
 const translations = {
-  es: () => import('../translations/es.json').then(module => module.default),
-  en: () => import('../translations/en.json').then(module => module.default),
-  de: () => import('../translations/de.json').then(module => module.default),
-  fr: () => import('../translations/fr.json').then(module => module.default),
-  it: () => import('../translations/it.json').then(module => module.default),
+  es: {
+    'app.title': 'Contador Lorcana',
+    'nav.tournaments': 'Torneos',
+    'tabs.register_match': 'Registrar Partida',
+    'tabs.statistics': 'Estadísticas',
+    'tabs.my_decks': 'Mis Mazos',
+    'auth.access_required': 'Acceso Requerido',
+    'auth.login_required_decks': 'Necesitas iniciar sesión para gestionar tus mazos.',
+    'nav.login': 'Iniciar Sesión'
+  },
+  en: {
+    'app.title': 'Lorcana Counter',
+    'nav.tournaments': 'Tournaments',
+    'tabs.register_match': 'Register Match',
+    'tabs.statistics': 'Statistics',
+    'tabs.my_decks': 'My Decks',
+    'auth.access_required': 'Access Required',
+    'auth.login_required_decks': 'You need to login to manage your decks.',
+    'nav.login': 'Login'
+  }
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>('es');
-  const [translationsData, setTranslationsData] = useState<Record<string, string>>({});
-
-  // Load translations when language changes
-  useEffect(() => {
-    const loadTranslations = async () => {
-      try {
-        const data = await translations[language]();
-        setTranslationsData(data);
-      } catch (error) {
-        console.error('Error loading translations:', error);
-        setTranslationsData({});
-      }
-    };
-
-    loadTranslations();
-  }, [language]);
 
   // Load saved language from localStorage on mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('lorcana-language') as Language;
-    if (savedLanguage && Object.keys(translations).includes(savedLanguage)) {
+    if (savedLanguage && ['es', 'en', 'de', 'fr', 'it'].includes(savedLanguage)) {
       setLanguageState(savedLanguage);
     }
   }, []);
@@ -60,7 +59,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const t = (key: string): string => {
-    return translationsData[key] || key;
+    const currentTranslations = translations[language] || translations['es'];
+    return currentTranslations[key] || key;
   };
 
   const value: LanguageContextType = {
