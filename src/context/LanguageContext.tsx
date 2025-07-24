@@ -51,7 +51,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const t = (key: string): string => {
     const currentTranslations = translations[language] || translations['es'];
-    return currentTranslations[key] || key;
+    return (currentTranslations as Record<string, string>)[key] || key;
   };
 
   const value: LanguageContextType = {
