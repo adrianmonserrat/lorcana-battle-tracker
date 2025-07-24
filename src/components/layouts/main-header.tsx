@@ -6,6 +6,8 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { CurrentDateTime } from '@/components/current-datetime';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { LanguageSelector } from '@/components/language-selector';
+import { useLanguage } from '@/context/LanguageContext';
 import { LogOut, User, LogIn, Settings, Menu } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -30,6 +32,7 @@ export function MainHeader({
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { profile, refreshProfile } = useUserProfile();
+  const { t } = useLanguage();
   const isMobile = useIsMobile();
   
   // Refresh profile data periodically to ensure header stays updated
@@ -55,21 +58,23 @@ export function MainHeader({
   
   const NavigationButtons = () => (
     <>
+      <LanguageSelector size={isMobile ? "sm" : "default"} />
+      
       {showTourneosButton && (
         <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={() => navigate('/torneos')}>
-          Torneos
+          {t('nav.tournaments')}
         </Button>
       )}
       
       {showPartidasButton && (
         <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={() => navigate('/')}>
-          Partidas
+          {t('nav.matches')}
         </Button>
       )}
       
       {showMisMazosButton && user && (
         <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={() => navigate('/mis-mazos')}>
-          {isMobile ? 'Mazos' : 'Mis Mazos'}
+          {isMobile ? t('nav.decks') : t('nav.my_decks')}
         </Button>
       )}
       
@@ -85,8 +90,8 @@ export function MainHeader({
     <header className="border-b p-2 sm:p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container max-w-7xl mx-auto flex justify-between items-center gap-2">
         <Link to="/" className="text-lg sm:text-2xl font-bold hover:text-primary transition-colors shrink-0">
-          <span className="hidden sm:inline">Contador Lorcana</span>
-          <span className="sm:hidden">Lorcana</span>
+          <span className="hidden sm:inline">{t('app.title')}</span>
+          <span className="sm:hidden">{t('app.title.short')}</span>
         </Link>
         
         <div className="hidden sm:block">
@@ -106,18 +111,18 @@ export function MainHeader({
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <Settings className="w-4 h-4 mr-2" />
-                    Mi Perfil
+                    {t('nav.profile')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="w-4 h-4 mr-2" />
-                    Cerrar Sesión
+                    {t('nav.logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Button variant="outline" size="sm" onClick={() => navigate('/auth')}>
                 <LogIn className="w-4 h-4 mr-1" />
-                <span className="text-xs">Entrar</span>
+                <span className="text-xs">{t('nav.enter')}</span>
               </Button>
             )}
             
@@ -155,18 +160,18 @@ export function MainHeader({
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <Settings className="w-4 h-4 mr-2" />
-                    Mi Perfil
+                    {t('nav.profile')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="w-4 h-4 mr-2" />
-                    Cerrar Sesión
+                    {t('nav.logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Button variant="outline" onClick={() => navigate('/auth')}>
                 <LogIn className="w-4 h-4 mr-2" />
-                Iniciar Sesión
+                {t('nav.login')}
               </Button>
             )}
             

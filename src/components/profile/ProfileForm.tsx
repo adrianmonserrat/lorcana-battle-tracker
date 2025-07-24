@@ -7,11 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useAuth } from '@/components/auth/AuthProvider';
+import { useLanguage } from '@/context/LanguageContext';
 import { toast } from '@/hooks/use-toast';
 
 export function ProfileForm() {
   const { user } = useAuth();
   const { profile, loading, updateProfile } = useUserProfile();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [displayName, setDisplayName] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
@@ -32,14 +34,14 @@ export function ProfileForm() {
     try {
       await updateProfile(displayName.trim());
       toast({
-        title: "Perfil actualizado",
-        description: "Tu perfil se ha actualizado correctamente.",
+        title: t('profile.updated'),
+        description: t('profile.updated_description'),
       });
     } catch (error) {
       // Error is already handled in the hook
       toast({
-        title: "Error",
-        description: "No se pudo actualizar el perfil. Inténtalo de nuevo.",
+        title: t('profile.error'),
+        description: t('profile.error_description'),
         variant: "destructive",
       });
     } finally {
@@ -53,7 +55,7 @@ export function ProfileForm() {
         <CardContent className="p-4 sm:p-6">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p>Cargando perfil...</p>
+            <p>{t('profile.loading')}</p>
           </div>
         </CardContent>
       </Card>
@@ -63,12 +65,12 @@ export function ProfileForm() {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader className="p-4 sm:p-6">
-        <CardTitle className="text-xl sm:text-2xl">Perfil de Usuario</CardTitle>
+        <CardTitle className="text-xl sm:text-2xl">{t('profile.title')}</CardTitle>
       </CardHeader>
       <CardContent className="p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+            <Label htmlFor="email" className="text-sm font-medium">{t('auth.email')}</Label>
             <Input
               id="email"
               type="email"
@@ -77,23 +79,23 @@ export function ProfileForm() {
               className="bg-muted text-muted-foreground cursor-not-allowed"
             />
             <p className="text-xs text-muted-foreground">
-              El email no se puede modificar
+              {t('profile.email_readonly')}
             </p>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="displayName" className="text-sm font-medium">Nombre para mostrar</Label>
+            <Label htmlFor="displayName" className="text-sm font-medium">{t('auth.display_name')}</Label>
             <Input
               id="displayName"
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Ingresa tu nombre o apodo"
+              placeholder={t('profile.display_name_placeholder')}
               disabled={isUpdating}
               className="w-full"
             />
             <p className="text-xs text-muted-foreground">
-              Este nombre se mostrará en lugar de tu email en la aplicación
+              {t('profile.display_name_help')}
             </p>
           </div>
           
@@ -102,7 +104,7 @@ export function ProfileForm() {
             disabled={isUpdating || !displayName.trim() || displayName === profile?.display_name}
             className="w-full sm:w-auto"
           >
-            {isUpdating ? 'Actualizando...' : 'Actualizar Perfil'}
+            {isUpdating ? t('profile.updating') : t('profile.update')}
           </Button>
         </form>
       </CardContent>

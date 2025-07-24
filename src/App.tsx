@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LorcanaProvider } from "@/context/LorcanaContext";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { LanguageProvider } from "@/context/LanguageContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 import Index from "./pages/Index";
@@ -23,8 +24,9 @@ const queryClient = new QueryClient();
 const App = () => (
   <ThemeProvider defaultTheme="light">
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <LorcanaProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <LorcanaProvider>
           <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -41,8 +43,9 @@ const App = () => (
               </Routes>
             </BrowserRouter>
           </TooltipProvider>
-        </LorcanaProvider>
-      </AuthProvider>
+          </LorcanaProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </QueryClientProvider>
   </ThemeProvider>
 );
