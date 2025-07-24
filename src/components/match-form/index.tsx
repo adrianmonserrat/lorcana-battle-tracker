@@ -9,6 +9,7 @@ import { Form } from '@/components/ui/form';
 import { useMatchRecords } from '@/hooks/useMatchRecords';
 import { useUserDecks } from '@/hooks/useUserDecks';
 import { useLorcana } from '@/context/lorcana/LorcanaProvider';
+import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'sonner';
 import { InkColor, GameFormat, MatchFormat, MatchResult, InitialTurn } from '@/types';
 
@@ -46,6 +47,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
   const { createMatch, loading } = useMatchRecords();
   const { decks } = useUserDecks();
   const { addTournamentMatch, tournaments } = useLorcana();
+  const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Find the tournament if we have a tournamentId
@@ -95,7 +97,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
       
       // Validar que tengamos los datos necesarios del mazo del usuario
       if (!data.userDeckId && (!data.userDeckName || !data.userDeckColors || data.userDeckColors.length === 0)) {
-        toast.error('Debes especificar tu mazo o seleccionar uno existente');
+        toast.error(t('match.form.error_deck'));
         return;
       }
 
@@ -146,7 +148,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
       });
       
       // Show success message
-      toast.success(tournamentId ? '¡Partida de torneo registrada exitosamente!' : '¡Partida registrada exitosamente!');
+      toast.success(tournamentId ? t('match.form.success_tournament') : t('match.form.success'));
       
       // Call onSuccess callback if provided
       if (onSuccess) {
@@ -155,7 +157,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
       
     } catch (error) {
       console.error('Error creating match:', error);
-      toast.error('Error al registrar la partida');
+      toast.error(t('match.form.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -169,10 +171,10 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>
-          {tournamentId ? 'Agregar Partida al Torneo' : 'Registrar Nueva Partida'}
+          {tournamentId ? t('match.form.title_tournament') : t('match.form.title')}
           {tournament?.defaultDeck && (
             <p className="text-sm text-muted-foreground mt-1">
-              Usando mazo por defecto: {tournament.defaultDeck.name}
+              {t('match.form.default_deck')}: {tournament.defaultDeck.name}
             </p>
           )}
         </CardTitle>
@@ -194,7 +196,7 @@ export function MatchForm({ tournamentId, onSuccess }: MatchFormProps = {}) {
               className="w-full" 
               disabled={loading || isSubmitting}
             >
-              {isSubmitting ? 'Registrando...' : tournamentId ? 'Registrar Partida de Torneo' : 'Registrar Partida'}
+              {isSubmitting ? t('match.form.submitting') : tournamentId ? t('match.form.submit_tournament') : t('match.form.submit')}
             </Button>
           </form>
         </Form>
