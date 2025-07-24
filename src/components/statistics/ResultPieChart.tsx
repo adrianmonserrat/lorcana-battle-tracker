@@ -1,12 +1,14 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, Tooltip } from "recharts";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ResultPieChartProps {
   resultData: Array<{ name: string; value: number }>;
 }
 
 export function ResultPieChart({ resultData }: ResultPieChartProps) {
+  const { t } = useLanguage();
   const COLORS = ["#00A651", "#FFB81C", "#E31937"];
   
   // Preparar los datos para la gráfica de barras
@@ -20,7 +22,7 @@ export function ResultPieChart({ resultData }: ResultPieChartProps) {
   return (
     <Card className="col-span-1">
       <CardHeader>
-        <CardTitle>Distribución de Resultados</CardTitle>
+        <CardTitle>{t('statistics.charts.result_distribution')}</CardTitle>
       </CardHeader>
       <CardContent className="h-[350px]">
         <ResponsiveContainer width="100%" height="100%">

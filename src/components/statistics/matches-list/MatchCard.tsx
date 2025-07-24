@@ -1,6 +1,6 @@
 
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { es, enUS, de, fr, it } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { 
@@ -17,6 +17,7 @@ import {
 import { EnhancedMatch } from "./types";
 import { getInkColorHex } from "../utils";
 import { useMatchRecords } from "@/hooks/useMatchRecords";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface MatchCardProps {
   match: EnhancedMatch;
@@ -25,6 +26,18 @@ interface MatchCardProps {
 
 export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
   const { deleteMatch: deleteSupabaseMatch } = useMatchRecords();
+  const { t, language } = useLanguage();
+  
+  // Get locale for date formatting
+  const getLocale = () => {
+    switch (language) {
+      case 'en': return enUS;
+      case 'de': return de;
+      case 'fr': return fr;
+      case 'it': return it;
+      default: return es;
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -46,19 +59,19 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
   const getResultDisplay = () => {
     if (match.detailedResult) {
       if (match.detailedResult === 'Empate') {
-        return { text: 'Empate', color: 'text-amber-500' };
+        return { text: t('match.result.draw'), color: 'text-amber-500' };
       } else if (match.detailedResult === '2-0' || match.detailedResult === '2-1') {
-        return { text: `Victoria ${match.detailedResult}`, color: 'text-emerald-500' };
+        return { text: `${t('match.result.win')} ${match.detailedResult}`, color: 'text-emerald-500' };
       } else {
-        return { text: `Derrota ${match.detailedResult}`, color: 'text-red-500' };
+        return { text: `${t('match.result.loss')} ${match.detailedResult}`, color: 'text-red-500' };
       }
     } else {
       // Fallback to basic result
       return match.result === 'Victoria' 
-        ? { text: 'Victoria', color: 'text-emerald-500' }
+        ? { text: t('match.result.win'), color: 'text-emerald-500' }
         : match.result === 'Empate' 
-          ? { text: 'Empate', color: 'text-amber-500' }
-          : { text: 'Derrota', color: 'text-red-500' };
+          ? { text: t('match.result.draw'), color: 'text-amber-500' }
+          : { text: t('match.result.loss'), color: 'text-red-500' };
     }
   };
 
@@ -78,12 +91,12 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
             <span className={resultDisplay.color}>{resultDisplay.text}</span>
             {match.tournamentName && (
               <span className="ml-2 text-sm text-muted-foreground">
-                (Torneo: {match.tournamentName})
+                ({t('nav.tournaments')}: {match.tournamentName})
               </span>
             )}
           </div>
           <div className="text-sm text-muted-foreground">
-            {format(new Date(match.date), "dd 'de' MMMM 'de' yyyy, HH:mm", { locale: es })}
+            {format(new Date(match.date), "dd MMMM yyyy, HH:mm", { locale: getLocale() })}
           </div>
         </div>
         
@@ -95,18 +108,18 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Eliminar partida</AlertDialogTitle>
+              <AlertDialogTitle>{t('common.delete')} {t('nav.matches').toLowerCase()}</AlertDialogTitle>
               <AlertDialogDescription>
-                ¿Estás seguro que quieres eliminar esta partida? Esta acción no se puede deshacer.
+                {t('deck.delete.description')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
               <AlertDialogAction 
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 onClick={handleDelete}
               >
-                Eliminar
+                {t('common.delete')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -114,24 +127,24 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
       </div>
       
       <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <DeckInfo title="Mi Mazo" deck={match.myDeck} />
-        <DeckInfo title="Mazo Rival" deck={match.opponentDeck} />
+        <DeckInfo title={t('match.my_deck')} deck={match.myDeck} />
+        <DeckInfo title={t('match.opponent_deck')} deck={match.opponentDeck} />
       </div>
       
       <div className="mt-2 text-sm space-y-1">
         <div>
-          <span className="font-medium">Formato: </span>
+          <span className="font-medium">{t('match.format')}: </span>
           <span>{match.gameFormat} ({match.matchFormat})</span>
         </div>
         {match.initialTurn && (
           <div>
-            <span className="font-medium">Turno: </span>
+            <span className="font-medium">{t('match.initial_turn')}: </span>
             <span className={`px-2 py-0.5 rounded-full text-xs ${
               match.initialTurn === 'OTP' 
                 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' 
                 : 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
             }`}>
-              {match.initialTurn === 'OTP' ? 'OTP (On the Play)' : 'OTD (On the Draw)'}
+              {match.initialTurn === 'OTP' ? t('match.on_the_play') : t('match.on_the_draw')}
             </span>
           </div>
         )}
@@ -139,7 +152,7 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
       
       {match.notes && (
         <div className="mt-2">
-          <h4 className="text-sm font-medium">Notas:</h4>
+          <h4 className="text-sm font-medium">{t('match.notes')}:</h4>
           <p className="text-xs whitespace-pre-wrap">{match.notes}</p>
         </div>
       )}

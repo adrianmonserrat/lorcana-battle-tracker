@@ -207,5 +207,41 @@
   "match.detailed_result.1_3_loss": "1-3 (Derrota - Perdiste ganando una)",
   "match.detailed_result.0_3_loss": "0-3 (Derrota - Perdiste todas las partidas)",
   "match.detailed_result.tie": "Empate",
-  "deck.form.name.placeholder": "Ej: Control Ambar/Amatista"
+  "deck.form.name.placeholder": "Ej: Control Ambar/Amatista",
+  "statistics.filter": {
+    "title": "Filtrar estadísticas",
+    "all": "Todas las partidas",
+    "freeplay": "Solo partidas libres",
+    "tournament": "Solo partidas de torneo",
+    "infinity": "Solo formato Infinity Constructor",
+    "standard": "Solo formato Estándar"
+  },
+  "statistics.charts": {
+    "result_distribution": "Distribución de Resultados",
+    "color_performance": "Rendimiento por Color",
+    "initial_turn_stats": "Estadísticas por Turno Inicial"
+  },
+  "statistics.matches_list": {
+    "title": "Lista de Partidas",
+    "no_matches": "No hay partidas que coincidan con los filtros seleccionados",
+    "filters": {
+      "color": "Color",
+      "source": "Origen",
+      "format": "Formato",
+      "initial_turn": "Turno Inicial",
+      "all_colors": "Todos los colores",
+      "all_sources": "Todos los orígenes",
+      "all_formats": "Todos los formatos",
+      "all_turns": "Todos los turnos",
+      "freeplay": "Partida libre",
+      "tournament": "Torneo"
+    }
+  },
+  "statistics.initial_turn": {
+    "otp": "OTP (Primero)",
+    "otd": "OTD (Segundo)",
+    "stats_title": "Estadísticas por Turno Inicial",
+    "matches": "partidas",
+    "win_rate": "% Victoria"
+  }
 }

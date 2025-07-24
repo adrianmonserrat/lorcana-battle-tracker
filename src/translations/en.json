@@ -207,5 +207,41 @@
   "match.detailed_result.1_3_loss": "1-3 (Defeat - Lost winning one)",
   "match.detailed_result.0_3_loss": "0-3 (Defeat - Lost all games)",
   "match.detailed_result.tie": "Tie",
-  "deck.form.name.placeholder": "e.g. Amber/Amethyst Control"
+  "deck.form.name.placeholder": "e.g. Amber/Amethyst Control",
+  "statistics.filter": {
+    "title": "Filter statistics",
+    "all": "All matches",
+    "freeplay": "Only freeplay matches",
+    "tournament": "Only tournament matches",
+    "infinity": "Only Infinity Constructor format",
+    "standard": "Only Standard format"
+  },
+  "statistics.charts": {
+    "result_distribution": "Result Distribution",
+    "color_performance": "Performance by Color",
+    "initial_turn_stats": "Statistics by Initial Turn"
+  },
+  "statistics.matches_list": {
+    "title": "Matches List",
+    "no_matches": "No matches found matching the selected filters",
+    "filters": {
+      "color": "Color",
+      "source": "Source",
+      "format": "Format",
+      "initial_turn": "Initial Turn",
+      "all_colors": "All colors",
+      "all_sources": "All sources",
+      "all_formats": "All formats",
+      "all_turns": "All turns",
+      "freeplay": "Freeplay",
+      "tournament": "Tournament"
+    }
+  },
+  "statistics.initial_turn": {
+    "otp": "OTP (On the Play)",
+    "otd": "OTD (On the Draw)",
+    "stats_title": "Statistics by Initial Turn",
+    "matches": "matches",
+    "win_rate": "Win Rate"
+  }
 }

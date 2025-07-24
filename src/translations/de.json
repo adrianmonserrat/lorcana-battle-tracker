@@ -207,5 +207,41 @@
   "match.detailed_result.1_3_loss": "1-3 (Niederlage - Verloren mit einem Sieg)",
   "match.detailed_result.0_3_loss": "0-3 (Niederlage - Alle Spiele verloren)",
   "match.detailed_result.tie": "Unentschieden",
-  "deck.form.name.placeholder": "z.B. Bernstein/Amethyst Kontrolle"
+  "deck.form.name.placeholder": "z.B. Bernstein/Amethyst Kontrolle",
+  "statistics.filter": {
+    "title": "Statistiken filtern",
+    "all": "Alle Spiele",
+    "freeplay": "Nur freie Spiele",
+    "tournament": "Nur Turnierspiele",
+    "infinity": "Nur Infinity Constructor Format",
+    "standard": "Nur Standard Format"
+  },
+  "statistics.charts": {
+    "result_distribution": "Ergebnisverteilung",
+    "color_performance": "Leistung nach Farbe",
+    "initial_turn_stats": "Statistiken nach Startzug"
+  },
+  "statistics.matches_list": {
+    "title": "Spieleliste",
+    "no_matches": "Keine Spiele gefunden, die den ausgewählten Filtern entsprechen",
+    "filters": {
+      "color": "Farbe",
+      "source": "Quelle",
+      "format": "Format",
+      "initial_turn": "Startzug",
+      "all_colors": "Alle Farben",
+      "all_sources": "Alle Quellen",
+      "all_formats": "Alle Formate",
+      "all_turns": "Alle Züge",
+      "freeplay": "Freies Spiel",
+      "tournament": "Turnier"
+    }
+  },
+  "statistics.initial_turn": {
+    "otp": "OTP (Erster Zug)",
+    "otd": "OTD (Zweiter Zug)",
+    "stats_title": "Statistiken nach Startzug",
+    "matches": "Spiele",
+    "win_rate": "Siegesrate"
+  }
 }

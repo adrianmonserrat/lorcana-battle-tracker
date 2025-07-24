@@ -57,7 +57,20 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const t = (key: string): string => {
     const currentTranslations = translations[language] || translations['es'];
-    return (currentTranslations as Record<string, string>)[key] || key;
+    
+    // Handle nested keys like 'statistics.filter.title'
+    const keys = key.split('.');
+    let value: any = currentTranslations;
+    
+    for (const k of keys) {
+      if (value && typeof value === 'object' && k in value) {
+        value = value[k];
+      } else {
+        return key; // Return key if not found
+      }
+    }
+    
+    return typeof value === 'string' ? value : key;
   };
 
   const value: LanguageContextType = {

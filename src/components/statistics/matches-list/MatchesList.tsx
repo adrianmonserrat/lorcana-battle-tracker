@@ -6,9 +6,11 @@ import { MatchFilters } from "./MatchFilters";
 import { MatchCard } from "./MatchCard";
 import { useLorcana } from "@/context/LorcanaContext";
 import { InkColor, GameFormat } from "@/types";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function MatchesList({ matches, tournaments, onMatchDelete }: MatchesListProps) {
   const { deleteMatch } = useLorcana();
+  const { t } = useLanguage();
   const [colorFilter, setColorFilter] = useState<string>("all");
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [formatFilter, setFormatFilter] = useState<string>("all");
@@ -87,7 +89,7 @@ export function MatchesList({ matches, tournaments, onMatchDelete }: MatchesList
   return (
     <Card>
       <CardHeader className="flex flex-col space-y-4">
-        <CardTitle>Listado de todas las partidas</CardTitle>
+        <CardTitle>{t('statistics.matches_list.title')}</CardTitle>
         <MatchFilters
           colorFilter={colorFilter}
           setColorFilter={setColorFilter}
@@ -114,7 +116,7 @@ export function MatchesList({ matches, tournaments, onMatchDelete }: MatchesList
           </div>
         ) : (
           <p className="text-center text-muted-foreground">
-            No hay partidas que coincidan con los filtros seleccionados
+            {t('statistics.matches_list.no_matches')}
           </p>
         )}
       </CardContent>
