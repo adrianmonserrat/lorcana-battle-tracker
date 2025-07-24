@@ -13,14 +13,20 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    // Provide a fallback instead of throwing error to prevent app crashes
+    console.warn('useLanguage called outside of LanguageProvider, using fallback');
+    return {
+      language: 'es' as Language,
+      setLanguage: () => {},
+      t: (key: string) => key
+    };
   }
   return context;
 };
 
 // Import translations
 import esTranslations from '../translations/es.json';
-import enTranslations from '../translations/en.json';
+import enTranslations from '../translations/en.json';  
 import deTranslations from '../translations/de.json';
 import frTranslations from '../translations/fr.json';
 import itTranslations from '../translations/it.json';
