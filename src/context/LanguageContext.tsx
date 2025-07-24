@@ -18,28 +18,19 @@ export const useLanguage = () => {
   return context;
 };
 
-// Simple translations object to avoid import issues
+// Import translations
+import esTranslations from '../translations/es.json';
+import enTranslations from '../translations/en.json';
+import deTranslations from '../translations/de.json';
+import frTranslations from '../translations/fr.json';
+import itTranslations from '../translations/it.json';
+
 const translations = {
-  es: {
-    'app.title': 'Contador Lorcana',
-    'nav.tournaments': 'Torneos',
-    'tabs.register_match': 'Registrar Partida',
-    'tabs.statistics': 'Estadísticas',
-    'tabs.my_decks': 'Mis Mazos',
-    'auth.access_required': 'Acceso Requerido',
-    'auth.login_required_decks': 'Necesitas iniciar sesión para gestionar tus mazos.',
-    'nav.login': 'Iniciar Sesión'
-  },
-  en: {
-    'app.title': 'Lorcana Counter',
-    'nav.tournaments': 'Tournaments',
-    'tabs.register_match': 'Register Match',
-    'tabs.statistics': 'Statistics',
-    'tabs.my_decks': 'My Decks',
-    'auth.access_required': 'Access Required',
-    'auth.login_required_decks': 'You need to login to manage your decks.',
-    'nav.login': 'Login'
-  }
+  es: esTranslations,
+  en: enTranslations,
+  de: deTranslations,
+  fr: frTranslations,
+  it: itTranslations,
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
