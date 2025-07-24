@@ -3,14 +3,15 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { InkColor } from '@/types';
+import { useLanguage } from '@/context/LanguageContext';
 
-const COLORS: { value: InkColor; label: string; color: string }[] = [
-  { value: 'Ambar', label: 'Ámbar', color: 'bg-lorcana-amber' },
-  { value: 'Amatista', label: 'Amatista', color: 'bg-lorcana-amethyst' },
-  { value: 'Esmeralda', label: 'Esmeralda', color: 'bg-lorcana-emerald' },
-  { value: 'Rubí', label: 'Rubí', color: 'bg-lorcana-ruby' },
-  { value: 'Zafiro', label: 'Zafiro', color: 'bg-lorcana-sapphire' },
-  { value: 'Acero', label: 'Acero', color: 'bg-lorcana-steel' },
+const COLORS: { value: InkColor; color: string; translationKey: string }[] = [
+  { value: 'Ambar', color: 'bg-lorcana-amber', translationKey: 'colors.amber' },
+  { value: 'Amatista', color: 'bg-lorcana-amethyst', translationKey: 'colors.amethyst' },
+  { value: 'Esmeralda', color: 'bg-lorcana-emerald', translationKey: 'colors.emerald' },
+  { value: 'Rubí', color: 'bg-lorcana-ruby', translationKey: 'colors.ruby' },
+  { value: 'Zafiro', color: 'bg-lorcana-sapphire', translationKey: 'colors.sapphire' },
+  { value: 'Acero', color: 'bg-lorcana-steel', translationKey: 'colors.steel' },
 ];
 
 interface ColorSelectorProps {
@@ -20,6 +21,7 @@ interface ColorSelectorProps {
 }
 
 export function ColorSelector({ selectedColors, onColorsChange, disabled = false }: ColorSelectorProps) {
+  const { t } = useLanguage();
   const handleColorToggle = (color: string) => {
     if (disabled) return;
     
@@ -47,7 +49,7 @@ export function ColorSelector({ selectedColors, onColorsChange, disabled = false
           )}
         >
           <div className={cn("w-4 h-4 rounded-full border", color.color)} />
-          <span className="text-sm">{color.label}</span>
+          <span className="text-sm">{t(color.translationKey)}</span>
         </Button>
       ))}
     </div>

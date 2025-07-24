@@ -4,12 +4,14 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/comp
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { UseFormReturn } from 'react-hook-form';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface DetailedResultSelectorProps {
   form: UseFormReturn<any>;
 }
 
 export function DetailedResultSelector({ form }: DetailedResultSelectorProps) {
+  const { t } = useLanguage();
   const matchFormat = form.watch('matchFormat');
   const detailedResult = form.watch('detailedResult');
   
@@ -55,25 +57,25 @@ export function DetailedResultSelector({ form }: DetailedResultSelectorProps) {
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="2-0" id="2-0" />
         <Label htmlFor="2-0" className="cursor-pointer">
-          2-0 (Victoria - Ganaste ambas partidas)
+          {t('match.detailed_result.2_0_win')}
         </Label>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="2-1" id="2-1" />
         <Label htmlFor="2-1" className="cursor-pointer">
-          2-1 (Victoria - Ganaste pero perdiste una)
+          {t('match.detailed_result.2_1_win')}
         </Label>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="1-2" id="1-2" />
         <Label htmlFor="1-2" className="cursor-pointer">
-          1-2 (Derrota - Perdiste pero ganaste una)
+          {t('match.detailed_result.1_2_loss')}
         </Label>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="0-2" id="0-2" />
         <Label htmlFor="0-2" className="cursor-pointer">
-          0-2 (Derrota - Perdiste ambas partidas)
+          {t('match.detailed_result.0_2_loss')}
         </Label>
       </div>
     </>
@@ -84,37 +86,37 @@ export function DetailedResultSelector({ form }: DetailedResultSelectorProps) {
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="3-0" id="3-0" />
         <Label htmlFor="3-0" className="cursor-pointer">
-          3-0 (Victoria - Ganaste todas las partidas)
+          {t('match.detailed_result.3_0_win')}
         </Label>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="3-1" id="3-1" />
         <Label htmlFor="3-1" className="cursor-pointer">
-          3-1 (Victoria - Ganaste perdiendo una)
+          {t('match.detailed_result.3_1_win')}
         </Label>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="3-2" id="3-2" />
         <Label htmlFor="3-2" className="cursor-pointer">
-          3-2 (Victoria - Ganaste perdiendo dos)
+          {t('match.detailed_result.3_2_win')}
         </Label>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="2-3" id="2-3" />
         <Label htmlFor="2-3" className="cursor-pointer">
-          2-3 (Derrota - Perdiste ganando dos)
+          {t('match.detailed_result.2_3_loss')}
         </Label>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="1-3" id="1-3" />
         <Label htmlFor="1-3" className="cursor-pointer">
-          1-3 (Derrota - Perdiste ganando una)
+          {t('match.detailed_result.1_3_loss')}
         </Label>
       </div>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="0-3" id="0-3" />
         <Label htmlFor="0-3" className="cursor-pointer">
-          0-3 (Derrota - Perdiste todas las partidas)
+          {t('match.detailed_result.0_3_loss')}
         </Label>
       </div>
     </>
@@ -130,7 +132,7 @@ export function DetailedResultSelector({ form }: DetailedResultSelectorProps) {
       name="detailedResult"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Resultado Detallado de la Partida</FormLabel>
+          <FormLabel>{t('match.detailed_result.title')}</FormLabel>
           <FormControl>
             <RadioGroup
               onValueChange={handleDetailedResultChange}
@@ -142,7 +144,7 @@ export function DetailedResultSelector({ form }: DetailedResultSelectorProps) {
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="Empate" id="empate-detailed" />
                 <Label htmlFor="empate-detailed" className="cursor-pointer">
-                  Empate
+                  {t('match.detailed_result.tie')}
                 </Label>
               </div>
             </RadioGroup>
