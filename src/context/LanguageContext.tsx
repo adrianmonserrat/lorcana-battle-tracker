@@ -39,6 +39,14 @@ const translations = {
   it: itTranslations,
 };
 
+// Debug: Log translations structure on load
+console.log('Translations loaded:', {
+  es: !!esTranslations,
+  esKeys: Object.keys(esTranslations || {}).length,
+  sampleEsKey: esTranslations?.['match.form.title'],
+  esType: typeof esTranslations,
+});
+
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>('es');
 
@@ -56,7 +64,22 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const t = (key: string): string => {
+    // Simple debug log for all translations
+    console.log('Translation requested:', { key, language, translationsAvailable: Object.keys(translations) });
+    
     const currentTranslations = translations[language] || translations['es'];
+    
+    // More specific debug for problematic keys
+    if (key === 'match.form.title' || key === 'colors.amber' || key === 'match.best_of_3') {
+      console.log('Detailed translation debug:', {
+        key,
+        language,
+        currentTranslations: currentTranslations,
+        translationType: typeof currentTranslations,
+        matchFormTitle: currentTranslations?.['match.form.title'],
+        hasMatchKey: 'match.form.title' in (currentTranslations || {}),
+      });
+    }
     
     // Handle nested keys like 'statistics.filter.title'
     const keys = key.split('.');
