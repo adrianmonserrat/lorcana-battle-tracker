@@ -88,19 +88,25 @@ export function Statistics() {
       'Acero': { matches: 0, victories: 0, ties: 0, defeats: 0 }
     };
     
-    // Count opponent colors from Supabase matches
+    // Count our deck colors from Supabase matches
     filteredMatches.forEach(match => {
-      match.opponent_deck_colors.forEach(color => {
-        if (colorStats[color]) {
-          colorStats[color].matches++;
-          if (match.result === 'Victoria') colorStats[color].victories++;
-          else if (match.result === 'Derrota') colorStats[color].defeats++;
-          else if (match.result === 'Empate') colorStats[color].ties++;
-        }
-      });
+      const userDeck = match.user_deck_id 
+        ? decks.find(deck => deck.id === match.user_deck_id)
+        : null;
+      
+      if (userDeck) {
+        userDeck.colors.forEach(color => {
+          if (colorStats[color]) {
+            colorStats[color].matches++;
+            if (match.result === 'Victoria') colorStats[color].victories++;
+            else if (match.result === 'Derrota') colorStats[color].defeats++;
+            else if (match.result === 'Empate') colorStats[color].ties++;
+          }
+        });
+      }
     });
 
-    // Count opponent colors from tournament matches
+    // Count our deck colors from tournament matches
     tournaments.forEach(tournament => {
       tournament.matches.forEach(match => {
         const passesFilter = selectedFilter === 'all' ? 
@@ -110,7 +116,7 @@ export function Statistics() {
             match.gameFormat === 'Estándar';
         
         if (passesFilter) {
-          match.opponentDeck.colors.forEach(color => {
+          match.myDeck.colors.forEach(color => {
             if (colorStats[color]) {
               colorStats[color].matches++;
               if (match.result === 'Victoria') colorStats[color].victories++;
@@ -188,7 +194,11 @@ export function Statistics() {
         
         {/* Initial Turn Statistics */}
         {statsData.totalMatches > 0 && (
-          <InitialTurnStats matches={statsData.filteredMatches} />
+          <InitialTurnStats 
+            matches={statsData.filteredMatches} 
+            tournaments={tournaments}
+            selectedFilter={selectedFilter}
+          />
         )}
         
         {statsData.totalMatches > 0 && (
