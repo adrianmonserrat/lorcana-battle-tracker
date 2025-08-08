@@ -50,7 +50,6 @@ const { t } = useLanguage();
                 <SheetDescription>
                   {t('match.form.title')}
                 </SheetDescription>
-                </SheetDescription>
               </SheetHeader>
               <ScrollArea className="h-full pr-4 mt-4">
                 <MatchForm 
