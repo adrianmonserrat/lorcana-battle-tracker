@@ -14,7 +14,7 @@ import { useUserDecks } from "@/hooks/useUserDecks";
 import { useLorcana } from "@/context/lorcana/LorcanaProvider";
 import { useLanguage } from "@/context/LanguageContext";
 import { useMemo } from "react";
-import { calculateWinRate } from "./utils";
+import { calculateWinRate, getInkColorTranslationKey } from "./utils";
 
 export function Statistics() {
   const { t } = useLanguage();
@@ -131,7 +131,7 @@ export function Statistics() {
     });
 
     const colorData = Object.entries(colorStats).map(([color, data]) => ({
-      name: color,
+      name: t(getInkColorTranslationKey(color) || color),
       total: data.matches,
       victorias: data.victories,
       empates: data.ties,

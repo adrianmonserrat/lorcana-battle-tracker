@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from "recharts";
 import { ChartTooltip } from "./ChartTooltip";
 import { useLanguage } from "@/context/LanguageContext";
+import { getInkColorTranslationKey } from "./utils";
 
 interface ColorData {
   name: string;
@@ -30,7 +31,7 @@ export function ColorPerformanceChart({ colorData }: ColorPerformanceChartProps)
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={colorData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="name" tickFormatter={(value: string) => t(getInkColorTranslationKey(value) || value)} />
             <YAxis />
             <ChartTooltip />
             <Legend />

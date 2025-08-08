@@ -16,3 +16,16 @@ export function getInkColorHex(color: InkColor | string): string {
     default: return '#CCCCCC';
   }
 }
+
+// Map stored Spanish ink color names to translation keys
+export function getInkColorTranslationKey(color: string): string | undefined {
+  switch (color) {
+    case 'Ambar': return 'colors.amber';
+    case 'Amatista': return 'colors.amethyst';
+    case 'Esmeralda': return 'colors.emerald';
+    case 'Rubí': return 'colors.ruby';
+    case 'Zafiro': return 'colors.sapphire';
+    case 'Acero': return 'colors.steel';
+    default: return undefined;
+  }
+}
