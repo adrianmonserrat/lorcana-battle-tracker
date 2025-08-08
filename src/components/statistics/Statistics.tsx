@@ -12,10 +12,12 @@ import { ProtectedRoute } from "../auth/ProtectedRoute";
 import { useMatchRecords } from "@/hooks/useMatchRecords";
 import { useUserDecks } from "@/hooks/useUserDecks";
 import { useLorcana } from "@/context/lorcana/LorcanaProvider";
+import { useLanguage } from "@/context/LanguageContext";
 import { useMemo } from "react";
 import { calculateWinRate } from "./utils";
 
 export function Statistics() {
+  const { t } = useLanguage();
   const [selectedFilter, setSelectedFilter] = useState<StatsFilter>('all');
   const { matches: supabaseMatches, loading } = useMatchRecords();
   const { decks } = useUserDecks();
@@ -73,9 +75,9 @@ export function Statistics() {
     
     // Data for the pie chart
     const resultData = [
-      { name: "Victorias", value: victories },
-      { name: "Empates", value: ties },
-      { name: "Derrotas", value: defeats },
+      { name: t('statistics.charts.victories'), value: victories },
+      { name: t('statistics.charts.ties'), value: ties },
+      { name: t('statistics.charts.defeats'), value: defeats },
     ];
     
     // Calculate color data
@@ -158,7 +160,7 @@ export function Statistics() {
     return (
       <ProtectedRoute>
         <StatisticsLayout
-          title="Estadísticas"
+          title={t('statistics.title')}
           filter={
             <StatisticsFilter 
               selectedFilter={selectedFilter}
@@ -166,7 +168,7 @@ export function Statistics() {
             />
           }
         >
-          <div className="text-center text-muted-foreground">Cargando estadísticas...</div>
+          <div className="text-center text-muted-foreground">{t('statistics.loading')}</div>
         </StatisticsLayout>
       </ProtectedRoute>
     );
@@ -175,7 +177,7 @@ export function Statistics() {
   return (
     <ProtectedRoute>
       <StatisticsLayout
-        title="Estadísticas"
+        title={t('statistics.title')}
         filter={
           <StatisticsFilter 
             selectedFilter={selectedFilter}
@@ -238,7 +240,7 @@ export function Statistics() {
             return {
               id: match.id,
               myDeck: {
-                name: userDeck?.name || 'Mi Mazo',
+                name: userDeck?.name || t('match.my_deck'),
                 colors: userDeck?.colors || ['Ambar'] // Use actual deck colors or default
               },
               opponentDeck: {

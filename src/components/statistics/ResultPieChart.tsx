@@ -12,11 +12,14 @@ export function ResultPieChart({ resultData }: ResultPieChartProps) {
   const COLORS = ["#00A651", "#FFB81C", "#E31937"];
   
   // Preparar los datos para la gráfica de barras
+  const VICTORIES = t('statistics.charts.victories');
+  const TIES = t('statistics.charts.ties');
+  const DEFEATS = t('statistics.charts.defeats');
   const formattedData = resultData.map(item => ({
     name: item.name,
     valor: item.value,
-    color: item.name === 'Victorias' ? COLORS[0] : 
-           item.name === 'Empates' ? COLORS[1] : COLORS[2]
+    color: item.name === VICTORIES ? COLORS[0] : 
+           item.name === TIES ? COLORS[1] : COLORS[2]
   }));
   
   return (
@@ -40,10 +43,10 @@ export function ResultPieChart({ resultData }: ResultPieChartProps) {
               width={80}
             />
             <Tooltip
-              formatter={(value) => [`${value} partidas`, 'Total']}
+              formatter={(value) => [`${value} ${t('statistics.initial_turn.matches')}`, t('statistics.total_matches')]}
               labelFormatter={(name) => `${name}`}
             />
-            <Bar dataKey="valor" name="Cantidad" radius={[0, 4, 4, 0]}>
+            <Bar dataKey="valor" name={t('statistics.total_matches')} radius={[0, 4, 4, 0]}>
               {formattedData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
