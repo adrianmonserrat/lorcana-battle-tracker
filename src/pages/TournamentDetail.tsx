@@ -4,13 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { TournamentDetail as TournamentDetailComponent } from '@/components/tournament-detail';
 import { MatchForm } from '@/components/match-form';
 import { useLanguage } from '@/context/LanguageContext';
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle,
-  SheetDescription
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MainHeader } from '@/components/layouts/main-header';
