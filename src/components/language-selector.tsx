@@ -11,6 +11,9 @@ import { useLanguage, type Language } from "@/context/LanguageContext";
 const languages = [
   { code: 'es' as Language, name: 'Español', flag: '🇪🇸' },
   { code: 'en' as Language, name: 'English', flag: '🇺🇸' },
+  { code: 'de' as Language, name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'fr' as Language, name: 'Français', flag: '🇫🇷' },
+  { code: 'it' as Language, name: 'Italiano', flag: '🇮🇹' },
 ];
 
 interface LanguageSelectorProps {
