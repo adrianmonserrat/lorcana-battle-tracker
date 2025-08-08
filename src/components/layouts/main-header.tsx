@@ -54,7 +54,7 @@ export function MainHeader({
     }
   };
 
-  const displayName = profile?.display_name || user?.email?.split('@')[0] || 'Usuario';
+  const displayName = profile?.display_name || user?.email?.split('@')[0] || t('nav.profile');
   
   const NavigationButtons = () => (
     <>

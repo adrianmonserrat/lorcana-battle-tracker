@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { TournamentDetail as TournamentDetailComponent } from '@/components/tournament-detail';
 import { MatchForm } from '@/components/match-form';
+import { useLanguage } from '@/context/LanguageContext';
 import { 
   Sheet, 
   SheetContent, 
@@ -17,8 +18,9 @@ import { MainHeader } from '@/components/layouts/main-header';
 const TournamentDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [isAddingMatch, setIsAddingMatch] = useState(false);
-  const isMobile = useIsMobile();
+const [isAddingMatch, setIsAddingMatch] = useState(false);
+const isMobile = useIsMobile();
+const { t } = useLanguage();
   
   if (!id) {
     navigate('/torneos');
@@ -30,7 +32,7 @@ const TournamentDetail = () => {
       <MainHeader 
         showTourneosButton={false}
         showPartidasButton={false}
-        alternateButtonText="Volver a Torneos"
+        alternateButtonText={`${t('common.back')} ${t('tournament.title')}`}
         alternateButtonAction={() => navigate('/torneos')}
       />
       
@@ -44,9 +46,10 @@ const TournamentDetail = () => {
           <Sheet open={isAddingMatch} onOpenChange={setIsAddingMatch}>
             <SheetContent side="bottom" className="h-[90vh] pb-8 overflow-y-auto">
               <SheetHeader>
-                <SheetTitle>Agregar Partida al Torneo</SheetTitle>
+                <SheetTitle>{t('match.form.title_tournament')}</SheetTitle>
                 <SheetDescription>
-                  Completa el formulario para registrar una nueva partida
+                  {t('match.form.title')}
+                </SheetDescription>
                 </SheetDescription>
               </SheetHeader>
               <ScrollArea className="h-full pr-4 mt-4">
@@ -61,9 +64,9 @@ const TournamentDetail = () => {
           <Sheet open={isAddingMatch} onOpenChange={setIsAddingMatch}>
             <SheetContent className="w-[95%] sm:max-w-[600px] overflow-y-auto">
               <SheetHeader>
-                <SheetTitle>Agregar Partida al Torneo</SheetTitle>
+                <SheetTitle>{t('match.form.title_tournament')}</SheetTitle>
                 <SheetDescription>
-                  Completa el formulario para registrar una nueva partida
+                  {t('match.form.title')}
                 </SheetDescription>
               </SheetHeader>
               <ScrollArea className="h-[calc(100vh-150px)] pr-4 mt-4">

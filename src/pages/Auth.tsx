@@ -8,14 +8,16 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { PasswordStrengthIndicator } from '@/components/auth/PasswordStrengthIndicator';
 import { toast } from 'sonner';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp } = useAuth();
-  const navigate = useNavigate();
+const { signIn, signUp } = useAuth();
+const navigate = useNavigate();
+const { t } = useLanguage();
 
   const validatePassword = (password: string) => {
     const hasUppercase = /[A-Z]/.test(password);
@@ -30,12 +32,12 @@ export default function Auth() {
     e.preventDefault();
     
     if (!email || !password) {
-      toast.error('Por favor completa todos los campos');
+      toast.error(t('auth.fill_all_fields'));
       return;
     }
 
     if (isSignUp && !validatePassword(password)) {
-      toast.error('La contraseña no cumple con los requisitos');
+      toast.error(t('auth.password_not_meet_requirements'));
       return;
     }
 
@@ -44,14 +46,14 @@ export default function Auth() {
       if (isSignUp) {
         const redirectUrl = `${window.location.origin}/`;
         await signUp(email, password);
-        toast.success('Cuenta creada exitosamente. Revisa tu email para confirmar.');
+        toast.success(t('auth.account_created_check_email'));
       } else {
         await signIn(email, password);
-        toast.success('Sesión iniciada exitosamente');
+        toast.success(t('auth.login_success'));
         navigate('/');
       }
     } catch (error: any) {
-      const errorMessage = error.message || 'Error en la autenticación';
+      const errorMessage = error.message || t('auth.auth_error');
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -63,52 +65,52 @@ export default function Auth() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <Link to="/" className="text-3xl font-bold text-primary hover:text-primary/80 transition-colors">
-            Contador Lorcana
+            {t('app.title')}
           </Link>
           <h2 className="mt-6 text-2xl font-bold text-gray-900">
-            {isSignUp ? 'Crear cuenta nueva' : 'Iniciar sesión'}
+            {isSignUp ? t('auth.signup') : t('auth.login')}
           </h2>
         </div>
         
         <Card>
           <CardHeader>
-            <CardTitle className="text-center">
-              {isSignUp ? 'Registro' : 'Login'}
-            </CardTitle>
+          <CardTitle className="text-center">
+            {isSignUp ? t('auth.signup') : t('auth.login')}
+          </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@email.com"
-                  disabled={loading}
-                  required
-                />
+              <Label htmlFor="email">{t('auth.email')}</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t('auth.email_placeholder')}
+                disabled={loading}
+                required
+              />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Contraseña</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  disabled={loading}
-                  required
-                />
+              <Label htmlFor="password">{t('auth.password')}</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                disabled={loading}
+                required
+              />
                 {isSignUp && (
                   <PasswordStrengthIndicator password={password} />
                 )}
               </div>
               
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Cargando...' : (isSignUp ? 'Crear Cuenta' : 'Iniciar Sesión')}
+                {loading ? t('common.loading') : (isSignUp ? t('auth.signup') : t('auth.login'))}
               </Button>
               
               <Button
@@ -118,7 +120,7 @@ export default function Auth() {
                 onClick={() => setIsSignUp(!isSignUp)}
                 disabled={loading}
               >
-                {isSignUp ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
+                {isSignUp ? `${t('auth.already_have_account')} ${t('auth.sign_in_here')}` : `${t('auth.no_account')} ${t('auth.sign_up_here')}`}
               </Button>
             </form>
           </CardContent>

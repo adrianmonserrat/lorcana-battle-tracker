@@ -9,6 +9,7 @@ import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 import { isValidEmail, validatePasswordStrength } from '@/lib/security';
 import { checkRateLimit } from '@/lib/rateLimiter';
 import { toast } from 'sonner';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface AuthModalProps {
   open: boolean;
@@ -23,18 +24,19 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const [attemptCount, setAttemptCount] = useState(0);
   const { signIn, signUp } = useAuth();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Input validation
     if (!email || !password) {
-      toast.error('Por favor completa todos los campos');
+      toast.error(t('auth.fill_all_fields'));
       return;
     }
 
     if (!isValidEmail(email)) {
-      toast.error('Por favor ingresa un email válido');
+      toast.error(t('auth.invalid_email'));
       return;
     }
 
@@ -46,7 +48,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
       }
 
       if (password !== confirmPassword) {
-        toast.error('Las contraseñas no coinciden');
+        toast.error(t('auth.passwords_mismatch'));
         return;
       }
     }
@@ -56,7 +58,10 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
     const rateLimitResult = await checkRateLimit(action);
     
     if (!rateLimitResult.allowed) {
-      toast.error(`Demasiados intentos. ${rateLimitResult.resetTime ? `Intenta nuevamente después de ${new Date(rateLimitResult.resetTime).toLocaleTimeString()}` : 'Espera un momento antes de intentar nuevamente.'}`);
+      const msg = rateLimitResult.resetTime
+        ? `${t('auth.too_many_attempts')} ${t('auth.try_again_after')} ${new Date(rateLimitResult.resetTime).toLocaleTimeString()}`
+        : `${t('auth.too_many_attempts')} ${t('auth.try_again_later')}`;
+      toast.error(msg);
       return;
     }
 
@@ -66,14 +71,14 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
     try {
       if (isSignUp) {
         await signUp(email, password);
-        toast.success('Cuenta creada exitosamente. Revisa tu email para confirmar.');
+        toast.success(t('auth.account_created_check_email'));
         setEmail('');
         setPassword('');
         setConfirmPassword('');
         setIsSignUp(false);
       } else {
         await signIn(email, password);
-        toast.success('Sesión iniciada exitosamente');
+        toast.success(t('auth.login_success'));
         onClose();
         // Reset form on success
         setEmail('');
@@ -84,15 +89,15 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
       console.error('Auth error:', error);
       
       // Enhanced error messages
-      let errorMessage = 'Error en la autenticación';
+      let errorMessage = t('auth.auth_error');
       if (error.message?.includes('Invalid login credentials')) {
-        errorMessage = 'Credenciales inválidas. Verifica tu email y contraseña.';
+        errorMessage = t('auth.invalid_credentials');
       } else if (error.message?.includes('User already registered')) {
-        errorMessage = 'Este email ya está registrado. Intenta iniciar sesión.';
+        errorMessage = t('auth.user_already_registered');
       } else if (error.message?.includes('Email not confirmed')) {
-        errorMessage = 'Por favor confirma tu email antes de iniciar sesión.';
+        errorMessage = t('auth.email_not_confirmed');
       } else if (error.message?.includes('Too many requests')) {
-        errorMessage = 'Demasiados intentos. Espera un momento antes de intentar nuevamente.';
+        errorMessage = `${t('auth.too_many_attempts')} ${t('auth.try_again_later')}`;
       }
       
       toast.error(errorMessage);
@@ -106,19 +111,19 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {isSignUp ? 'Crear Cuenta' : 'Iniciar Sesión'}
+            {isSignUp ? t('auth.signup') : t('auth.login')}
           </DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('auth.email')}</Label>
             <Input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="tu@email.com"
+              placeholder={t('auth.email_placeholder')}
               disabled={loading}
               required
               autoComplete="email"
@@ -126,7 +131,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="password">Contraseña</Label>
+            <Label htmlFor="password">{t('auth.password')}</Label>
             <Input
               id="password"
               type="password"
@@ -142,7 +147,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
 
           {isSignUp && (
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
+              <Label htmlFor="confirmPassword">{t('auth.confirm_password')}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -157,7 +162,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
           )}
           
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Cargando...' : (isSignUp ? 'Crear Cuenta' : 'Iniciar Sesión')}
+            {loading ? t('common.loading') : (isSignUp ? t('auth.signup') : t('auth.login'))}
           </Button>
           
           <Button
@@ -167,7 +172,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
             onClick={() => setIsSignUp(!isSignUp)}
             disabled={loading}
           >
-            {isSignUp ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
+            {isSignUp ? `${t('auth.already_have_account')} ${t('auth.sign_in_here')}` : `${t('auth.no_account')} ${t('auth.sign_up_here')}`}
           </Button>
         </form>
       </DialogContent>

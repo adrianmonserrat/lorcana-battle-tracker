@@ -1,5 +1,6 @@
 
 import { Check, X } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface PasswordRequirement {
   label: string;
@@ -10,27 +11,29 @@ interface PasswordStrengthIndicatorProps {
   password: string;
 }
 
-const requirements: PasswordRequirement[] = [
-  {
-    label: 'Al menos una mayúscula',
-    test: (password) => /[A-Z]/.test(password)
-  },
-  {
-    label: 'Al menos una minúscula',
-    test: (password) => /[a-z]/.test(password)
-  },
-  {
-    label: 'Al menos un número',
-    test: (password) => /[0-9]/.test(password)
-  },
-  {
-    label: 'Mínimo 8 caracteres',
-    test: (password) => password.length >= 8
-  }
-];
-
 export function PasswordStrengthIndicator({ password }: PasswordStrengthIndicatorProps) {
+  const { t } = useLanguage();
+
   if (!password) return null;
+
+  const requirements: PasswordRequirement[] = [
+    {
+      label: t('auth.requirements.uppercase'),
+      test: (password) => /[A-Z]/.test(password)
+    },
+    {
+      label: t('auth.requirements.lowercase'),
+      test: (password) => /[a-z]/.test(password)
+    },
+    {
+      label: t('auth.requirements.number'),
+      test: (password) => /[0-9]/.test(password)
+    },
+    {
+      label: t('auth.requirements.min_length'),
+      test: (password) => password.length >= 8
+    }
+  ];
 
   const validRequirements = requirements.filter(req => req.test(password)).length;
   const allValid = validRequirements === requirements.length;
@@ -38,7 +41,7 @@ export function PasswordStrengthIndicator({ password }: PasswordStrengthIndicato
   return (
     <div className="mt-2 space-y-2">
       <div className="text-sm font-medium">
-        Requisitos de contraseña ({validRequirements}/{requirements.length})
+        {t('auth.password_requirements_title')} ({validRequirements}/{requirements.length})
       </div>
       <div className="space-y-1">
         {requirements.map((requirement, index) => {
@@ -59,7 +62,7 @@ export function PasswordStrengthIndicator({ password }: PasswordStrengthIndicato
       </div>
       {allValid && (
         <div className="text-sm text-green-600 font-medium">
-          ✓ Contraseña válida
+          ✓ {t('auth.password_valid')}
         </div>
       )}
     </div>
