@@ -72,7 +72,7 @@ export function InitialTurnStats({ matches, tournaments = [], selectedFilter = '
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-sm text-muted-foreground">Total</p>
+                <p className="text-sm text-muted-foreground">{t('common.total')}</p>
                 <p className="text-2xl font-bold">{otpMatches.length} {t('statistics.initial_turn.matches')}</p>
               </div>
               <div>
@@ -99,7 +99,7 @@ export function InitialTurnStats({ matches, tournaments = [], selectedFilter = '
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-sm text-muted-foreground">Total</p>
+                <p className="text-sm text-muted-foreground">{t('common.total')}</p>
                 <p className="text-2xl font-bold">{otdMatches.length} {t('statistics.initial_turn.matches')}</p>
               </div>
               <div>

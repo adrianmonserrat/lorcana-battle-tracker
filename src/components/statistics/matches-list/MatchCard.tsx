@@ -1,6 +1,6 @@
 
 import { format } from "date-fns";
-import { es, enUS } from "date-fns/locale";
+import { es, enUS, de as deLocale, fr as frLocale, it as itLocale } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { 
@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
 import { EnhancedMatch } from "./types";
-import { getInkColorHex } from "../utils";
+import { getInkColorHex, getInkColorTranslationKey } from "../utils";
 import { useMatchRecords } from "@/hooks/useMatchRecords";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -29,8 +29,15 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
   const { t, language } = useLanguage();
   
   // Get locale for date formatting
-  const getLocale = () => (language === 'en' ? enUS : es);
-
+  const getLocale = () => {
+    switch (language) {
+      case 'en': return enUS;
+      case 'de': return deLocale;
+      case 'fr': return frLocale;
+      case 'it': return itLocale;
+      default: return es;
+    }
+  };
   const handleDelete = async () => {
     try {
       if (!match.tournamentName) {
@@ -68,6 +75,7 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
   };
 
   const resultDisplay = getResultDisplay();
+  const formatText = match.gameFormat === 'Infinity Constructor' ? t('match.format.infinity') : t('match.format.standard');
 
   return (
     <div className={`border-l-4 rounded-md border ${
@@ -158,6 +166,7 @@ interface DeckInfoProps {
 }
 
 function DeckInfo({ title, deck }: DeckInfoProps) {
+  const { t } = useLanguage();
   return (
     <div>
       <h4 className="text-sm font-medium">{title}:</h4>
@@ -171,7 +180,7 @@ function DeckInfo({ title, deck }: DeckInfoProps) {
               color: ['Ambar', 'Zafiro', 'Esmeralda'].includes(color) ? '#000' : '#fff'
             }}
           >
-            {color}
+            {t(getInkColorTranslationKey(color) || color)}
           </span>
         ))}
       </div>
