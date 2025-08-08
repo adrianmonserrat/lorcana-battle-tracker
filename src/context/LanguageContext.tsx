@@ -58,35 +58,43 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return key;
       }
 
-      // Handle nested keys like 'match.initial_turn' or 'statistics.filter.title'
-      const keys = key.split('.');
-      let value: any = currentTranslations;
-      
-      for (const k of keys) {
-        if (value && typeof value === 'object' && k in value) {
-          value = value[k];
-        } else {
-          // If key not found, try fallback to Spanish
-          if (language !== 'es') {
-            const fallbackTranslations = translations['es'];
-            let fallbackValue: any = fallbackTranslations;
-            
-            for (const fk of keys) {
-              if (fallbackValue && typeof fallbackValue === 'object' && fk in fallbackValue) {
-                fallbackValue = fallbackValue[fk];
-              } else {
-                return key; // Return original key if not found in fallback either
-              }
-            }
-            
-            return typeof fallbackValue === 'string' ? fallbackValue : key;
-          }
-          
-          return key; // Return original key if not found
-        }
+      // 1) Try direct key lookup (flat keys like "match.form.title")
+      if (Object.prototype.hasOwnProperty.call(currentTranslations, key)) {
+        const direct = (currentTranslations as any)[key];
+        if (typeof direct === 'string') return direct;
       }
-      
-      return typeof value === 'string' ? value : key;
+
+      // Helper to resolve nested keys (e.g., statistics.filter.title)
+      const getNested = (obj: any): string | undefined => {
+        const parts = key.split('.');
+        let value: any = obj;
+        for (const p of parts) {
+          if (value && typeof value === 'object' && p in value) {
+            value = value[p];
+          } else {
+            return undefined;
+          }
+        }
+        return typeof value === 'string' ? value : undefined;
+      };
+
+      // 2) Try nested resolution in current language
+      const nested = getNested(currentTranslations);
+      if (nested) return nested;
+
+      // 3) Fallback to Spanish (direct, then nested)
+      if (language !== 'es') {
+        const fallback = translations['es'];
+        if (Object.prototype.hasOwnProperty.call(fallback, key)) {
+          const directFallback = (fallback as any)[key];
+          if (typeof directFallback === 'string') return directFallback;
+        }
+        const nestedFallback = getNested(fallback);
+        if (nestedFallback) return nestedFallback;
+      }
+
+      // 4) As a last resort return the key
+      return key;
     } catch (error) {
       console.error('Translation error:', error, 'for key:', key);
       return key;
