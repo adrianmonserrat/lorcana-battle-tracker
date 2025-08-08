@@ -97,23 +97,24 @@ export function useMatchRecords() {
           notes: matchData.notes,
           notes_en: language === 'en' ? (matchData.notes || null) : null,
           notes_es: language === 'es' ? (matchData.notes || null) : null,
-        })
+        } as any)
         .select()
         .single();
 
       if (error) throw error;
       
+      const d: any = data;
       const typedMatch: MatchRecord = {
-        ...data,
+        ...d,
         opponent_deck_name: (language === 'en' 
-          ? (data.opponent_deck_name_en || data.opponent_deck_name)
-          : (data.opponent_deck_name_es || data.opponent_deck_name)) || undefined,
-        opponent_deck_colors: data.opponent_deck_colors as InkColor[],
-        result: data.result as 'Victoria' | 'Derrota' | 'Empate',
-        game_format: data.game_format as GameFormat,
-        match_format: data.match_format as MatchFormat,
-        initial_turn: data.initial_turn as InitialTurn,
-        notes: data.notes || undefined
+          ? (d.opponent_deck_name_en || d.opponent_deck_name)
+          : (d.opponent_deck_name_es || d.opponent_deck_name)) || undefined,
+        opponent_deck_colors: d.opponent_deck_colors as InkColor[],
+        result: d.result as 'Victoria' | 'Derrota' | 'Empate',
+        game_format: d.game_format as GameFormat,
+        match_format: d.match_format as MatchFormat,
+        initial_turn: d.initial_turn as InitialTurn,
+        notes: d.notes || undefined
       };
       
       setMatches(prev => [typedMatch, ...prev]);

@@ -1,6 +1,6 @@
 
 import { format } from "date-fns";
-import { es, enUS, de, fr, it } from "date-fns/locale";
+import { es, enUS } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { 
@@ -29,15 +29,7 @@ export function MatchCard({ match, onDeleteMatch }: MatchCardProps) {
   const { t, language } = useLanguage();
   
   // Get locale for date formatting
-  const getLocale = () => {
-    switch (language) {
-      case 'en': return enUS;
-      case 'de': return de;
-      case 'fr': return fr;
-      case 'it': return it;
-      default: return es;
-    }
-  };
+  const getLocale = () => (language === 'en' ? enUS : es);
 
   const handleDelete = async () => {
     try {
