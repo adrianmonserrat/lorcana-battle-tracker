@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from 'sonner';
+import { useLanguage } from '@/context/LanguageContext';
 
 export interface DeckStatistics {
   id: string;
@@ -22,6 +23,7 @@ export interface DeckStatistics {
 
 export function useDeckStatistics() {
   const { user } = useAuth();
+  const { language } = useLanguage();
   const [statistics, setStatistics] = useState<DeckStatistics[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,6 +42,8 @@ export function useDeckStatistics() {
           *,
           user_decks!deck_statistics_deck_id_fkey(
             name,
+            name_es,
+            name_en,
             colors,
             format
           )
@@ -49,13 +53,16 @@ export function useDeckStatistics() {
 
       if (error) throw error;
       
-      // Transform data to include deck information
-      const transformedData = (data || []).map(stat => ({
-        ...stat,
-        deck_name: stat.user_decks?.name,
-        deck_colors: stat.user_decks?.colors,
-        deck_format: stat.user_decks?.format
-      }));
+      const transformedData = (data || []).map((stat: any) => {
+        const ud = stat.user_decks || {};
+        const localizedName = language === 'en' ? (ud.name_en || ud.name) : (ud.name_es || ud.name);
+        return {
+          ...stat,
+          deck_name: localizedName,
+          deck_colors: ud.colors,
+          deck_format: ud.format
+        };
+      });
 
       console.log('Estadísticas de mazos cargadas:', transformedData);
       setStatistics(transformedData);
@@ -121,6 +128,15 @@ export function useDeckStatistics() {
       subscription.unsubscribe();
     };
   }, [user]);
+
+  // Re-localize deck names when language changes without refetching
+  useEffect(() => {
+    setStatistics(prev => prev.map((stat: any) => {
+      const ud = stat.user_decks || {};
+      const localizedName = language === 'en' ? (ud.name_en || ud.name) : (ud.name_es || ud.name);
+      return { ...stat, deck_name: localizedName };
+    }));
+  }, [language]);
 
   return {
     statistics,

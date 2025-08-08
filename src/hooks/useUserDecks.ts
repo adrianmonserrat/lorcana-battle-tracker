@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { InkColor, GameFormat } from '@/types';
 import { toast } from 'sonner';
 import { useAuth } from '@/components/auth/AuthProvider';
+import { useLanguage } from '@/context/LanguageContext';
 
 export interface UserDeck {
   id: string;
@@ -17,6 +18,7 @@ export interface UserDeck {
 
 export function useUserDecks() {
   const { user } = useAuth();
+  const { language } = useLanguage();
   const [decks, setDecks] = useState<UserDeck[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,7 +44,11 @@ export function useUserDecks() {
         format: deck.format as GameFormat
       }));
       
-      setDecks(typedDecks);
+      const localizedDecks = typedDecks.map((d: any) => {
+        const localizedName = language === 'en' ? (d.name_en || d.name) : (d.name_es || d.name);
+        return { ...d, name: localizedName };
+      });
+      setDecks(localizedDecks);
     } catch (error) {
       console.error('Error loading decks:', error);
       toast.error('Error al cargar los mazos');
@@ -61,6 +67,8 @@ export function useUserDecks() {
         .from('user_decks')
         .insert({
           name,
+          name_en: (language === 'en' ? name : null),
+          name_es: (language === 'es' ? name : null),
           colors: colors as string[],
           format,
           user_id: user.id
@@ -107,6 +115,14 @@ export function useUserDecks() {
   useEffect(() => {
     loadDecks();
   }, [user]);
+
+  // Re-localize deck names when language changes without refetching
+  useEffect(() => {
+    setDecks(prev => prev.map((d: any) => {
+      const localizedName = language === 'en' ? (d.name_en || d.name) : (d.name_es || d.name);
+      return { ...d, name: localizedName };
+    }));
+  }, [language]);
 
   return {
     decks,

@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export type Language = 'es' | 'en' | 'de' | 'fr' | 'it';
+export type Language = 'es' | 'en';
 
 export interface LanguageContextType {
   language: Language;
@@ -28,16 +28,10 @@ export const useLanguage = () => {
 // Import translations
 import esTranslations from '../translations/es.json';
 import enTranslations from '../translations/en.json';  
-import deTranslations from '../translations/de.json';
-import frTranslations from '../translations/fr.json';
-import itTranslations from '../translations/it.json';
 
 const translations = {
   es: esTranslations,
   en: enTranslations,
-  de: deTranslations,
-  fr: frTranslations,
-  it: itTranslations,
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -46,7 +40,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Load saved language from localStorage on mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('lorcana-language') as Language;
-    if (savedLanguage && ['es', 'en', 'de', 'fr', 'it'].includes(savedLanguage)) {
+    if (savedLanguage && ['es', 'en'].includes(savedLanguage)) {
       setLanguageState(savedLanguage);
     }
   }, []);
