@@ -250,12 +250,5 @@
     "stats_title": "Statistiche per Turno Iniziale",
     "matches": "partite",
     "win_rate": "Tasso di Vittoria"
-  },
-  "statistics.charts.result_distribution": "Distribuzione Risultati",
-  "statistics.charts.color_performance": "Prestazioni per Colore",
-  "statistics.initial_turn.stats_title": "Statistiche per Turno Iniziale",
-  "statistics.initial_turn.matches": "partite",
-  "statistics.initial_turn.win_rate": "Tasso di Vittoria",
-  "statistics.matches_list.title": "Lista Partite",
-  "statistics.matches_list.no_matches": "Nessuna partita trovata che corrisponda ai filtri selezionati"
+  }
 }

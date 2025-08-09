@@ -250,12 +250,5 @@
     "stats_title": "Statistiques par Tour Initial",
     "matches": "parties",
     "win_rate": "Taux de Victoire"
-  },
-  "statistics.charts.result_distribution": "Distribution des Résultats",
-  "statistics.charts.color_performance": "Performance par Couleur",
-  "statistics.initial_turn.stats_title": "Statistiques par Tour Initial",
-  "statistics.initial_turn.matches": "parties",
-  "statistics.initial_turn.win_rate": "Taux de Victoire",
-  "statistics.matches_list.title": "Liste des Parties",
-  "statistics.matches_list.no_matches": "Aucune partie trouvée correspondant aux filtres sélectionnés"
+  }
 }

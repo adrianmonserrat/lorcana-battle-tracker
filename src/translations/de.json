@@ -250,12 +250,5 @@
     "stats_title": "Statistiken nach Startzug",
     "matches": "Spiele",
     "win_rate": "Siegesrate"
-  },
-  "statistics.charts.result_distribution": "Ergebnisverteilung",
-  "statistics.charts.color_performance": "Leistung nach Farbe",
-  "statistics.initial_turn.stats_title": "Statistiken nach Startzug",
-  "statistics.initial_turn.matches": "Spiele",
-  "statistics.initial_turn.win_rate": "Siegesrate",
-  "statistics.matches_list.title": "Spieleliste",
-  "statistics.matches_list.no_matches": "Keine Spiele gefunden, die den ausgewählten Filtern entsprechen"
+  }
 }

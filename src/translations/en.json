@@ -250,14 +250,8 @@
     "stats_title": "Statistics by Initial Turn",
     "matches": "matches",
     "win_rate": "Win Rate"
-  },
-  "statistics.charts.result_distribution": "Result Distribution",
-  "statistics.charts.color_performance": "Performance by Color",
-  "statistics.initial_turn.stats_title": "Statistics by Initial Turn",
-  "statistics.initial_turn.matches": "matches",
-  "statistics.initial_turn.win_rate": "Win Rate",
-  "statistics.matches_list.title": "Matches List",
-  "statistics.matches_list.no_matches": "No matches found matching the selected filters",
+  }
+,
   "auth.fill_all_fields": "Please fill in all fields",
   "auth.invalid_email": "Please enter a valid email",
   "auth.passwords_mismatch": "Passwords do not match",
