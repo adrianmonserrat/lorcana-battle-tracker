@@ -23,7 +23,7 @@ export function TournamentStatsChart({ tournamentData }: TournamentStatsChartPro
   
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="text-center">
         <CardTitle>{t('statistics.tournament_chart_title')}</CardTitle>
       </CardHeader>
       <CardContent className="h-[400px]">

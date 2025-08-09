@@ -24,7 +24,7 @@ export function ColorPerformanceChart({ colorData }: ColorPerformanceChartProps)
   
   return (
     <Card className="col-span-1">
-      <CardHeader>
+      <CardHeader className="text-center">
         <CardTitle>{t('statistics.charts.color_performance')}</CardTitle>
       </CardHeader>
       <CardContent className="h-[350px]">

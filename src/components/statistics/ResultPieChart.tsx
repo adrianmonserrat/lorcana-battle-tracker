@@ -24,7 +24,7 @@ export function ResultPieChart({ resultData }: ResultPieChartProps) {
   
   return (
     <Card className="col-span-1">
-      <CardHeader>
+      <CardHeader className="text-center">
         <CardTitle>{t('statistics.charts.result_distribution')}</CardTitle>
       </CardHeader>
       <CardContent className="h-[350px]">

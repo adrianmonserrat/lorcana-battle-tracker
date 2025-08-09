@@ -61,12 +61,12 @@ export function InitialTurnStats({ matches, tournaments = [], selectedFilter = '
 
   return (
     <div className="space-y-4">
-      <h3 className="text-xl font-semibold">{t('statistics.initial_turn.stats_title')}</h3>
+      <h3 className="text-xl font-semibold text-center">{t('statistics.initial_turn.stats_title')}</h3>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* OTP Stats */}
         <Card>
-          <CardHeader className="pb-4">
+          <CardHeader className="pb-4 text-center">
             <CardTitle className="text-lg text-blue-600">{t('statistics.initial_turn.otp')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -93,7 +93,7 @@ export function InitialTurnStats({ matches, tournaments = [], selectedFilter = '
 
         {/* OTD Stats */}
         <Card>
-          <CardHeader className="pb-4">
+          <CardHeader className="pb-4 text-center">
             <CardTitle className="text-lg text-purple-600">{t('statistics.initial_turn.otd')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">

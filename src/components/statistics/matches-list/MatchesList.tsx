@@ -88,7 +88,7 @@ export function MatchesList({ matches, tournaments, onMatchDelete }: MatchesList
 
   return (
     <Card>
-      <CardHeader className="flex flex-col space-y-4">
+      <CardHeader className="flex flex-col items-center text-center space-y-4">
         <CardTitle>{t('statistics.matches_list.title')}</CardTitle>
         <MatchFilters
           colorFilter={colorFilter}
