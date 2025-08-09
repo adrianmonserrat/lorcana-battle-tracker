@@ -14,12 +14,45 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
-    // Provide a fallback instead of throwing error to prevent app crashes
+    // Provide a resilient fallback to avoid crashes and visible keys
     console.warn('useLanguage called outside of LanguageProvider, using fallback');
+    const stored = (typeof window !== 'undefined'
+      ? (localStorage.getItem('lorcana-language') as Language | null)
+      : null);
+    const supported: Language[] = ['es', 'en', 'de', 'fr', 'it'];
+    const safeLang: Language = stored && (supported as readonly string[]).includes(stored)
+      ? (stored as Language)
+      : 'es';
+
+    const translate = (key: string): string => {
+      try {
+        const current: any = (translations as any)[safeLang];
+        const parts = key.split('.');
+        let value: any = current;
+        for (const p of parts) {
+          if (value && typeof value === 'object' && p in value) {
+            value = value[p];
+          } else {
+            value = undefined;
+            break;
+          }
+        }
+        if (typeof value === 'string') return value;
+        if (safeLang !== 'es') {
+          let v: any = (translations as any)['es'];
+          for (const p of parts) v = v && typeof v === 'object' ? v[p] : undefined;
+          if (typeof v === 'string') return v;
+        }
+        return key;
+      } catch {
+        return key;
+      }
+    };
+
     return {
-      language: 'es' as Language,
+      language: safeLang,
       setLanguage: () => {},
-      t: (key: string) => key
+      t: translate
     };
   }
   return context;
@@ -58,17 +91,11 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const t = (key: string): string => {
     try {
-      const currentTranslations = translations[language];
-      if (!currentTranslations) {
-        console.warn(`No translations found for language: ${language}`);
-        return key;
-      }
-
-      // 1) Try direct key lookup (flat keys like "match.form.title")
-      if (Object.prototype.hasOwnProperty.call(currentTranslations, key)) {
-        const direct = (currentTranslations as any)[key];
-        if (typeof direct === 'string') return direct;
-      }
+      const supported: Language[] = ['es', 'en', 'de', 'fr', 'it'];
+      const lang: Language = (supported as readonly string[]).includes(language)
+        ? language
+        : 'es';
+      const currentTranslations: any = (translations as any)[lang];
 
       // Helper to resolve nested keys (e.g., statistics.filter.title)
       const getNested = (obj: any): string | undefined => {
@@ -84,15 +111,21 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return typeof value === 'string' ? value : undefined;
       };
 
+      // 1) Try direct key lookup (flat keys like "match.form.title")
+      if (Object.prototype.hasOwnProperty.call(currentTranslations, key)) {
+        const direct = (currentTranslations as any)[key];
+        if (typeof direct === 'string') return direct;
+      }
+
       // 2) Try nested resolution in current language
       const nested = getNested(currentTranslations);
       if (nested) return nested;
 
       // 3) Fallback to Spanish (direct, then nested)
-      if (language !== 'es') {
-        const fallback = translations['es'];
+      if (lang !== 'es') {
+        const fallback: any = (translations as any)['es'];
         if (Object.prototype.hasOwnProperty.call(fallback, key)) {
-          const directFallback = (fallback as any)[key];
+          const directFallback = fallback[key];
           if (typeof directFallback === 'string') return directFallback;
         }
         const nestedFallback = getNested(fallback);
@@ -101,8 +134,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       // 4) As a last resort return the key
       return key;
-    } catch (error) {
-      console.error('Translation error:', error, 'for key:', key);
+    } catch {
       return key;
     }
   };
