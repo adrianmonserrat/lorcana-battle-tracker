@@ -17,7 +17,7 @@ export function CurrentDateTime() {
   
   return (
     <div className="text-center hidden md:block">
-      <p className="text-xs text-muted-foreground">
+      <p className="text-2xl lg:text-3xl font-semibold text-muted-foreground tracking-tight">
         {format(currentDate, "HH:mm")}
       </p>
     </div>
