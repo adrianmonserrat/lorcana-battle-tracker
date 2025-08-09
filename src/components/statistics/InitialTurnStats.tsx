@@ -67,7 +67,7 @@ export function InitialTurnStats({ matches, tournaments = [], selectedFilter = '
         {/* OTP Stats */}
         <Card>
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg text-blue-600">{t('statistics.initial_turn.otp')}</CardTitle>
+            <CardTitle className="text-lg text-blue-600">OTP</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4 text-center">
@@ -94,7 +94,7 @@ export function InitialTurnStats({ matches, tournaments = [], selectedFilter = '
         {/* OTD Stats */}
         <Card>
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg text-purple-600">{t('statistics.initial_turn.otd')}</CardTitle>
+            <CardTitle className="text-lg text-purple-600">OTD</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4 text-center">
