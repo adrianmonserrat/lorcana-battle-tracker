@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useLorcana } from "@/context/lorcana/LorcanaProvider";
 import { useUserDecks } from "@/hooks/useUserDecks";
+import { useLanguage } from "@/context/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,21 +15,25 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { es, enUS, de, fr, it } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-const formSchema = z.object({
-  name: z.string().min(1, "El nombre del torneo es requerido"),
-  location: z.string().optional(),
-  date: z.date({
-    required_error: "La fecha del torneo es requerida",
-  }),
-  totalMatches: z.number().min(1, "Debe haber al menos 1 partida").max(20, "Máximo 20 partidas"),
-  defaultDeckId: z.string().optional()
-});
+const getFormSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("tournament.form.errors.name_required")),
+    location: z.string().optional(),
+    date: z.date({
+      required_error: t("tournament.form.errors.date_required"),
+    }),
+    totalMatches: z
+      .number()
+      .min(1, t("tournament.form.errors.totalMatches_min"))
+      .max(20, t("tournament.form.errors.totalMatches_max")),
+    defaultDeckId: z.string().optional(),
+  });
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<ReturnType<typeof getFormSchema>>;
 
 interface TournamentFormProps {
   onSuccess?: () => void;
@@ -38,7 +43,9 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
   const { addTournament } = useLorcana();
   const { decks } = useUserDecks();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const { t, language } = useLanguage();
+  const formSchema = getFormSchema(t);
+  const localeMap = { es, en: enUS, de, fr, it } as const;
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -79,14 +86,14 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
         defaultDeckId: ""
       });
       
-      toast.success('¡Torneo creado exitosamente!');
+      toast.success(t('tournament.form.success'));
       
       if (onSuccess) {
         onSuccess();
       }
     } catch (error) {
       console.error('Error creating tournament:', error);
-      toast.error('Error al crear el torneo');
+      toast.error(t('tournament.form.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -95,15 +102,15 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Crear Nuevo Torneo</CardTitle>
+        <CardTitle>{t('tournament.create')}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="name">Nombre del Torneo</Label>
+            <Label htmlFor="name">{t('tournament.form.name')}</Label>
             <Input
               id="name"
-              placeholder="Ej: Torneo Local Lorcana"
+              placeholder={t('tournament.form.name_placeholder')}
               {...form.register("name")}
             />
             {form.formState.errors.name && (
@@ -112,16 +119,16 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="location">Ubicación (Opcional)</Label>
+            <Label htmlFor="location">{t('tournament.form.location_optional')}</Label>
             <Input
               id="location"
-              placeholder="Ej: Tienda de Cartas Local"
+              placeholder={t('tournament.form.location_placeholder')}
               {...form.register("location")}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="totalMatches">Número de Partidas</Label>
+            <Label htmlFor="totalMatches">{t('tournament.form.total_matches')}</Label>
             <Input
               id="totalMatches"
               type="number"
@@ -140,13 +147,13 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label>Mazo por Defecto (Opcional)</Label>
+            <Label>{t('tournament.form.default_deck_optional')}</Label>
             <Select onValueChange={(value) => form.setValue("defaultDeckId", value)} value={form.watch("defaultDeckId")}>
               <SelectTrigger>
-                <SelectValue placeholder="Selecciona un mazo para usar en todo el torneo" />
+                <SelectValue placeholder={t('tournament.form.default_deck_placeholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="no-deck">Sin mazo por defecto</SelectItem>
+                <SelectItem value="no-deck">{t('tournament.form.no_default_deck')}</SelectItem>
                 {decks.map((deck) => (
                   <SelectItem key={deck.id} value={deck.id}>
                     {deck.name} ({deck.colors.join(', ')})
@@ -155,12 +162,12 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">
-              Si seleccionas un mazo, se usará automáticamente en todas las partidas del torneo
+              {t('tournament.form.default_deck_help')}
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label>Fecha del Torneo</Label>
+            <Label>{t('tournament.form.date')}</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -172,9 +179,9 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {form.watch("date") ? (
-                    format(form.watch("date"), "PPP", { locale: es })
+                    format(form.watch("date"), "PPP", { locale: localeMap[language] })
                   ) : (
-                    <span>Seleccionar fecha</span>
+                    <span>{t('tournament.form.select_date')}</span>
                   )}
                 </Button>
               </PopoverTrigger>
@@ -197,7 +204,7 @@ export function TournamentForm({ onSuccess }: TournamentFormProps) {
             className="w-full" 
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Creando..." : "Crear Torneo"}
+            {isSubmitting ? t('tournament.form.submitting') : t('tournament.form.submit')}
           </Button>
         </form>
       </CardContent>
