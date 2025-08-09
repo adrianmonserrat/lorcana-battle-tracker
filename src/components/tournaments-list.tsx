@@ -1,11 +1,12 @@
 
 import { useState } from "react";
 import { useLorcana } from "@/context/lorcana/LorcanaProvider";
+import { useLanguage } from "@/context/LanguageContext";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { es, enUS, de, fr, it } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
@@ -13,6 +14,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 export function TournamentsList() {
   const { tournaments, deleteTournament } = useLorcana();
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
+  const localeMap = { es, en: enUS, de, fr, it } as const;
   const [tournamentToDelete, setTournamentToDelete] = useState<string | null>(null);
   
   const handleDeleteTournament = () => {
@@ -25,8 +28,8 @@ export function TournamentsList() {
   if (tournaments.length === 0) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-medium mb-4">No hay torneos registrados</h2>
-        <Button onClick={() => navigate("/torneos/nuevo")}>Crear Nuevo Torneo</Button>
+        <h2 className="text-xl font-medium mb-4">{t('tournament.empty')}</h2>
+        <Button onClick={() => navigate("/torneos/nuevo")}>{t('tournament.create')}</Button>
       </div>
     );
   }
@@ -34,8 +37,8 @@ export function TournamentsList() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Mis Torneos</h1>
-        <Button onClick={() => navigate("/torneos/nuevo")}>Crear Nuevo Torneo</Button>
+        <h1 className="text-2xl font-bold">{t('tournament.title')}</h1>
+        <Button onClick={() => navigate("/torneos/nuevo")}>{t('tournament.create')}</Button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -66,24 +69,24 @@ export function TournamentsList() {
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Eliminar Torneo</DialogTitle>
+                        <DialogTitle>{t('tournament.delete.title')}</DialogTitle>
                         <DialogDescription>
-                          ¿Estás seguro de que deseas eliminar este torneo? Esta acción no se puede deshacer.
+                          {t('tournament.delete.description')}
                         </DialogDescription>
                       </DialogHeader>
                       <DialogFooter>
                         <Button variant="outline" onClick={() => setTournamentToDelete(null)}>
-                          Cancelar
+                          {t('common.cancel')}
                         </Button>
                         <Button variant="destructive" onClick={handleDeleteTournament}>
-                          Eliminar
+                          {t('tournament.delete.submit')}
                         </Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {format(tournament.date, "PPP", { locale: es })}
+                  {format(tournament.date, "PPP", { locale: localeMap[language] })}
                   {tournament.location && ` - ${tournament.location}`}
                 </p>
               </CardHeader>
@@ -91,7 +94,7 @@ export function TournamentsList() {
               <CardContent className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Progreso: {tournament.matches.length}/{tournament.totalMatches}</span>
+                    <span>{t('tournament.progress')}: {tournament.matches.length}/{tournament.totalMatches}</span>
                     <span>{progress}%</span>
                   </div>
                   <Progress value={progress} className="w-full" />
@@ -99,11 +102,11 @@ export function TournamentsList() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Puntos</p>
+                    <p className="text-sm text-muted-foreground">{t('tournament.points')}</p>
                     <p className="text-xl font-bold text-blue-600">{points}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">V / E / D</p>
+                    <p className="text-sm text-muted-foreground">{t('tournament.record')}</p>
                     <p className="text-lg font-bold">
                       <span className="text-emerald-600">{victories}</span> / 
                       <span className="text-amber-600">{ties}</span> / 
@@ -119,7 +122,7 @@ export function TournamentsList() {
                   className="w-full"
                   onClick={() => navigate(`/torneos/${tournament.id}`)}
                 >
-                  Ver Detalles
+                  {t('tournament.view_details')}
                 </Button>
               </CardFooter>
             </Card>
