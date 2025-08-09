@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { es } from 'date-fns/locale';
+
 import { format } from 'date-fns';
 
 export function CurrentDateTime() {
@@ -17,9 +17,6 @@ export function CurrentDateTime() {
   
   return (
     <div className="text-center hidden md:block">
-      <p className="text-sm font-medium">
-        {format(currentDate, "PPP", { locale: es })}
-      </p>
       <p className="text-xs text-muted-foreground">
         {format(currentDate, "HH:mm")}
       </p>
