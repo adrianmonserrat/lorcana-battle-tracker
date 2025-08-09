@@ -74,15 +74,19 @@ const translations = {
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('es');
-
-  // Load saved language from localStorage on mount
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('lorcana-language') as Language;
-    if (savedLanguage && ['es', 'en', 'de', 'fr', 'it'].includes(savedLanguage)) {
-      setLanguageState(savedLanguage);
+  const [language, setLanguageState] = useState<Language>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const savedLanguage = localStorage.getItem('lorcana-language') as Language | null;
+        if (savedLanguage && ['es', 'en', 'de', 'fr', 'it'].includes(savedLanguage)) {
+          return savedLanguage;
+        }
+      }
+      return 'es';
+    } catch {
+      return 'es';
     }
-  }, []);
+  });
 
   const setLanguage = (newLanguage: Language) => {
     setLanguageState(newLanguage);
