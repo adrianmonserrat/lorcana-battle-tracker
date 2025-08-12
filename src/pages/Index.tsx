@@ -11,7 +11,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { AdsenseBanner } from '@/components/ads/AdsenseBanner';
+
 
 const Index = () => {
   const { user } = useAuth();
@@ -46,11 +46,6 @@ const Index = () => {
             </TabsList>
           </div>
 
-          {/* Banner publicitario debajo de las pestañas */}
-          <div className="mb-6">
-            {/* TODO: Reemplaza "" por tu data-ad-slot numérico cuando lo compartas */}
-            <AdsenseBanner slot={""} />
-          </div>
           
           <TabsContent value="registrarPartida" className="mt-0">
             <MatchForm />
