@@ -10,6 +10,7 @@ import { isValidEmail, validatePasswordStrength } from '@/lib/security';
 import { checkRateLimit } from '@/lib/rateLimiter';
 import { toast } from 'sonner';
 import { useLanguage } from '@/context/LanguageContext';
+import { LanguageSelector } from '@/components/language-selector';
 
 interface AuthModalProps {
   open: boolean;
@@ -110,9 +111,12 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {isSignUp ? t('auth.signup') : t('auth.login')}
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle>
+              {isSignUp ? t('auth.signup') : t('auth.login')}
+            </DialogTitle>
+            <LanguageSelector size="sm" variant="outline" />
+          </div>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">

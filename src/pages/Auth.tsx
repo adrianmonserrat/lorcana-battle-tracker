@@ -9,6 +9,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { PasswordStrengthIndicator } from '@/components/auth/PasswordStrengthIndicator';
 import { toast } from 'sonner';
 import { useLanguage } from '@/context/LanguageContext';
+import { LanguageSelector } from '@/components/language-selector';
 
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -74,9 +75,12 @@ const { t } = useLanguage();
         
         <Card>
           <CardHeader>
-          <CardTitle className="text-center">
-            {isSignUp ? t('auth.signup') : t('auth.login')}
-          </CardTitle>
+            <div className="flex justify-end">
+              <LanguageSelector size="sm" variant="outline" />
+            </div>
+            <CardTitle className="text-center">
+              {isSignUp ? t('auth.signup') : t('auth.login')}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
