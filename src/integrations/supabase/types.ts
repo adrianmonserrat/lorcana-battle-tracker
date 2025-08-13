@@ -69,9 +69,13 @@ export type Database = {
           initial_turn: string | null
           match_format: string
           notes: string | null
+          notes_en: string | null
+          notes_es: string | null
           opponent_deck_colors: string[]
           opponent_deck_id: string | null
           opponent_deck_name: string | null
+          opponent_deck_name_en: string | null
+          opponent_deck_name_es: string | null
           result: string
           user_deck_id: string | null
           user_id: string
@@ -83,9 +87,13 @@ export type Database = {
           initial_turn?: string | null
           match_format: string
           notes?: string | null
+          notes_en?: string | null
+          notes_es?: string | null
           opponent_deck_colors: string[]
           opponent_deck_id?: string | null
           opponent_deck_name?: string | null
+          opponent_deck_name_en?: string | null
+          opponent_deck_name_es?: string | null
           result: string
           user_deck_id?: string | null
           user_id: string
@@ -97,9 +105,13 @@ export type Database = {
           initial_turn?: string | null
           match_format?: string
           notes?: string | null
+          notes_en?: string | null
+          notes_es?: string | null
           opponent_deck_colors?: string[]
           opponent_deck_id?: string | null
           opponent_deck_name?: string | null
+          opponent_deck_name_en?: string | null
+          opponent_deck_name_es?: string | null
           result?: string
           user_deck_id?: string | null
           user_id?: string
@@ -126,8 +138,12 @@ export type Database = {
           colors: string[]
           created_at: string
           description: string | null
+          description_en: string | null
+          description_es: string | null
           id: string
           name: string
+          name_en: string | null
+          name_es: string | null
           updated_at: string
           user_id: string
         }
@@ -135,8 +151,12 @@ export type Database = {
           colors: string[]
           created_at?: string
           description?: string | null
+          description_en?: string | null
+          description_es?: string | null
           id?: string
           name: string
+          name_en?: string | null
+          name_es?: string | null
           updated_at?: string
           user_id: string
         }
@@ -144,8 +164,12 @@ export type Database = {
           colors?: string[]
           created_at?: string
           description?: string | null
+          description_en?: string | null
+          description_es?: string | null
           id?: string
           name?: string
+          name_en?: string | null
+          name_es?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -209,6 +233,8 @@ export type Database = {
           format: string
           id: string
           name: string
+          name_en: string | null
+          name_es: string | null
           updated_at: string
           user_id: string
         }
@@ -218,6 +244,8 @@ export type Database = {
           format?: string
           id?: string
           name: string
+          name_en?: string | null
+          name_es?: string | null
           updated_at?: string
           user_id: string
         }
@@ -227,6 +255,8 @@ export type Database = {
           format?: string
           id?: string
           name?: string
+          name_en?: string | null
+          name_es?: string | null
           updated_at?: string
           user_id?: string
         }
