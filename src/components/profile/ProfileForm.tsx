@@ -9,6 +9,7 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from '@/hooks/use-toast';
+import { sanitizeInput } from '@/lib/security';
 
 export function ProfileForm() {
   const { user } = useAuth();
@@ -89,7 +90,7 @@ export function ProfileForm() {
               id="displayName"
               type="text"
               value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
+              onChange={(e) => setDisplayName(sanitizeInput(e.target.value))}
               placeholder={t('profile.display_name_placeholder')}
               disabled={isUpdating}
               className="w-full"

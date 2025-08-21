@@ -1,8 +1,51 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://id-preview--4628bf8b-89cf-4488-98b5-264476c42e1d.lovable.app',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+// Hash function for anonymizing IPs
+async function hashIP(ip: string, salt: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(ip + salt)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+// Extract real IP from headers (prioritized order)
+function extractRealIP(req: Request): string {
+  const xForwardedFor = req.headers.get('x-forwarded-for')
+  if (xForwardedFor) {
+    // Take the first IP in the chain
+    return xForwardedFor.split(',')[0].trim()
+  }
+  
+  const cfConnectingIP = req.headers.get('cf-connecting-ip')
+  if (cfConnectingIP) return cfConnectingIP
+  
+  const xRealIP = req.headers.get('x-real-ip')
+  if (xRealIP) return xRealIP
+  
+  // Fallback to a generic identifier
+  return 'unknown'
+}
+
+// Extract authenticated user ID from Authorization header
+async function extractUserID(req: Request, supabaseClient: any): Promise<string | null> {
+  try {
+    const authHeader = req.headers.get('authorization')
+    if (!authHeader?.startsWith('Bearer ')) return null
+    
+    const token = authHeader.substring(7)
+    const { data: { user }, error } = await supabaseClient.auth.getUser(token)
+    
+    if (error || !user) return null
+    return user.id
+  } catch {
+    return null
+  }
 }
 
 interface RateLimitRequest {
@@ -36,14 +79,23 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { userId, ipAddress, action }: RateLimitRequest = await req.json()
+    const requestBody = await req.json()
+    const { action } = requestBody
 
-    if (!ipAddress || !action) {
+    if (!action) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields: ipAddress, action' }),
+        JSON.stringify({ error: 'Missing required field: action' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
+
+    // Extract real IP and user ID server-side (ignore client-provided values)
+    const realIP = extractRealIP(req)
+    const authenticatedUserID = await extractUserID(req, supabaseClient)
+    
+    // Hash the IP for privacy
+    const salt = Deno.env.get('RATE_LIMIT_SALT') ?? 'default-salt-change-me'
+    const hashedIP = await hashIP(realIP, salt)
 
     // Find rate limit rule for this action
     const rule = RATE_LIMIT_RULES.find(r => r.action === action)
@@ -54,7 +106,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    const identifier = userId || ipAddress
+    const identifier = authenticatedUserID || hashedIP
     const windowStart = new Date(Date.now() - rule.windowMinutes * 60 * 1000)
 
     // Create rate_limit_logs table if it doesn't exist
@@ -96,8 +148,8 @@ Deno.serve(async (req) => {
       .insert({
         identifier,
         action,
-        ip_address: ipAddress,
-        user_id: userId
+        ip_address: hashedIP, // Store hashed IP instead of raw IP
+        user_id: authenticatedUserID
       })
 
     return new Response(

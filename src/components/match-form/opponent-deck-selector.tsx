@@ -7,6 +7,7 @@ import { ColorSelector } from './color-selector';
 import { useUserDecks } from '@/hooks/useUserDecks';
 import { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+import { sanitizeInput } from '@/lib/security';
 
 interface OpponentDeckSelectorProps {
   form: UseFormReturn<any>;
@@ -100,6 +101,7 @@ export function OpponentDeckSelector({ form }: OpponentDeckSelectorProps) {
               <Input 
                 placeholder={t('match.opponent_deck_name_placeholder')}
                 {...field}
+                onChange={(e) => field.onChange(sanitizeInput(e.target.value))}
                 disabled={selectionMode === 'existing'}
               />
             </FormControl>
